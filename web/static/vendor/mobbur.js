@@ -7215,6 +7215,358 @@ var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
 };
 var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
 
+var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
+var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', value);
+};
+var _elm_lang$html$Html_Attributes$property = _elm_lang$virtual_dom$VirtualDom$property;
+var _elm_lang$html$Html_Attributes$stringProperty = F2(
+	function (name, string) {
+		return A2(
+			_elm_lang$html$Html_Attributes$property,
+			name,
+			_elm_lang$core$Json_Encode$string(string));
+	});
+var _elm_lang$html$Html_Attributes$class = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'className', name);
+};
+var _elm_lang$html$Html_Attributes$id = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'id', name);
+};
+var _elm_lang$html$Html_Attributes$title = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'title', name);
+};
+var _elm_lang$html$Html_Attributes$accesskey = function ($char) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'accessKey',
+		_elm_lang$core$String$fromChar($char));
+};
+var _elm_lang$html$Html_Attributes$dir = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dir', value);
+};
+var _elm_lang$html$Html_Attributes$draggable = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'draggable', value);
+};
+var _elm_lang$html$Html_Attributes$dropzone = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dropzone', value);
+};
+var _elm_lang$html$Html_Attributes$itemprop = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'itemprop', value);
+};
+var _elm_lang$html$Html_Attributes$lang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'lang', value);
+};
+var _elm_lang$html$Html_Attributes$tabindex = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'tabIndex',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$charset = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'charset', value);
+};
+var _elm_lang$html$Html_Attributes$content = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'content', value);
+};
+var _elm_lang$html$Html_Attributes$httpEquiv = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'httpEquiv', value);
+};
+var _elm_lang$html$Html_Attributes$language = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'language', value);
+};
+var _elm_lang$html$Html_Attributes$src = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'src', value);
+};
+var _elm_lang$html$Html_Attributes$height = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'height',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$width = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'width',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$alt = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'alt', value);
+};
+var _elm_lang$html$Html_Attributes$preload = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'preload', value);
+};
+var _elm_lang$html$Html_Attributes$poster = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'poster', value);
+};
+var _elm_lang$html$Html_Attributes$kind = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'kind', value);
+};
+var _elm_lang$html$Html_Attributes$srclang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srclang', value);
+};
+var _elm_lang$html$Html_Attributes$sandbox = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'sandbox', value);
+};
+var _elm_lang$html$Html_Attributes$srcdoc = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srcdoc', value);
+};
+var _elm_lang$html$Html_Attributes$type$ = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'type', value);
+};
+var _elm_lang$html$Html_Attributes$value = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'value', value);
+};
+var _elm_lang$html$Html_Attributes$defaultValue = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'defaultValue', value);
+};
+var _elm_lang$html$Html_Attributes$placeholder = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'placeholder', value);
+};
+var _elm_lang$html$Html_Attributes$accept = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'accept', value);
+};
+var _elm_lang$html$Html_Attributes$acceptCharset = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'acceptCharset', value);
+};
+var _elm_lang$html$Html_Attributes$action = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'action', value);
+};
+var _elm_lang$html$Html_Attributes$autocomplete = function (bool) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'autocomplete',
+		bool ? 'on' : 'off');
+};
+var _elm_lang$html$Html_Attributes$autosave = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'autosave', value);
+};
+var _elm_lang$html$Html_Attributes$enctype = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'enctype', value);
+};
+var _elm_lang$html$Html_Attributes$formaction = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'formAction', value);
+};
+var _elm_lang$html$Html_Attributes$list = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'list', value);
+};
+var _elm_lang$html$Html_Attributes$minlength = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'minLength',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$maxlength = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'maxLength',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$method = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'method', value);
+};
+var _elm_lang$html$Html_Attributes$name = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'name', value);
+};
+var _elm_lang$html$Html_Attributes$pattern = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pattern', value);
+};
+var _elm_lang$html$Html_Attributes$size = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'size',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$for = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'htmlFor', value);
+};
+var _elm_lang$html$Html_Attributes$form = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'form', value);
+};
+var _elm_lang$html$Html_Attributes$max = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'max', value);
+};
+var _elm_lang$html$Html_Attributes$min = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'min', value);
+};
+var _elm_lang$html$Html_Attributes$step = function (n) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'step', n);
+};
+var _elm_lang$html$Html_Attributes$cols = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'cols',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$rows = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'rows',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$wrap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'wrap', value);
+};
+var _elm_lang$html$Html_Attributes$usemap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'useMap', value);
+};
+var _elm_lang$html$Html_Attributes$shape = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'shape', value);
+};
+var _elm_lang$html$Html_Attributes$coords = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'coords', value);
+};
+var _elm_lang$html$Html_Attributes$challenge = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'challenge', value);
+};
+var _elm_lang$html$Html_Attributes$keytype = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'keytype', value);
+};
+var _elm_lang$html$Html_Attributes$align = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'align', value);
+};
+var _elm_lang$html$Html_Attributes$cite = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'cite', value);
+};
+var _elm_lang$html$Html_Attributes$href = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'href', value);
+};
+var _elm_lang$html$Html_Attributes$target = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'target', value);
+};
+var _elm_lang$html$Html_Attributes$downloadAs = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'download', value);
+};
+var _elm_lang$html$Html_Attributes$hreflang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'hreflang', value);
+};
+var _elm_lang$html$Html_Attributes$media = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'media', value);
+};
+var _elm_lang$html$Html_Attributes$ping = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'ping', value);
+};
+var _elm_lang$html$Html_Attributes$rel = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'rel', value);
+};
+var _elm_lang$html$Html_Attributes$datetime = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'datetime', value);
+};
+var _elm_lang$html$Html_Attributes$pubdate = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pubdate', value);
+};
+var _elm_lang$html$Html_Attributes$start = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'start',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$colspan = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'colSpan',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$headers = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'headers', value);
+};
+var _elm_lang$html$Html_Attributes$rowspan = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'rowSpan',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$scope = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'scope', value);
+};
+var _elm_lang$html$Html_Attributes$manifest = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'manifest', value);
+};
+var _elm_lang$html$Html_Attributes$boolProperty = F2(
+	function (name, bool) {
+		return A2(
+			_elm_lang$html$Html_Attributes$property,
+			name,
+			_elm_lang$core$Json_Encode$bool(bool));
+	});
+var _elm_lang$html$Html_Attributes$hidden = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'hidden', bool);
+};
+var _elm_lang$html$Html_Attributes$contenteditable = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'contentEditable', bool);
+};
+var _elm_lang$html$Html_Attributes$spellcheck = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'spellcheck', bool);
+};
+var _elm_lang$html$Html_Attributes$async = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'async', bool);
+};
+var _elm_lang$html$Html_Attributes$defer = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'defer', bool);
+};
+var _elm_lang$html$Html_Attributes$scoped = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'scoped', bool);
+};
+var _elm_lang$html$Html_Attributes$autoplay = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'autoplay', bool);
+};
+var _elm_lang$html$Html_Attributes$controls = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'controls', bool);
+};
+var _elm_lang$html$Html_Attributes$loop = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'loop', bool);
+};
+var _elm_lang$html$Html_Attributes$default = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'default', bool);
+};
+var _elm_lang$html$Html_Attributes$seamless = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'seamless', bool);
+};
+var _elm_lang$html$Html_Attributes$checked = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'checked', bool);
+};
+var _elm_lang$html$Html_Attributes$selected = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'selected', bool);
+};
+var _elm_lang$html$Html_Attributes$autofocus = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'autofocus', bool);
+};
+var _elm_lang$html$Html_Attributes$disabled = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'disabled', bool);
+};
+var _elm_lang$html$Html_Attributes$multiple = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'multiple', bool);
+};
+var _elm_lang$html$Html_Attributes$novalidate = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'noValidate', bool);
+};
+var _elm_lang$html$Html_Attributes$readonly = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'readOnly', bool);
+};
+var _elm_lang$html$Html_Attributes$required = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'required', bool);
+};
+var _elm_lang$html$Html_Attributes$ismap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'isMap', value);
+};
+var _elm_lang$html$Html_Attributes$download = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'download', bool);
+};
+var _elm_lang$html$Html_Attributes$reversed = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'reversed', bool);
+};
+var _elm_lang$html$Html_Attributes$classList = function (list) {
+	return _elm_lang$html$Html_Attributes$class(
+		A2(
+			_elm_lang$core$String$join,
+			' ',
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$core$Basics$fst,
+				A2(_elm_lang$core$List$filter, _elm_lang$core$Basics$snd, list))));
+};
+var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
+
 var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int);
 var _elm_lang$html$Html_Events$targetChecked = A2(
 	_elm_lang$core$Json_Decode$at,
@@ -7316,9 +7668,76 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Mobbur$countdownTimer = function (model) {
-	var seconds = A2(_elm_lang$core$Basics$rem, model.countdown, 60);
-	var minutes = (model.countdown / 60) | 0;
+var _user$project$Mobbur$stringToSeconds = function (string) {
+	return A2(
+		_elm_lang$core$Result$withDefault,
+		0,
+		_elm_lang$core$String$toInt(string));
+};
+var _user$project$Mobbur$secondsToString = function (seconds) {
+	var secs = A3(
+		_elm_lang$core$String$padLeft,
+		2,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString(
+			A2(_elm_lang$core$Basics$rem, seconds, 60)));
+	var minutes = A3(
+		_elm_lang$core$String$padLeft,
+		2,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString((seconds / 60) | 0));
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		minutes,
+		A2(_elm_lang$core$Basics_ops['++'], ':', secs));
+};
+var _user$project$Mobbur$secondsToTimeRecord = function (seconds) {
+	var secs = A2(_elm_lang$core$Basics$rem, seconds, 60);
+	var mins = (seconds / 60) | 0;
+	return {minutes: mins, seconds: secs};
+};
+var _user$project$Mobbur$alarm = _elm_lang$core$Native_Platform.outgoingPort(
+	'alarm',
+	function (v) {
+		return null;
+	});
+var _user$project$Mobbur$Model = F4(
+	function (a, b, c, d) {
+		return {countdown: a, interval: b, state: c, team: d};
+	});
+var _user$project$Mobbur$Team = F2(
+	function (a, b) {
+		return {name: a, members: b};
+	});
+var _user$project$Mobbur$TeamMember = function (a) {
+	return {nick: a};
+};
+var _user$project$Mobbur$TimeRecord = F2(
+	function (a, b) {
+		return {minutes: a, seconds: b};
+	});
+var _user$project$Mobbur$Editing = {ctor: 'Editing'};
+var _user$project$Mobbur$Stopped = {ctor: 'Stopped'};
+var _user$project$Mobbur$initialModel = {
+	countdown: 480,
+	interval: 480,
+	state: _user$project$Mobbur$Stopped,
+	team: {
+		name: '',
+		members: _elm_lang$core$Native_List.fromArray(
+			[])
+	}
+};
+var _user$project$Mobbur$init = {ctor: '_Tuple2', _0: _user$project$Mobbur$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Mobbur$Paused = {ctor: 'Paused'};
+var _user$project$Mobbur$Started = {ctor: 'Started'};
+var _user$project$Mobbur$UpdateSeconds = function (a) {
+	return {ctor: 'UpdateSeconds', _0: a};
+};
+var _user$project$Mobbur$UpdateMinutes = function (a) {
+	return {ctor: 'UpdateMinutes', _0: a};
+};
+var _user$project$Mobbur$inputFields = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -7326,84 +7745,58 @@ var _user$project$Mobbur$countdownTimer = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
+				_elm_lang$html$Html$input,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(minutes),
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								':',
-								_elm_lang$core$Basics$toString(seconds))))
-					]))
+						_elm_lang$html$Html_Attributes$type$('number'),
+						_elm_lang$html$Html_Attributes$placeholder(
+						_elm_lang$core$Basics$toString(
+							function (_) {
+								return _.minutes;
+							}(
+								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+						_elm_lang$html$Html_Attributes$value(
+						_elm_lang$core$Basics$toString(
+							function (_) {
+								return _.minutes;
+							}(
+								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+						_elm_lang$html$Html_Attributes$name('minutes'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Mobbur$UpdateMinutes)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				_elm_lang$html$Html$text(':'),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('number'),
+						_elm_lang$html$Html_Attributes$placeholder(
+						_elm_lang$core$Basics$toString(
+							function (_) {
+								return _.seconds;
+							}(
+								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+						_elm_lang$html$Html_Attributes$value(
+						_elm_lang$core$Basics$toString(
+							function (_) {
+								return _.seconds;
+							}(
+								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+						_elm_lang$html$Html_Attributes$name('seconds'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Mobbur$UpdateSeconds)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
 			]));
 };
-var _user$project$Mobbur$initialModel = {countdown: 2, started: false};
-var _user$project$Mobbur$init = {ctor: '_Tuple2', _0: _user$project$Mobbur$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Mobbur$alarm = _elm_lang$core$Native_Platform.outgoingPort(
-	'alarm',
-	function (v) {
-		return null;
-	});
-var _user$project$Mobbur$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'Alarm':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{started: false}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Reset':
-				return {ctor: '_Tuple2', _0: _user$project$Mobbur$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Start':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{started: true}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Pause':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{started: false}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return (_elm_lang$core$Native_Utils.eq(model.started, true) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? {
-					ctor: '_Tuple2',
-					_0: _user$project$Mobbur$initialModel,
-					_1: _user$project$Mobbur$alarm(
-						{ctor: '_Tuple0'})
-				} : (_elm_lang$core$Native_Utils.eq(model.started, true) ? {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{countdown: model.countdown - 1}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
-		}
-	});
-var _user$project$Mobbur$Model = F2(
-	function (a, b) {
-		return {countdown: a, started: b};
-	});
 var _user$project$Mobbur$Tick = {ctor: 'Tick'};
 var _user$project$Mobbur$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Time$every,
 		_elm_lang$core$Time$second,
-		function (_p1) {
+		function (_p0) {
 			return _user$project$Mobbur$Tick;
 		});
 };
@@ -7429,6 +7822,134 @@ var _user$project$Mobbur$pauseButton = A2(
 		[
 			_elm_lang$html$Html$text('||')
 		]));
+var _user$project$Mobbur$Reset = {ctor: 'Reset'};
+var _user$project$Mobbur$update = F2(
+	function (msg, model) {
+		update:
+		while (true) {
+			var _p1 = msg;
+			switch (_p1.ctor) {
+				case 'Edit':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{state: _user$project$Mobbur$Editing, countdown: model.interval}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Reset':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{state: _user$project$Mobbur$Stopped, countdown: model.interval}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Start':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{state: _user$project$Mobbur$Started}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Pause':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{state: _user$project$Mobbur$Paused}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Tick':
+					if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) && _elm_lang$core$Native_Utils.eq(model.countdown, 1)) {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{countdown: model.countdown - 1}),
+							_1: _user$project$Mobbur$alarm(
+								{ctor: '_Tuple0'})
+						};
+					} else {
+						if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) {
+							var _v1 = _user$project$Mobbur$Reset,
+								_v2 = model;
+							msg = _v1;
+							model = _v2;
+							continue update;
+						} else {
+							if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started)) {
+								return {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.update(
+										model,
+										{countdown: model.countdown - 1}),
+									_1: _elm_lang$core$Platform_Cmd$none
+								};
+							} else {
+								return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+							}
+						}
+					}
+				case 'UpdateMinutes':
+					var minutes = _user$project$Mobbur$stringToSeconds(_p1._0);
+					var total = A2(
+						_elm_lang$core$Debug$log,
+						'total minutes and seconds',
+						(minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{countdown: total, interval: total}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				default:
+					var seconds = _user$project$Mobbur$stringToSeconds(_p1._0);
+					var total = ((model.countdown / 60) | 0) + seconds;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{countdown: total, interval: total}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+			}
+		}
+	});
+var _user$project$Mobbur$Edit = {ctor: 'Edit'};
+var _user$project$Mobbur$countdownTimer = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				function () {
+				var _p2 = model.state;
+				if (_p2.ctor === 'Editing') {
+					return _user$project$Mobbur$inputFields(model);
+				} else {
+					return A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(_user$project$Mobbur$Edit)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Debug$log,
+									'after secondsToString',
+									_user$project$Mobbur$secondsToString(
+										A2(_elm_lang$core$Debug$log, 'countdown', model.countdown))))
+							]));
+				}
+			}()
+			]));
+};
 var _user$project$Mobbur$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -7436,7 +7957,7 @@ var _user$project$Mobbur$view = function (model) {
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$core$Native_Utils.eq(model.started, true) ? _user$project$Mobbur$pauseButton : _user$project$Mobbur$startButton,
+				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) ? _user$project$Mobbur$pauseButton : _user$project$Mobbur$startButton,
 				_user$project$Mobbur$countdownTimer(model)
 			]));
 };
@@ -7444,8 +7965,6 @@ var _user$project$Mobbur$main = {
 	main: _elm_lang$html$Html_App$program(
 		{init: _user$project$Mobbur$init, view: _user$project$Mobbur$view, update: _user$project$Mobbur$update, subscriptions: _user$project$Mobbur$subscriptions})
 };
-var _user$project$Mobbur$Reset = {ctor: 'Reset'};
-var _user$project$Mobbur$Alarm = {ctor: 'Alarm'};
 
 var Elm = {};
 Elm['Mobbur'] = Elm['Mobbur'] || {};
