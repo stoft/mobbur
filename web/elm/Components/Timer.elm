@@ -1,4 +1,4 @@
-port module Mobbur exposing (..)
+port module Components.Timer exposing (..)
 
 import Html exposing (..)
 

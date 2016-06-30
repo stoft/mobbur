@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, text, div)
 import Html.App
-import Mobbur as Timer
+import Components.Timer as Timer
 
 
 main : Program Never
