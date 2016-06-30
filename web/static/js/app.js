@@ -20,7 +20,7 @@ import "phoenix_html"
 
 // import socket from "./socket"
 var elmDiv = document.getElementById('elm-app-lives-here');
-var app = Elm.Mobbur.embed(elmDiv);
+var app = Elm.Main.embed(elmDiv);
 
 // var audio = new Audio('/audio/start1.mp3')
 

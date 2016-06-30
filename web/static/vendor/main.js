@@ -7894,10 +7894,7 @@ var _user$project$Mobbur$update = F2(
 					}
 				case 'UpdateMinutes':
 					var minutes = _user$project$Mobbur$stringToSeconds(_p1._0);
-					var total = A2(
-						_elm_lang$core$Debug$log,
-						'total minutes and seconds',
-						(minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60));
+					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -7940,11 +7937,7 @@ var _user$project$Mobbur$countdownTimer = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(
-								A2(
-									_elm_lang$core$Debug$log,
-									'after secondsToString',
-									_user$project$Mobbur$secondsToString(
-										A2(_elm_lang$core$Debug$log, 'countdown', model.countdown))))
+								_user$project$Mobbur$secondsToString(model.countdown))
 							]));
 				}
 			}()
@@ -7961,14 +7954,65 @@ var _user$project$Mobbur$view = function (model) {
 				_user$project$Mobbur$countdownTimer(model)
 			]));
 };
-var _user$project$Mobbur$main = {
-	main: _elm_lang$html$Html_App$program(
-		{init: _user$project$Mobbur$init, view: _user$project$Mobbur$view, update: _user$project$Mobbur$update, subscriptions: _user$project$Mobbur$subscriptions})
+
+var _user$project$Main$initialModel = {timer: _user$project$Mobbur$initialModel};
+var _user$project$Main$Model = function (a) {
+	return {timer: a};
 };
+var _user$project$Main$TimerMsg = function (a) {
+	return {ctor: 'TimerMsg', _0: a};
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'Noop') {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		} else {
+			var _p1 = A2(_user$project$Mobbur$update, _p0._0, model.timer);
+			var tmodel = _p1._0;
+			var tmsg = _p1._1;
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{timer: tmodel}),
+				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TimerMsg, tmsg)
+			};
+		}
+	});
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$TimerMsg,
+				_user$project$Mobbur$view(model.timer))
+			]));
+};
+var _user$project$Main$subscriptions = function (model) {
+	return A2(
+		_elm_lang$core$Platform_Sub$map,
+		_user$project$Main$TimerMsg,
+		_user$project$Mobbur$subscriptions(model.timer));
+};
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			init: {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none},
+			view: _user$project$Main$view,
+			update: _user$project$Main$update,
+			subscriptions: _user$project$Main$subscriptions
+		})
+};
+var _user$project$Main$Noop = {ctor: 'Noop'};
 
 var Elm = {};
-Elm['Mobbur'] = Elm['Mobbur'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Mobbur'], 'Mobbur', typeof _user$project$Mobbur$main === 'undefined' ? null : _user$project$Mobbur$main);
+Elm['Main'] = Elm['Main'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
 
 if (typeof define === "function" && define['amd'])
 {

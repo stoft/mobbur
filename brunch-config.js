@@ -41,7 +41,7 @@ exports.config = {
     watched: [
       "web/static",
       "test/static",
-      "web/elm/Mobbur.elm"
+      "web/elm"
     ],
 
     // Where to compile files to
@@ -50,14 +50,14 @@ exports.config = {
 
   // Configure your plugins
   plugins: {
-    elmBrunch: {
-      elmFolder: 'web/elm',
-      mainModules: ['Mobbur.elm'],
-      outputFolder: '../static/vendor'
-    },
     babel: {
       // Do not use ES6 compiler in vendor code
-      ignore: [/web\/static\/vendor/]
+      ignore: [/web\/static\/vendor/, /web\/static\/elm/]
+    },
+    elmBrunch: {
+      elmFolder: 'web/elm',
+      mainModules: ['Main.elm'],
+      outputFolder: '../static/vendor'
     }
   },
 

@@ -1,51 +1,54 @@
 port module Mobbur exposing (..)
 
 import Html exposing (..)
-import Html.App as App
+
+
+-- import Html.App as App
+
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (toInt)
 import Time exposing (Time, second)
 
 
--- import Html.Attributes exposing (..)
-
-
-main : Program Never
-main =
-    App.program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-
+-- main : Program Never
+-- main =
+--     App.program
+--         { init = init
+--         , view = view
+--         , update = update
+--         , subscriptions = subscriptions
+--         }
 -- MODEL
 
+
 type alias Model =
-  { countdown : Int
-  , interval : Int
-  , state : State
-  , team : Team
-  }
+    { countdown : Int
+    , interval : Int
+    , state : State
+    , team : Team
+    }
+
 
 type alias Team =
-  { name : String
-  , members : List TeamMember
-  }
+    { name : String
+    , members : List TeamMember
+    }
 
-type alias TeamMember = { nick : String }
+
+type alias TeamMember =
+    { nick : String }
+
 
 type alias TimeRecord =
-  { minutes : Int, seconds : Int }
+    { minutes : Int, seconds : Int }
 
-type State =
-  Started
-  | Paused
-  | Stopped
-  | Editing
+
+type State
+    = Started
+    | Paused
+    | Stopped
+    | Editing
 
 
 initialModel : Model
@@ -64,29 +67,33 @@ init =
 
 secondsToTimeRecord : Int -> TimeRecord
 secondsToTimeRecord seconds =
-  let
-      mins =
-          seconds // 60
+    let
+        mins =
+            seconds // 60
 
-      secs =
-          rem seconds 60
-  in
-    { minutes = mins, seconds = secs }
+        secs =
+            rem seconds 60
+    in
+        { minutes = mins, seconds = secs }
+
 
 secondsToString : Int -> String
 secondsToString seconds =
-      let
-          minutes =
-              seconds // 60 |> toString |> String.padLeft 2 '0'
+    let
+        minutes =
+            seconds // 60 |> toString |> String.padLeft 2 '0'
 
-          secs =
-              rem seconds 60 |> toString |> String.padLeft 2 '0'
-      in
+        secs =
+            rem seconds 60 |> toString |> String.padLeft 2 '0'
+    in
         minutes ++ ":" ++ secs
+
 
 stringToSeconds : String -> Int
 stringToSeconds string =
-  Result.withDefault 0 (String.toInt string)
+    Result.withDefault 0 (String.toInt string)
+
+
 
 -- UPDATE
 
@@ -129,18 +136,25 @@ update msg model =
                 ( model, Cmd.none )
 
         UpdateMinutes time ->
-          let
-            minutes = stringToSeconds time
-            total = Debug.log "total minutes and seconds" ((minutes * 60) + (rem model.countdown 60))
-          in
-          ( { model | countdown = total, interval = total }, Cmd.none)
+            let
+                minutes =
+                    stringToSeconds time
+
+                total =
+                    (minutes * 60) + (rem model.countdown 60)
+            in
+                ( { model | countdown = total, interval = total }, Cmd.none )
 
         UpdateSeconds time ->
-          let
-            seconds = stringToSeconds time
-            total = (model.countdown // 60) + seconds
-          in
-            ( { model | countdown = total, interval = total}, Cmd.none)
+            let
+                seconds =
+                    stringToSeconds time
+
+                total =
+                    (model.countdown // 60) + seconds
+            in
+                ( { model | countdown = total, interval = total }, Cmd.none )
+
 
 
 -- OUTBOUND PORTS
@@ -176,37 +190,38 @@ view model =
 
 countdownTimer : Model -> Html Msg
 countdownTimer model =
-      div []
-          [ case model.state of
-              Editing ->
-                  inputFields model
-              _ -> div [ onClick Edit ] [ text
-                          <| Debug.log "after secondsToString"
-                          <| secondsToString
-                          <| Debug.log "countdown"
-                          <| model.countdown ]
-          ]
+    div []
+        [ case model.state of
+            Editing ->
+                inputFields model
+
+            _ ->
+                div [ onClick Edit ] [ text <| secondsToString <| model.countdown ]
+        ]
+
 
 inputFields : Model -> Html Msg
 inputFields model =
-  div []
-  [input
-    [ type' "number"
-    , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-    , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-    , name "minutes"
-    , onInput UpdateMinutes
-    ]
-    []
-    , text ":"
-  , input [ type' "number"
-      , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-      , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-      , name "seconds"
-      , onInput UpdateSeconds
-      ]
-      []
-      ]
+    div []
+        [ input
+            [ type' "number"
+            , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+            , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+            , name "minutes"
+            , onInput UpdateMinutes
+            ]
+            []
+        , text ":"
+        , input
+            [ type' "number"
+            , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+            , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+            , name "seconds"
+            , onInput UpdateSeconds
+            ]
+            []
+        ]
+
 
 startButton : Html Msg
 startButton =
