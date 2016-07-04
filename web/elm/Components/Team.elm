@@ -1,8 +1,8 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input)
+import Html exposing (Html, text, div, button, input, span)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
 
 --MODEL
@@ -12,6 +12,7 @@ type alias Model =
     { name : String
     , members : List TeamMember
     , state : TeamState
+    , foo : Int
     }
 
 
@@ -28,8 +29,9 @@ type TeamState
 initialModel : Model
 initialModel =
     { name = "Inglorious Anonymous"
-    , members = []
+    , members = [ { nick = "pippo" }, { nick = "pluto" } ]
     , state = Display
+    , foo = 0
     }
 
 
@@ -40,6 +42,8 @@ initialModel =
 type Msg
     = NoOp
     | EditTeam
+    | UpdateTeamName String
+    | SubmitTeamName
 
 
 
@@ -57,6 +61,12 @@ update msg model =
         EditTeam ->
             ( { model | state = EditingTeam }, Cmd.none )
 
+        SubmitTeamName ->
+            ( { model | state = Display }, Cmd.none )
+
+        UpdateTeamName name ->
+            ( { model | name = name }, Cmd.none )
+
 
 
 --VIEW
@@ -65,17 +75,41 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ text model.name
+        [ renderTeamName model
+        , renderMemberList model.members
         , renderMemberInput
         , button
             [{--onClick AddMember--}
             ]
             [ text "+" ]
+        , div [] [ text (toString model) ]
         ]
+
+
+renderTeamName : Model -> Html Msg
+renderTeamName model =
+    case model.state of
+        EditingTeam ->
+            input
+                [ type' "text"
+                , value model.name
+                , name "team-name"
+                , onInput UpdateTeamName
+                , onBlur SubmitTeamName
+                ]
+                []
+
+        _ ->
+            span [ onClick EditTeam ] [ text model.name ]
 
 
 
 -- ++ (List.map renderMember team.members)
+
+
+renderMemberList : List TeamMember -> Html Msg
+renderMemberList members =
+    div [] (List.map renderMember members)
 
 
 renderMemberInput : Html Msg
