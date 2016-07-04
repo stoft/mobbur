@@ -11,14 +11,6 @@ import String exposing (toInt)
 import Time exposing (Time, second)
 
 
--- main : Program Never
--- main =
---     App.program
---         { init = init
---         , view = view
---         , update = update
---         , subscriptions = subscriptions
---         }
 -- MODEL
 
 
@@ -26,18 +18,7 @@ type alias Model =
     { countdown : Int
     , interval : Int
     , state : State
-    , team : Team
     }
-
-
-type alias Team =
-    { name : String
-    , members : List TeamMember
-    }
-
-
-type alias TeamMember =
-    { nick : String }
 
 
 type alias TimeRecord =
@@ -56,7 +37,6 @@ initialModel =
     { countdown = 480
     , interval = 480
     , state = Stopped
-    , team = { name = "", members = [] }
     }
 
 
@@ -151,7 +131,10 @@ update msg model =
                     stringToSeconds time
 
                 total =
-                    (model.countdown // 60) + seconds
+                    if seconds == -1 && model.countdown < 1 then
+                        model.countdown
+                    else
+                        ((model.countdown // 60) * 60) + seconds
             in
                 ( { model | countdown = total, interval = total }, Cmd.none )
 
@@ -185,6 +168,7 @@ view model =
             startButton
           )
         , countdownTimer model
+        , text (toString model)
         ]
 
 

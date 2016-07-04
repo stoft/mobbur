@@ -3,12 +3,17 @@ module Main exposing (..)
 import Html exposing (Html, text, div)
 import Html.App
 import Components.Timer as Timer
+import Components.Team as Team
+
+
+-- import Components.Team as Team
 
 
 main : Program Never
 main =
     Html.App.program
-        { init = ( initialModel, Cmd.none )
+        { init =
+            ( initialModel, Cmd.none )
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -20,12 +25,16 @@ main =
 
 
 type alias Model =
-    { timer : Timer.Model }
+    { timer : Timer.Model
+    , team : Team.Model
+    }
 
 
 initialModel : Model
 initialModel =
-    { timer = Timer.initialModel }
+    { timer = Timer.initialModel
+    , team = Team.initialModel
+    }
 
 
 
@@ -35,6 +44,7 @@ initialModel =
 type Msg
     = Noop
     | TimerMsg Timer.Msg
+    | TeamMsg Team.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -50,12 +60,20 @@ update msg model =
             in
                 ( { model | timer = tmodel }, Cmd.map TimerMsg tmsg )
 
+        TeamMsg teamMsg ->
+            let
+                ( tmodel, tmsg ) =
+                    Team.update teamMsg model.team
+            in
+                ( { model | team = tmodel }, Cmd.map TeamMsg tmsg )
+
 
 view : Model -> Html Msg
 view model =
     div []
         [ Html.App.map TimerMsg
             (Timer.view model.timer)
+        , Html.App.map TeamMsg (Team.view model.team)
         ]
 
 

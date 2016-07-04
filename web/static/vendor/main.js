@@ -7668,13 +7668,88 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Mobbur$stringToSeconds = function (string) {
+var _user$project$Components_Team$renderMemberInput = A2(
+	_elm_lang$html$Html$input,
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html_Attributes$type$('text'),
+			_elm_lang$html$Html_Attributes$placeholder('Nick...'),
+			_elm_lang$html$Html_Attributes$name('nick')
+		]),
+	_elm_lang$core$Native_List.fromArray(
+		[]));
+var _user$project$Components_Team$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(model.name),
+				_user$project$Components_Team$renderMemberInput,
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('+')
+					]))
+			]));
+};
+var _user$project$Components_Team$Model = F3(
+	function (a, b, c) {
+		return {name: a, members: b, state: c};
+	});
+var _user$project$Components_Team$TeamMember = function (a) {
+	return {nick: a};
+};
+var _user$project$Components_Team$Display = {ctor: 'Display'};
+var _user$project$Components_Team$initialModel = {
+	name: 'Inglorious Anonymous',
+	members: _elm_lang$core$Native_List.fromArray(
+		[]),
+	state: _user$project$Components_Team$Display
+};
+var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
+var _user$project$Components_Team$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'NoOp') {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{state: _user$project$Components_Team$EditingTeam}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		}
+	});
+var _user$project$Components_Team$EditingMember = {ctor: 'EditingMember'};
+var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
+var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
+var _user$project$Components_Team$renderMember = function (member) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$NoOp)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(member.nick)
+			]));
+};
+
+var _user$project$Components_Timer$stringToSeconds = function (string) {
 	return A2(
 		_elm_lang$core$Result$withDefault,
 		0,
 		_elm_lang$core$String$toInt(string));
 };
-var _user$project$Mobbur$secondsToString = function (seconds) {
+var _user$project$Components_Timer$secondsToString = function (seconds) {
 	var secs = A3(
 		_elm_lang$core$String$padLeft,
 		2,
@@ -7691,53 +7766,37 @@ var _user$project$Mobbur$secondsToString = function (seconds) {
 		minutes,
 		A2(_elm_lang$core$Basics_ops['++'], ':', secs));
 };
-var _user$project$Mobbur$secondsToTimeRecord = function (seconds) {
+var _user$project$Components_Timer$secondsToTimeRecord = function (seconds) {
 	var secs = A2(_elm_lang$core$Basics$rem, seconds, 60);
 	var mins = (seconds / 60) | 0;
 	return {minutes: mins, seconds: secs};
 };
-var _user$project$Mobbur$alarm = _elm_lang$core$Native_Platform.outgoingPort(
+var _user$project$Components_Timer$alarm = _elm_lang$core$Native_Platform.outgoingPort(
 	'alarm',
 	function (v) {
 		return null;
 	});
-var _user$project$Mobbur$Model = F4(
-	function (a, b, c, d) {
-		return {countdown: a, interval: b, state: c, team: d};
+var _user$project$Components_Timer$Model = F3(
+	function (a, b, c) {
+		return {countdown: a, interval: b, state: c};
 	});
-var _user$project$Mobbur$Team = F2(
-	function (a, b) {
-		return {name: a, members: b};
-	});
-var _user$project$Mobbur$TeamMember = function (a) {
-	return {nick: a};
-};
-var _user$project$Mobbur$TimeRecord = F2(
+var _user$project$Components_Timer$TimeRecord = F2(
 	function (a, b) {
 		return {minutes: a, seconds: b};
 	});
-var _user$project$Mobbur$Editing = {ctor: 'Editing'};
-var _user$project$Mobbur$Stopped = {ctor: 'Stopped'};
-var _user$project$Mobbur$initialModel = {
-	countdown: 480,
-	interval: 480,
-	state: _user$project$Mobbur$Stopped,
-	team: {
-		name: '',
-		members: _elm_lang$core$Native_List.fromArray(
-			[])
-	}
-};
-var _user$project$Mobbur$init = {ctor: '_Tuple2', _0: _user$project$Mobbur$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Mobbur$Paused = {ctor: 'Paused'};
-var _user$project$Mobbur$Started = {ctor: 'Started'};
-var _user$project$Mobbur$UpdateSeconds = function (a) {
+var _user$project$Components_Timer$Editing = {ctor: 'Editing'};
+var _user$project$Components_Timer$Stopped = {ctor: 'Stopped'};
+var _user$project$Components_Timer$initialModel = {countdown: 480, interval: 480, state: _user$project$Components_Timer$Stopped};
+var _user$project$Components_Timer$init = {ctor: '_Tuple2', _0: _user$project$Components_Timer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Components_Timer$Paused = {ctor: 'Paused'};
+var _user$project$Components_Timer$Started = {ctor: 'Started'};
+var _user$project$Components_Timer$UpdateSeconds = function (a) {
 	return {ctor: 'UpdateSeconds', _0: a};
 };
-var _user$project$Mobbur$UpdateMinutes = function (a) {
+var _user$project$Components_Timer$UpdateMinutes = function (a) {
 	return {ctor: 'UpdateMinutes', _0: a};
 };
-var _user$project$Mobbur$inputFields = function (model) {
+var _user$project$Components_Timer$inputFields = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -7754,15 +7813,15 @@ var _user$project$Mobbur$inputFields = function (model) {
 							function (_) {
 								return _.minutes;
 							}(
-								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
 						_elm_lang$html$Html_Attributes$value(
 						_elm_lang$core$Basics$toString(
 							function (_) {
 								return _.minutes;
 							}(
-								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
 						_elm_lang$html$Html_Attributes$name('minutes'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Mobbur$UpdateMinutes)
+						_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateMinutes)
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[])),
@@ -7777,53 +7836,53 @@ var _user$project$Mobbur$inputFields = function (model) {
 							function (_) {
 								return _.seconds;
 							}(
-								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
 						_elm_lang$html$Html_Attributes$value(
 						_elm_lang$core$Basics$toString(
 							function (_) {
 								return _.seconds;
 							}(
-								_user$project$Mobbur$secondsToTimeRecord(model.countdown)))),
+								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
 						_elm_lang$html$Html_Attributes$name('seconds'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Mobbur$UpdateSeconds)
+						_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateSeconds)
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[]))
 			]));
 };
-var _user$project$Mobbur$Tick = {ctor: 'Tick'};
-var _user$project$Mobbur$subscriptions = function (model) {
+var _user$project$Components_Timer$Tick = {ctor: 'Tick'};
+var _user$project$Components_Timer$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Time$every,
 		_elm_lang$core$Time$second,
 		function (_p0) {
-			return _user$project$Mobbur$Tick;
+			return _user$project$Components_Timer$Tick;
 		});
 };
-var _user$project$Mobbur$Start = {ctor: 'Start'};
-var _user$project$Mobbur$startButton = A2(
+var _user$project$Components_Timer$Start = {ctor: 'Start'};
+var _user$project$Components_Timer$startButton = A2(
 	_elm_lang$html$Html$button,
 	_elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html_Events$onClick(_user$project$Mobbur$Start)
+			_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Start)
 		]),
 	_elm_lang$core$Native_List.fromArray(
 		[
 			_elm_lang$html$Html$text('>')
 		]));
-var _user$project$Mobbur$Pause = {ctor: 'Pause'};
-var _user$project$Mobbur$pauseButton = A2(
+var _user$project$Components_Timer$Pause = {ctor: 'Pause'};
+var _user$project$Components_Timer$pauseButton = A2(
 	_elm_lang$html$Html$button,
 	_elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html_Events$onClick(_user$project$Mobbur$Pause)
+			_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Pause)
 		]),
 	_elm_lang$core$Native_List.fromArray(
 		[
 			_elm_lang$html$Html$text('||')
 		]));
-var _user$project$Mobbur$Reset = {ctor: 'Reset'};
-var _user$project$Mobbur$update = F2(
+var _user$project$Components_Timer$Reset = {ctor: 'Reset'};
+var _user$project$Components_Timer$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
@@ -7834,7 +7893,7 @@ var _user$project$Mobbur$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{state: _user$project$Mobbur$Editing, countdown: model.interval}),
+							{state: _user$project$Components_Timer$Editing, countdown: model.interval}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Reset':
@@ -7842,7 +7901,7 @@ var _user$project$Mobbur$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{state: _user$project$Mobbur$Stopped, countdown: model.interval}),
+							{state: _user$project$Components_Timer$Stopped, countdown: model.interval}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Start':
@@ -7850,7 +7909,7 @@ var _user$project$Mobbur$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{state: _user$project$Mobbur$Started}),
+							{state: _user$project$Components_Timer$Started}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Pause':
@@ -7858,28 +7917,28 @@ var _user$project$Mobbur$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{state: _user$project$Mobbur$Paused}),
+							{state: _user$project$Components_Timer$Paused}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Tick':
-					if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) && _elm_lang$core$Native_Utils.eq(model.countdown, 1)) {
+					if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && _elm_lang$core$Native_Utils.eq(model.countdown, 1)) {
 						return {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
 								{countdown: model.countdown - 1}),
-							_1: _user$project$Mobbur$alarm(
+							_1: _user$project$Components_Timer$alarm(
 								{ctor: '_Tuple0'})
 						};
 					} else {
-						if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) {
-							var _v1 = _user$project$Mobbur$Reset,
+						if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) {
+							var _v1 = _user$project$Components_Timer$Reset,
 								_v2 = model;
 							msg = _v1;
 							model = _v2;
 							continue update;
 						} else {
-							if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started)) {
+							if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started)) {
 								return {
 									ctor: '_Tuple2',
 									_0: _elm_lang$core$Native_Utils.update(
@@ -7893,7 +7952,7 @@ var _user$project$Mobbur$update = F2(
 						}
 					}
 				case 'UpdateMinutes':
-					var minutes = _user$project$Mobbur$stringToSeconds(_p1._0);
+					var minutes = _user$project$Components_Timer$stringToSeconds(_p1._0);
 					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60);
 					return {
 						ctor: '_Tuple2',
@@ -7903,8 +7962,8 @@ var _user$project$Mobbur$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				default:
-					var seconds = _user$project$Mobbur$stringToSeconds(_p1._0);
-					var total = ((model.countdown / 60) | 0) + seconds;
+					var seconds = _user$project$Components_Timer$stringToSeconds(_p1._0);
+					var total = (_elm_lang$core$Native_Utils.eq(seconds, -1) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? model.countdown : ((((model.countdown / 60) | 0) * 60) + seconds);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -7915,8 +7974,8 @@ var _user$project$Mobbur$update = F2(
 			}
 		}
 	});
-var _user$project$Mobbur$Edit = {ctor: 'Edit'};
-var _user$project$Mobbur$countdownTimer = function (model) {
+var _user$project$Components_Timer$Edit = {ctor: 'Edit'};
+var _user$project$Components_Timer$countdownTimer = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -7926,38 +7985,44 @@ var _user$project$Mobbur$countdownTimer = function (model) {
 				function () {
 				var _p2 = model.state;
 				if (_p2.ctor === 'Editing') {
-					return _user$project$Mobbur$inputFields(model);
+					return _user$project$Components_Timer$inputFields(model);
 				} else {
 					return A2(
 						_elm_lang$html$Html$div,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Events$onClick(_user$project$Mobbur$Edit)
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Edit)
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(
-								_user$project$Mobbur$secondsToString(model.countdown))
+								_user$project$Components_Timer$secondsToString(model.countdown))
 							]));
 				}
 			}()
 			]));
 };
-var _user$project$Mobbur$view = function (model) {
+var _user$project$Components_Timer$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Mobbur$Started) ? _user$project$Mobbur$pauseButton : _user$project$Mobbur$startButton,
-				_user$project$Mobbur$countdownTimer(model)
+				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) ? _user$project$Components_Timer$pauseButton : _user$project$Components_Timer$startButton,
+				_user$project$Components_Timer$countdownTimer(model),
+				_elm_lang$html$Html$text(
+				_elm_lang$core$Basics$toString(model))
 			]));
 };
 
-var _user$project$Main$initialModel = {timer: _user$project$Mobbur$initialModel};
-var _user$project$Main$Model = function (a) {
-	return {timer: a};
+var _user$project$Main$initialModel = {timer: _user$project$Components_Timer$initialModel, team: _user$project$Components_Team$initialModel};
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {timer: a, team: b};
+	});
+var _user$project$Main$TeamMsg = function (a) {
+	return {ctor: 'TeamMsg', _0: a};
 };
 var _user$project$Main$TimerMsg = function (a) {
 	return {ctor: 'TimerMsg', _0: a};
@@ -7965,19 +8030,31 @@ var _user$project$Main$TimerMsg = function (a) {
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		if (_p0.ctor === 'Noop') {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-		} else {
-			var _p1 = A2(_user$project$Mobbur$update, _p0._0, model.timer);
-			var tmodel = _p1._0;
-			var tmsg = _p1._1;
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{timer: tmodel}),
-				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TimerMsg, tmsg)
-			};
+		switch (_p0.ctor) {
+			case 'Noop':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'TimerMsg':
+				var _p1 = A2(_user$project$Components_Timer$update, _p0._0, model.timer);
+				var tmodel = _p1._0;
+				var tmsg = _p1._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{timer: tmodel}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TimerMsg, tmsg)
+				};
+			default:
+				var _p2 = A2(_user$project$Components_Team$update, _p0._0, model.team);
+				var tmodel = _p2._0;
+				var tmsg = _p2._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{team: tmodel}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TeamMsg, tmsg)
+				};
 		}
 	});
 var _user$project$Main$view = function (model) {
@@ -7990,14 +8067,18 @@ var _user$project$Main$view = function (model) {
 				A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$TimerMsg,
-				_user$project$Mobbur$view(model.timer))
+				_user$project$Components_Timer$view(model.timer)),
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$TeamMsg,
+				_user$project$Components_Team$view(model.team))
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Platform_Sub$map,
 		_user$project$Main$TimerMsg,
-		_user$project$Mobbur$subscriptions(model.timer));
+		_user$project$Components_Timer$subscriptions(model.timer));
 };
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
