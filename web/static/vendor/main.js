@@ -7672,20 +7672,19 @@ var _user$project$Components_Team$Model = F4(
 	function (a, b, c, d) {
 		return {name: a, members: b, state: c, newNick: d};
 	});
-var _user$project$Components_Team$TeamMember = function (a) {
-	return {nick: a};
-};
-var _user$project$Components_Team$Display = {ctor: 'Display'};
-var _user$project$Components_Team$initialModel = {
-	name: 'Inglorious Anonymous',
-	members: _elm_lang$core$Native_List.fromArray(
-		[
-			{nick: 'pippo'},
-			{nick: 'pluto'}
-		]),
-	state: _user$project$Components_Team$Display,
-	newNick: ''
-};
+var _user$project$Components_Team$TeamMember = F3(
+	function (a, b, c) {
+		return {id$: a, nick: b, state: c};
+	});
+var _user$project$Components_Team$Editing = {ctor: 'Editing'};
+var _user$project$Components_Team$DisplayingMember = {ctor: 'DisplayingMember'};
+var _user$project$Components_Team$initMembers = _elm_lang$core$Native_List.fromArray(
+	[
+		{id$: 1, nick: 'pippo', state: _user$project$Components_Team$DisplayingMember},
+		{id$: 2, nick: 'pluto', state: _user$project$Components_Team$DisplayingMember}
+	]);
+var _user$project$Components_Team$Displaying = {ctor: 'Displaying'};
+var _user$project$Components_Team$initialModel = {name: 'Inglorious Anonymous', members: _user$project$Components_Team$initMembers, state: _user$project$Components_Team$Displaying, newNick: ''};
 var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
 var _user$project$Components_Team$update = F2(
 	function (msg, model) {
@@ -7694,7 +7693,18 @@ var _user$project$Components_Team$update = F2(
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'AddMember':
-				var newMember = _user$project$Components_Team$TeamMember(model.newNick);
+				var findMax = F2(
+					function (m, max) {
+						return (_elm_lang$core$Native_Utils.cmp(m.id$, max) > 0) ? m.id$ : max;
+					});
+				var nextId = A2(
+					F2(
+						function (x, y) {
+							return x + y;
+						}),
+					1,
+					A3(_elm_lang$core$List$foldl, findMax, 0, model.members));
+				var newMember = A3(_user$project$Components_Team$TeamMember, nextId, model.newNick, _user$project$Components_Team$DisplayingMember);
 				var updatedMembers = A2(
 					_elm_lang$core$Basics_ops['++'],
 					model.members,
@@ -7707,6 +7717,22 @@ var _user$project$Components_Team$update = F2(
 						{members: updatedMembers, newNick: ''}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'EditMember':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p0._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{state: _user$project$Components_Team$Editing}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'EditTeam':
 				return {
 					ctor: '_Tuple2',
@@ -7715,12 +7741,44 @@ var _user$project$Components_Team$update = F2(
 						{state: _user$project$Components_Team$EditingTeam}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'SubmitNick':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p0._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{state: _user$project$Components_Team$DisplayingMember}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SubmitTeamName':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{state: _user$project$Components_Team$Display}),
+						{state: _user$project$Components_Team$Displaying}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateNick':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p0._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{nick: _p0._1}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'UpdateNewNick':
@@ -7745,6 +7803,10 @@ var _user$project$Components_Team$EditingMember = {ctor: 'EditingMember'};
 var _user$project$Components_Team$UpdateTeamName = function (a) {
 	return {ctor: 'UpdateTeamName', _0: a};
 };
+var _user$project$Components_Team$UpdateNick = F2(
+	function (a, b) {
+		return {ctor: 'UpdateNick', _0: a, _1: b};
+	});
 var _user$project$Components_Team$UpdateNewNick = function (a) {
 	return {ctor: 'UpdateNewNick', _0: a};
 };
@@ -7761,6 +7823,9 @@ var _user$project$Components_Team$renderMemberInput = function (model) {
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[]));
+};
+var _user$project$Components_Team$SubmitNick = function (a) {
+	return {ctor: 'SubmitNick', _0: a};
 };
 var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
@@ -7792,19 +7857,39 @@ var _user$project$Components_Team$renderTeamName = function (model) {
 				]));
 	}
 };
-var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
-var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
+var _user$project$Components_Team$EditMember = function (a) {
+	return {ctor: 'EditMember', _0: a};
+};
 var _user$project$Components_Team$renderMember = function (member) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$NoOp)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(member.nick)
-			]));
+	var _p2 = member.state;
+	if (_p2.ctor === 'Editing') {
+		return A2(
+			_elm_lang$html$Html$input,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$type$('text'),
+					_elm_lang$html$Html_Attributes$name('nick'),
+					_elm_lang$html$Html_Attributes$value(member.nick),
+					_elm_lang$html$Html_Events$onInput(
+					_user$project$Components_Team$UpdateNick(member.id$)),
+					_elm_lang$html$Html_Events$onBlur(
+					_user$project$Components_Team$SubmitNick(member.id$))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Components_Team$EditMember(member.id$))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(member.nick)
+				]));
+	}
 };
 var _user$project$Components_Team$renderMemberList = function (members) {
 	return A2(
@@ -7813,6 +7898,7 @@ var _user$project$Components_Team$renderMemberList = function (members) {
 			[]),
 		A2(_elm_lang$core$List$map, _user$project$Components_Team$renderMember, members));
 };
+var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
 var _user$project$Components_Team$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -7844,6 +7930,7 @@ var _user$project$Components_Team$view = function (model) {
 					]))
 			]));
 };
+var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
 
 var _user$project$Components_Timer$stringToSeconds = function (string) {
 	return A2(

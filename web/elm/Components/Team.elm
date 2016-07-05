@@ -17,22 +17,37 @@ type alias Model =
 
 
 type alias TeamMember =
-    { nick : String }
+    { id' : Int
+    , nick : String
+    , state : MemberState
+    }
+
+
+type MemberState
+    = DisplayingMember
+    | Editing
 
 
 type TeamState
     = EditingMember
     | EditingTeam
-    | Display
+    | Displaying
 
 
 initialModel : Model
 initialModel =
     { name = "Inglorious Anonymous"
-    , members = [ { nick = "pippo" }, { nick = "pluto" } ]
-    , state = Display
+    , members = initMembers
+    , state = Displaying
     , newNick = ""
     }
+
+
+initMembers : List TeamMember
+initMembers =
+    [ { id' = 1, nick = "pippo", state = DisplayingMember }
+    , { id' = 2, nick = "pluto", state = DisplayingMember }
+    ]
 
 
 
@@ -42,9 +57,12 @@ initialModel =
 type Msg
     = NoOp
     | AddMember
+    | EditMember Int
     | EditTeam
     | SubmitTeamName
+    | SubmitNick Int
     | UpdateNewNick String
+    | UpdateNick Int String
     | UpdateTeamName String
 
 
@@ -56,19 +74,72 @@ update msg model =
 
         AddMember ->
             let
+                findMax =
+                    (\m max ->
+                        if m.id' > max then
+                            m.id'
+                        else
+                            max
+                    )
+
+                nextId =
+                    List.foldl findMax 0 model.members |> (+) 1
+
                 newMember =
-                    TeamMember model.newNick
+                    TeamMember nextId model.newNick DisplayingMember
 
                 updatedMembers =
                     model.members ++ [ newMember ]
             in
                 ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
 
+        EditMember id' ->
+            let
+                updatedMembers =
+                    model.members
+                        |> List.map
+                            (\m ->
+                                if m.id' == id' then
+                                    { m | state = Editing }
+                                else
+                                    m
+                            )
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
         EditTeam ->
             ( { model | state = EditingTeam }, Cmd.none )
 
+        SubmitNick id' ->
+            let
+                updatedMembers =
+                    model.members
+                        |> List.map
+                            (\m ->
+                                if m.id' == id' then
+                                    { m | state = DisplayingMember }
+                                else
+                                    m
+                            )
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
         SubmitTeamName ->
-            ( { model | state = Display }, Cmd.none )
+            ( { model | state = Displaying }, Cmd.none )
+
+        UpdateNick id' nick' ->
+            let
+                updatedMembers =
+                    model.members
+                        |> List.map
+                            (\m ->
+                                if m.id' == id' then
+                                    { m | nick = nick' }
+                                else
+                                    m
+                            )
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
 
         UpdateNewNick nick ->
             ( { model | newNick = nick }, Cmd.none )
@@ -110,10 +181,6 @@ renderTeamName model =
             span [ onClick EditTeam ] [ text model.name ]
 
 
-
--- ++ (List.map renderMember team.members)
-
-
 renderMemberList : List TeamMember -> Html Msg
 renderMemberList members =
     div [] (List.map renderMember members)
@@ -133,5 +200,17 @@ renderMemberInput model =
 
 renderMember : TeamMember -> Html Msg
 renderMember member =
-    div [ onClick NoOp ]
-        [ text member.nick ]
+    case member.state of
+        Editing ->
+            input
+                [ type' "text"
+                , name "nick"
+                , value member.nick
+                , onInput (UpdateNick member.id')
+                , onBlur (SubmitNick member.id')
+                ]
+                []
+
+        DisplayingMember ->
+            div [ onClick (EditMember member.id') ]
+                [ text member.nick ]
