@@ -12,7 +12,7 @@ type alias Model =
     { name : String
     , members : List TeamMember
     , state : TeamState
-    , foo : Int
+    , newNick : String
     }
 
 
@@ -31,7 +31,7 @@ initialModel =
     { name = "Inglorious Anonymous"
     , members = [ { nick = "pippo" }, { nick = "pluto" } ]
     , state = Display
-    , foo = 0
+    , newNick = ""
     }
 
 
@@ -41,15 +41,11 @@ initialModel =
 
 type Msg
     = NoOp
+    | AddMember
     | EditTeam
-    | UpdateTeamName String
     | SubmitTeamName
-
-
-
-{--| AddMember
-    | NewMember String
---}
+    | UpdateNewNick String
+    | UpdateTeamName String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,11 +54,24 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        AddMember ->
+            let
+                newMember =
+                    TeamMember model.newNick
+
+                updatedMembers =
+                    model.members ++ [ newMember ]
+            in
+                ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+
         EditTeam ->
             ( { model | state = EditingTeam }, Cmd.none )
 
         SubmitTeamName ->
             ( { model | state = Display }, Cmd.none )
+
+        UpdateNewNick nick ->
+            ( { model | newNick = nick }, Cmd.none )
 
         UpdateTeamName name ->
             ( { model | name = name }, Cmd.none )
@@ -77,10 +86,8 @@ view model =
     div []
         [ renderTeamName model
         , renderMemberList model.members
-        , renderMemberInput
-        , button
-            [{--onClick AddMember--}
-            ]
+        , renderMemberInput model
+        , button [ onClick AddMember ]
             [ text "+" ]
         , div [] [ text (toString model) ]
         ]
@@ -112,12 +119,14 @@ renderMemberList members =
     div [] (List.map renderMember members)
 
 
-renderMemberInput : Html Msg
-renderMemberInput =
+renderMemberInput : Model -> Html Msg
+renderMemberInput model =
     input
         [ type' "text"
         , placeholder "Nick..."
         , name "nick"
+        , value model.newNick
+        , onInput UpdateNewNick
         ]
         []
 

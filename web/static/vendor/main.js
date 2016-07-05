@@ -7668,19 +7668,9 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Components_Team$renderMemberInput = A2(
-	_elm_lang$html$Html$input,
-	_elm_lang$core$Native_List.fromArray(
-		[
-			_elm_lang$html$Html_Attributes$type$('text'),
-			_elm_lang$html$Html_Attributes$placeholder('Nick...'),
-			_elm_lang$html$Html_Attributes$name('nick')
-		]),
-	_elm_lang$core$Native_List.fromArray(
-		[]));
 var _user$project$Components_Team$Model = F4(
 	function (a, b, c, d) {
-		return {name: a, members: b, state: c, foo: d};
+		return {name: a, members: b, state: c, newNick: d};
 	});
 var _user$project$Components_Team$TeamMember = function (a) {
 	return {nick: a};
@@ -7694,7 +7684,7 @@ var _user$project$Components_Team$initialModel = {
 			{nick: 'pluto'}
 		]),
 	state: _user$project$Components_Team$Display,
-	foo: 0
+	newNick: ''
 };
 var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
 var _user$project$Components_Team$update = F2(
@@ -7703,6 +7693,20 @@ var _user$project$Components_Team$update = F2(
 		switch (_p0.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'AddMember':
+				var newMember = _user$project$Components_Team$TeamMember(model.newNick);
+				var updatedMembers = A2(
+					_elm_lang$core$Basics_ops['++'],
+					model.members,
+					_elm_lang$core$Native_List.fromArray(
+						[newMember]));
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers, newNick: ''}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'EditTeam':
 				return {
 					ctor: '_Tuple2',
@@ -7719,6 +7723,14 @@ var _user$project$Components_Team$update = F2(
 						{state: _user$project$Components_Team$Display}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'UpdateNewNick':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newNick: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				return {
 					ctor: '_Tuple2',
@@ -7730,10 +7742,27 @@ var _user$project$Components_Team$update = F2(
 		}
 	});
 var _user$project$Components_Team$EditingMember = {ctor: 'EditingMember'};
-var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
 var _user$project$Components_Team$UpdateTeamName = function (a) {
 	return {ctor: 'UpdateTeamName', _0: a};
 };
+var _user$project$Components_Team$UpdateNewNick = function (a) {
+	return {ctor: 'UpdateNewNick', _0: a};
+};
+var _user$project$Components_Team$renderMemberInput = function (model) {
+	return A2(
+		_elm_lang$html$Html$input,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$type$('text'),
+				_elm_lang$html$Html_Attributes$placeholder('Nick...'),
+				_elm_lang$html$Html_Attributes$name('nick'),
+				_elm_lang$html$Html_Attributes$value(model.newNick),
+				_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateNewNick)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
 var _user$project$Components_Team$renderTeamName = function (model) {
 	var _p1 = model.state;
@@ -7763,6 +7792,7 @@ var _user$project$Components_Team$renderTeamName = function (model) {
 				]));
 	}
 };
+var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
 var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
 var _user$project$Components_Team$renderMember = function (member) {
 	return A2(
@@ -7792,11 +7822,13 @@ var _user$project$Components_Team$view = function (model) {
 			[
 				_user$project$Components_Team$renderTeamName(model),
 				_user$project$Components_Team$renderMemberList(model.members),
-				_user$project$Components_Team$renderMemberInput,
+				_user$project$Components_Team$renderMemberInput(model),
 				A2(
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
-					[]),
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('+')
