@@ -13,6 +13,7 @@ type alias Model =
     , members : List TeamMember
     , state : TeamState
     , newNick : String
+    , activeMember : Int
     }
 
 
@@ -40,6 +41,7 @@ initialModel =
     , members = initMembers
     , state = Displaying
     , newNick = ""
+    , activeMember = 0
     }
 
 
@@ -61,6 +63,7 @@ type Msg
     | EditTeam
     | SubmitTeamName
     | SubmitNick Int
+    | SetNextMemberActive
     | UpdateNewNick String
     | UpdateNick Int String
     | UpdateTeamName String
@@ -110,17 +113,63 @@ update msg model =
         EditTeam ->
             ( { model | state = EditingTeam }, Cmd.none )
 
+        SetNextMemberActive ->
+            let
+                head =
+                    List.head model.members
+
+                tail =
+                    List.tail model.members
+
+                rotatedMembers =
+                    case tail of
+                        Just list ->
+                            case head of
+                                Just m ->
+                                    list ++ [ m ]
+
+                                Nothing ->
+                                    list
+
+                        Nothing ->
+                            []
+
+                nextActiveMember =
+                    case List.head rotatedMembers of
+                        Just m ->
+                            m.id'
+
+                        Nothing ->
+                            0
+            in
+                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+
         SubmitNick id' ->
             let
+                member =
+                    List.filter (\m -> m.id' == id') model.members |> List.head
+
+                changeToDisplaying =
+                    (\m ->
+                        if m.id' == id' then
+                            { m | state = DisplayingMember }
+                        else
+                            m
+                    )
+
+                removeMember =
+                    List.filter (\m -> m.id' /= id') model.members
+
                 updatedMembers =
-                    model.members
-                        |> List.map
-                            (\m ->
-                                if m.id' == id' then
-                                    { m | state = DisplayingMember }
-                                else
-                                    m
-                            )
+                    case member of
+                        Just m ->
+                            if m.nick == "" then
+                                removeMember
+                            else
+                                List.map changeToDisplaying model.members
+
+                        Nothing ->
+                            model.members
             in
                 ( { model | members = updatedMembers }, Cmd.none )
 
@@ -156,10 +205,11 @@ view : Model -> Html Msg
 view model =
     div []
         [ renderTeamName model
-        , renderMemberList model.members
+        , renderMemberList model.activeMember model.members
         , renderMemberInput model
         , button [ onClick AddMember ]
             [ text "+" ]
+        , button [ onClick SetNextMemberActive ] [ text ">>" ]
         , div [] [ text (toString model) ]
         ]
 
@@ -181,9 +231,9 @@ renderTeamName model =
             span [ onClick EditTeam ] [ text model.name ]
 
 
-renderMemberList : List TeamMember -> Html Msg
-renderMemberList members =
-    div [] (List.map renderMember members)
+renderMemberList : Int -> List TeamMember -> Html Msg
+renderMemberList activeMember members =
+    div [] (List.map (renderMember activeMember) members)
 
 
 renderMemberInput : Model -> Html Msg
@@ -198,8 +248,8 @@ renderMemberInput model =
         []
 
 
-renderMember : TeamMember -> Html Msg
-renderMember member =
+renderMember : Int -> TeamMember -> Html Msg
+renderMember activeMember member =
     case member.state of
         Editing ->
             input
@@ -212,5 +262,9 @@ renderMember member =
                 []
 
         DisplayingMember ->
-            div [ onClick (EditMember member.id') ]
-                [ text member.nick ]
+            if member.id' == activeMember then
+                div [ onClick (EditMember member.id') ]
+                    [ text ("*" ++ member.nick) ]
+            else
+                div [ onClick (EditMember member.id') ]
+                    [ text member.nick ]

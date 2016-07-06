@@ -9,6 +9,7 @@ Esthetics may suck.
 - [x] Editable countdown timer
 - [x] Editable team name
 - [x] Editable team members
+  - [x] Removable
 - [ ] Auto-restart of timer (configurable)
 - [ ] Countdown to timer restart (configurable)
 - [ ] Active team member (incl. auto-rotation)
