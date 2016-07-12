@@ -4,6 +4,10 @@ A Proof-of-Concept mob programming timer web app built using Elixir/Phoenix and 
 
 Esthetics may suck.
 
+## Principles
+
+- Should not replace real communication
+
 ## Functionality / Roadmap
 
 - [x] Editable countdown timer
@@ -13,9 +17,8 @@ Esthetics may suck.
 - [ ] Auto-restart of timer (configurable)
 - [ ] Countdown to timer restart (configurable)
 - [ ] Active team member (incl. auto-rotation)
-- [ ] Fast forward active team member
+- [x] Fast forward active team member
 - [ ] Less fugly layout/graphics!
-
 
 ## Running Mobbur
 

@@ -210,7 +210,7 @@ view model =
         , button [ onClick AddMember ]
             [ text "+" ]
         , button [ onClick SetNextMemberActive ] [ text ">>" ]
-        , div [] [ text (toString model) ]
+          -- , div [] [ text (toString model) ]
         ]
 
 

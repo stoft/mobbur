@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (toInt)
+import Task
 import Time exposing (Time, second)
 
 
@@ -32,17 +33,17 @@ type State
     | Editing
 
 
-initialModel : Model
-initialModel =
-    { countdown = 480
-    , interval = 480
+initialModel : Int -> Model
+initialModel seconds =
+    { countdown = seconds
+    , interval = seconds
     , state = Stopped
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    ( initialModel 480, Cmd.none )
 
 
 secondsToTimeRecord : Int -> TimeRecord
@@ -80,6 +81,7 @@ stringToSeconds string =
 
 type Msg
     = Edit
+    | Alarm
     | Reset
     | Pause
     | Start
@@ -91,8 +93,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        -- Alarm ->
-        --     ( { model | state = Stopped }, Cmd.none )
+        Alarm ->
+            update Reset model
+
         Edit ->
             ( { model | state = Editing, countdown = model.interval }, Cmd.none )
 
@@ -109,7 +112,8 @@ update msg model =
             if (model.state == Started) && (model.countdown == 1) then
                 ( { model | countdown = model.countdown - 1 }, alarm () )
             else if (model.state == Started) && (model.countdown < 1) then
-                update Reset model
+                -- ( model, Cmd.map (always Reset) Cmd.none )
+                ( model, Task.perform (always Alarm) (always Alarm) (Task.succeed ()) )
             else if model.state == Started then
                 ( { model | countdown = model.countdown - 1 }, Cmd.none )
             else
@@ -168,7 +172,7 @@ view model =
             startButton
           )
         , countdownTimer model
-        , text (toString model)
+          -- , text (toString model)
         ]
 
 

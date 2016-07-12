@@ -8001,15 +8001,6 @@ var _user$project$Components_Team$view = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('>>')
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model))
 					]))
 			]));
 };
@@ -8058,8 +8049,14 @@ var _user$project$Components_Timer$TimeRecord = F2(
 	});
 var _user$project$Components_Timer$Editing = {ctor: 'Editing'};
 var _user$project$Components_Timer$Stopped = {ctor: 'Stopped'};
-var _user$project$Components_Timer$initialModel = {countdown: 480, interval: 480, state: _user$project$Components_Timer$Stopped};
-var _user$project$Components_Timer$init = {ctor: '_Tuple2', _0: _user$project$Components_Timer$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Components_Timer$initialModel = function (seconds) {
+	return {countdown: seconds, interval: seconds, state: _user$project$Components_Timer$Stopped};
+};
+var _user$project$Components_Timer$init = {
+	ctor: '_Tuple2',
+	_0: _user$project$Components_Timer$initialModel(480),
+	_1: _elm_lang$core$Platform_Cmd$none
+};
 var _user$project$Components_Timer$Paused = {ctor: 'Paused'};
 var _user$project$Components_Timer$Started = {ctor: 'Started'};
 var _user$project$Components_Timer$UpdateSeconds = function (a) {
@@ -8154,12 +8151,19 @@ var _user$project$Components_Timer$pauseButton = A2(
 			_elm_lang$html$Html$text('||')
 		]));
 var _user$project$Components_Timer$Reset = {ctor: 'Reset'};
+var _user$project$Components_Timer$Alarm = {ctor: 'Alarm'};
 var _user$project$Components_Timer$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
 			var _p1 = msg;
 			switch (_p1.ctor) {
+				case 'Alarm':
+					var _v1 = _user$project$Components_Timer$Reset,
+						_v2 = model;
+					msg = _v1;
+					model = _v2;
+					continue update;
 				case 'Edit':
 					return {
 						ctor: '_Tuple2',
@@ -8193,36 +8197,29 @@ var _user$project$Components_Timer$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Tick':
-					if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && _elm_lang$core$Native_Utils.eq(model.countdown, 1)) {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{countdown: model.countdown - 1}),
-							_1: _user$project$Components_Timer$alarm(
-								{ctor: '_Tuple0'})
-						};
-					} else {
-						if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) {
-							var _v1 = _user$project$Components_Timer$Reset,
-								_v2 = model;
-							msg = _v1;
-							model = _v2;
-							continue update;
-						} else {
-							if (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started)) {
-								return {
-									ctor: '_Tuple2',
-									_0: _elm_lang$core$Native_Utils.update(
-										model,
-										{countdown: model.countdown - 1}),
-									_1: _elm_lang$core$Platform_Cmd$none
-								};
-							} else {
-								return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-							}
-						}
-					}
+					return (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && _elm_lang$core$Native_Utils.eq(model.countdown, 1)) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{countdown: model.countdown - 1}),
+						_1: _user$project$Components_Timer$alarm(
+							{ctor: '_Tuple0'})
+					} : ((_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: A3(
+							_elm_lang$core$Task$perform,
+							_elm_lang$core$Basics$always(_user$project$Components_Timer$Alarm),
+							_elm_lang$core$Basics$always(_user$project$Components_Timer$Alarm),
+							_elm_lang$core$Task$succeed(
+								{ctor: '_Tuple0'}))
+					} : (_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{countdown: model.countdown - 1}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 				case 'UpdateMinutes':
 					var minutes = _user$project$Components_Timer$stringToSeconds(_p1._0);
 					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60);
@@ -8282,54 +8279,27 @@ var _user$project$Components_Timer$view = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) ? _user$project$Components_Timer$pauseButton : _user$project$Components_Timer$startButton,
-				_user$project$Components_Timer$countdownTimer(model),
-				_elm_lang$html$Html$text(
-				_elm_lang$core$Basics$toString(model))
+				_user$project$Components_Timer$countdownTimer(model)
 			]));
 };
 
-var _user$project$Main$initialModel = {timer: _user$project$Components_Timer$initialModel, team: _user$project$Components_Team$initialModel};
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {timer: a, team: b};
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, team: e};
 	});
-var _user$project$Main$TeamMsg = function (a) {
-	return {ctor: 'TeamMsg', _0: a};
+var _user$project$Main$WorkTimer = {ctor: 'WorkTimer'};
+var _user$project$Main$initialModel = {
+	workTimer: _user$project$Components_Timer$initialModel(480),
+	breakTimer: _user$project$Components_Timer$initialModel(30),
+	activeTimer: _user$project$Main$WorkTimer,
+	useBreakTimer: true,
+	team: _user$project$Components_Team$initialModel
 };
-var _user$project$Main$TimerMsg = function (a) {
-	return {ctor: 'TimerMsg', _0: a};
+var _user$project$Main$BreakTimer = {ctor: 'BreakTimer'};
+var _user$project$Main$UpdateUseBreakTimer = function (a) {
+	return {ctor: 'UpdateUseBreakTimer', _0: a};
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'Noop':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'TimerMsg':
-				var _p1 = A2(_user$project$Components_Timer$update, _p0._0, model.timer);
-				var tmodel = _p1._0;
-				var tmsg = _p1._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{timer: tmodel}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TimerMsg, tmsg)
-				};
-			default:
-				var _p2 = A2(_user$project$Components_Team$update, _p0._0, model.team);
-				var tmodel = _p2._0;
-				var tmsg = _p2._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{team: tmodel}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TeamMsg, tmsg)
-				};
-		}
-	});
-var _user$project$Main$view = function (model) {
+var _user$project$Main$viewUseBreakTimer = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -8337,20 +8307,139 @@ var _user$project$Main$view = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$TimerMsg,
-				_user$project$Components_Timer$view(model.timer)),
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Use break timer')
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('checkbox'),
+						_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
+						_elm_lang$html$Html_Attributes$name('useBreakTimer'),
+						_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+			]));
+};
+var _user$project$Main$WorkTimerMsg = function (a) {
+	return {ctor: 'WorkTimerMsg', _0: a};
+};
+var _user$project$Main$TeamMsg = function (a) {
+	return {ctor: 'TeamMsg', _0: a};
+};
+var _user$project$Main$BreakTimerMsg = function (a) {
+	return {ctor: 'BreakTimerMsg', _0: a};
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'Noop':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'BreakTimerMsg':
+				var _p3 = _p0._0;
+				var activeTimer = function () {
+					var _p1 = _p3;
+					if (_p1.ctor === 'Alarm') {
+						return _user$project$Main$WorkTimer;
+					} else {
+						return model.activeTimer;
+					}
+				}();
+				var _p2 = A2(_user$project$Components_Timer$update, _p3, model.breakTimer);
+				var tmodel = _p2._0;
+				var tmsg = _p2._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{breakTimer: tmodel, activeTimer: activeTimer}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$BreakTimerMsg, tmsg)
+				};
+			case 'WorkTimerMsg':
+				var _p6 = _p0._0;
+				var activeTimer = function () {
+					var _p4 = _p6;
+					if (_p4.ctor === 'Alarm') {
+						return model.useBreakTimer ? _user$project$Main$BreakTimer : _user$project$Main$WorkTimer;
+					} else {
+						return model.activeTimer;
+					}
+				}();
+				var _p5 = A2(_user$project$Components_Timer$update, _p6, model.workTimer);
+				var tmodel = _p5._0;
+				var tmsg = _p5._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{workTimer: tmodel, activeTimer: activeTimer}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$WorkTimerMsg, tmsg)
+				};
+			case 'TeamMsg':
+				var _p7 = A2(_user$project$Components_Team$update, _p0._0, model.team);
+				var tmodel = _p7._0;
+				var tmsg = _p7._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{team: tmodel}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$TeamMsg, tmsg)
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{useBreakTimer: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Main$view = function (model) {
+	var timer = _elm_lang$core$Native_Utils.eq(model.activeTimer, _user$project$Main$BreakTimer) ? A2(
+		_elm_lang$html$Html_App$map,
+		_user$project$Main$BreakTimerMsg,
+		_user$project$Components_Timer$view(model.breakTimer)) : A2(
+		_elm_lang$html$Html_App$map,
+		_user$project$Main$WorkTimerMsg,
+		_user$project$Components_Timer$view(model.workTimer));
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Main$viewUseBreakTimer(model),
+				timer,
 				A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$TeamMsg,
-				_user$project$Components_Team$view(model.team))
+				_user$project$Components_Team$view(model.team)),
+				_elm_lang$html$Html$text(
+				_elm_lang$core$Basics$toString(model))
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Platform_Sub$map,
-		_user$project$Main$TimerMsg,
-		_user$project$Components_Timer$subscriptions(model.timer));
+	return _elm_lang$core$Platform_Sub$batch(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Main$WorkTimerMsg,
+				_user$project$Components_Timer$subscriptions(model.workTimer)),
+				A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Main$BreakTimerMsg,
+				_user$project$Components_Timer$subscriptions(model.breakTimer))
+			]));
 };
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
