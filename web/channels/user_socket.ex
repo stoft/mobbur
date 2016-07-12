@@ -2,7 +2,7 @@ defmodule Mobbur.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "rooms:*", Mobbur.RoomChannel
+  channel "teams:*", Mobbur.TeamChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
