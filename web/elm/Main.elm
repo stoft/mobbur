@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, text, div, input, label)
 import Html.App
-import Html.Attributes exposing (type', name)
+import Html.Attributes exposing (type', name, checked)
 import Html.Events exposing (onCheck)
 import Components.Timer as Timer
 import Components.Team as Team
@@ -31,6 +31,8 @@ type alias Model =
     , breakTimer : Timer.Model
     , activeTimer : ActiveTimer
     , useBreakTimer : Bool
+    , autoRestart : Bool
+    , autoRotateTeam : Bool
     , team : Team.Model
     }
 
@@ -46,6 +48,8 @@ initialModel =
     , breakTimer = Timer.initialModel 30
     , activeTimer = WorkTimer
     , useBreakTimer = True
+    , autoRestart = True
+    , autoRotateTeam = True
     , team = Team.initialModel
     }
 
@@ -59,6 +63,8 @@ type Msg
     | BreakTimerMsg Timer.Msg
     | TeamMsg Team.Msg
     | WorkTimerMsg Timer.Msg
+    | UpdateAutoRestart Bool
+    | UpdateAutoRotateTeam Bool
     | UpdateUseBreakTimer Bool
 
 
@@ -80,13 +86,30 @@ update msg model =
 
                         _ ->
                             model.activeTimer
+
+                ( workTimer, _ ) =
+                    if model.autoRestart && timerMsg == Timer.Alarm then
+                        Timer.update Timer.Start model.workTimer
+                    else
+                        ( model.workTimer, Cmd.none )
             in
-                ( { model | breakTimer = tmodel, activeTimer = activeTimer }, Cmd.map BreakTimerMsg tmsg )
+                ( { model | breakTimer = tmodel, activeTimer = activeTimer, workTimer = workTimer }
+                , Cmd.map BreakTimerMsg tmsg
+                )
 
         WorkTimerMsg timerMsg ->
             let
-                ( tmodel, tmsg ) =
+                ( tmodel, tcmd ) =
                     Timer.update timerMsg model.workTimer
+
+                ( ( breakTimer, bcmd ), ( workTimer, wcmd ) ) =
+                    if timerMsg == Timer.Alarm && model.autoRestart then
+                        if model.useBreakTimer then
+                            (,) (Timer.update Timer.Start model.breakTimer) ( tmodel, tcmd )
+                        else
+                            (,) ( model.breakTimer, Cmd.none ) (Timer.update Timer.Start tmodel)
+                    else
+                        (,) ( model.breakTimer, Cmd.none ) ( tmodel, tcmd )
 
                 activeTimer =
                     case timerMsg of
@@ -99,7 +122,9 @@ update msg model =
                         _ ->
                             model.activeTimer
             in
-                ( { model | workTimer = tmodel, activeTimer = activeTimer }, Cmd.map WorkTimerMsg tmsg )
+                ( { model | workTimer = workTimer, activeTimer = activeTimer, breakTimer = breakTimer }
+                , Cmd.map WorkTimerMsg tcmd
+                )
 
         TeamMsg teamMsg ->
             let
@@ -107,6 +132,12 @@ update msg model =
                     Team.update teamMsg model.team
             in
                 ( { model | team = tmodel }, Cmd.map TeamMsg tmsg )
+
+        UpdateAutoRestart flag ->
+            ( { model | autoRestart = flag }, Cmd.none )
+
+        UpdateAutoRotateTeam flag ->
+            ( { model | autoRotateTeam = flag }, Cmd.none )
 
         UpdateUseBreakTimer flag ->
             ( { model | useBreakTimer = flag }, Cmd.none )
@@ -122,24 +153,53 @@ view model =
                 Html.App.map WorkTimerMsg (Timer.view model.workTimer)
     in
         div []
-            [ viewUseBreakTimer model
+            [ optionView model
+            , activeTimerView model
             , timer
             , Html.App.map TeamMsg (Team.view model.team)
             , text (toString model)
             ]
 
 
-viewUseBreakTimer : Model -> Html Msg
-viewUseBreakTimer model =
+optionView : Model -> Html Msg
+optionView model =
     div []
         [ label [] [ text "Use break timer" ]
         , input
             [ type' "checkbox"
-            , Html.Attributes.checked model.useBreakTimer
-            , name "useBreakTimer"
+            , checked model.useBreakTimer
+            , name "use-break-timer"
             , onCheck UpdateUseBreakTimer
             ]
             []
+        , label [] [ text "Auto-restart" ]
+        , input
+            [ type' "checkbox"
+            , checked model.autoRestart
+            , name "auto-restart"
+            , onCheck UpdateAutoRestart
+            ]
+            []
+        , label [] [ text "Auto-rotate team" ]
+        , input
+            [ type' "checkbox"
+            , checked model.autoRotateTeam
+            , name "auto-rotate-team"
+            , onCheck UpdateAutoRotateTeam
+            ]
+            []
+        ]
+
+
+activeTimerView : Model -> Html Msg
+activeTimerView model =
+    div []
+        [ case model.activeTimer of
+            WorkTimer ->
+                text "Work!"
+
+            BreakTimer ->
+                text "Cooldown!"
         ]
 
 

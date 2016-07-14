@@ -14,7 +14,7 @@ Esthetics may suck.
 - [x] Editable team name
 - [x] Editable team members
   - [x] Removable
-- [ ] Auto-restart of timer (configurable)
+- [x] Auto-restart of timer (configurable)
 - [x] Countdown to timer restart (configurable)
 - [ ] Active team member (incl. auto-rotation)
 - [x] Fast forward active team member

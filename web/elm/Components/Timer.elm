@@ -80,8 +80,9 @@ stringToSeconds string =
 
 
 type Msg
-    = Edit
+    = NoOp
     | Alarm
+    | Edit
     | Reset
     | Pause
     | Start
@@ -93,6 +94,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         Alarm ->
             update Reset model
 
