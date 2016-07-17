@@ -61,6 +61,23 @@ exports.config = {
     }
   },
 
+  overrides: {
+    production: {
+      plugins: {
+        // babel: {
+        //   // Do not use ES6 compiler in vendor code
+        //   ignore: [/web\/static\/vendor/, /web\/static\/elm/]
+        // },
+        elmBrunch: null
+        // elmBrunch: {
+        //   elmFolder: 'web/elm',
+        //   mainModules: ['Main.elm'],
+        //   outputFolder: '../static/vendor'
+        // }
+      }
+    }
+  },
+
   modules: {
     autoRequire: {
       "js/app.js": ["web/static/js/app"]
