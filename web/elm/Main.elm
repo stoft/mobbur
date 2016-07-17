@@ -121,8 +121,24 @@ update msg model =
 
                         _ ->
                             model.activeTimer
+
+                ( team, _ ) =
+                    case timerMsg of
+                        Timer.Start ->
+                            if model.autoRotateTeam then
+                                (Team.update Team.SetNextMemberActive model.team)
+                            else
+                                ( model.team, Cmd.none )
+
+                        _ ->
+                            ( model.team, Cmd.none )
             in
-                ( { model | workTimer = workTimer, activeTimer = activeTimer, breakTimer = breakTimer }
+                ( { model
+                    | workTimer = workTimer
+                    , activeTimer = activeTimer
+                    , breakTimer = breakTimer
+                    , team = team
+                  }
                 , Cmd.map WorkTimerMsg tcmd
                 )
 

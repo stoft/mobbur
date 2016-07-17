@@ -7880,11 +7880,11 @@ var _user$project$Components_Team$renderMemberInput = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
-var _user$project$Components_Team$SetNextMemberActive = {ctor: 'SetNextMemberActive'};
+var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
 var _user$project$Components_Team$SubmitNick = function (a) {
 	return {ctor: 'SubmitNick', _0: a};
 };
-var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
+var _user$project$Components_Team$SetNextMemberActive = {ctor: 'SetNextMemberActive'};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
 var _user$project$Components_Team$renderTeamName = function (model) {
 	var _p7 = model.state;
@@ -8431,19 +8431,28 @@ var _user$project$Main$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$BreakTimerMsg, tmsg)
 				};
 			case 'WorkTimerMsg':
-				var _p9 = _p1._0;
+				var _p11 = _p1._0;
+				var _p6 = function () {
+					var _p7 = _p11;
+					if (_p7.ctor === 'Start') {
+						return model.autoRotateTeam ? A2(_user$project$Components_Team$update, _user$project$Components_Team$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				}();
+				var team = _p6._0;
 				var activeTimer = function () {
-					var _p6 = _p9;
-					if (_p6.ctor === 'Alarm') {
+					var _p8 = _p11;
+					if (_p8.ctor === 'Alarm') {
 						return model.useBreakTimer ? _user$project$Main$BreakTimer : _user$project$Main$WorkTimer;
 					} else {
 						return model.activeTimer;
 					}
 				}();
-				var _p7 = A2(_user$project$Components_Timer$update, _p9, model.workTimer);
-				var tmodel = _p7._0;
-				var tcmd = _p7._1;
-				var _p8 = (_elm_lang$core$Native_Utils.eq(_p9, _user$project$Components_Timer$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
+				var _p9 = A2(_user$project$Components_Timer$update, _p11, model.workTimer);
+				var tmodel = _p9._0;
+				var tcmd = _p9._1;
+				var _p10 = (_elm_lang$core$Native_Utils.eq(_p11, _user$project$Components_Timer$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
 					F2(
 						function (v0, v1) {
 							return {ctor: '_Tuple2', _0: v0, _1: v1};
@@ -8462,21 +8471,21 @@ var _user$project$Main$update = F2(
 						}),
 					{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
 					{ctor: '_Tuple2', _0: tmodel, _1: tcmd});
-				var breakTimer = _p8._0._0;
-				var bcmd = _p8._0._1;
-				var workTimer = _p8._1._0;
-				var wcmd = _p8._1._1;
+				var breakTimer = _p10._0._0;
+				var bcmd = _p10._0._1;
+				var workTimer = _p10._1._0;
+				var wcmd = _p10._1._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{workTimer: workTimer, activeTimer: activeTimer, breakTimer: breakTimer}),
+						{workTimer: workTimer, activeTimer: activeTimer, breakTimer: breakTimer, team: team}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$WorkTimerMsg, tcmd)
 				};
 			case 'TeamMsg':
-				var _p10 = A2(_user$project$Components_Team$update, _p1._0, model.team);
-				var tmodel = _p10._0;
-				var tmsg = _p10._1;
+				var _p12 = A2(_user$project$Components_Team$update, _p1._0, model.team);
+				var tmodel = _p12._0;
+				var tmsg = _p12._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(

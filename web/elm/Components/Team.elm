@@ -61,9 +61,9 @@ type Msg
     | AddMember
     | EditMember Int
     | EditTeam
-    | SubmitTeamName
-    | SubmitNick Int
     | SetNextMemberActive
+    | SubmitNick Int
+    | SubmitTeamName
     | UpdateNewNick String
     | UpdateNick Int String
     | UpdateTeamName String
