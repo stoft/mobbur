@@ -8434,7 +8434,7 @@ var _user$project$Main$update = F2(
 				var _p11 = _p1._0;
 				var _p6 = function () {
 					var _p7 = _p11;
-					if (_p7.ctor === 'Start') {
+					if (_p7.ctor === 'Alarm') {
 						return model.autoRotateTeam ? A2(_user$project$Components_Team$update, _user$project$Components_Team$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
 						return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};

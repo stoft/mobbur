@@ -124,7 +124,7 @@ update msg model =
 
                 ( team, _ ) =
                     case timerMsg of
-                        Timer.Start ->
+                        Timer.Alarm ->
                             if model.autoRotateTeam then
                                 (Team.update Team.SetNextMemberActive model.team)
                             else

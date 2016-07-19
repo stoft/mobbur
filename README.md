@@ -4,6 +4,8 @@ A Proof-of-Concept mob programming timer web app built using Elixir/Phoenix and 
 
 Esthetics may suck.
 
+Working example here: https://mobbur.herokuapp.com/
+
 ## Principles
 
 - Should not replace real communication
