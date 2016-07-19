@@ -1,5 +1,7 @@
 # Mobbur
 
+[![Heroku](http://heroku-badge.herokuapp.com/?app=mobbur&style=flat)]
+
 A Proof-of-Concept mob programming timer web app built using Elixir/Phoenix and Elm.
 
 Esthetics may suck.
