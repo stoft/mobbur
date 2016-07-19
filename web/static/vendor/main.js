@@ -8340,7 +8340,7 @@ var _user$project$Main$optionView = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Use break timer')
+						_elm_lang$html$Html$text('Use cooldown')
 					])),
 				A2(
 				_elm_lang$html$Html$input,
@@ -8539,9 +8539,7 @@ var _user$project$Main$view = function (model) {
 				A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$TeamMsg,
-				_user$project$Components_Team$view(model.team)),
-				_elm_lang$html$Html$text(
-				_elm_lang$core$Basics$toString(model))
+				_user$project$Components_Team$view(model.team))
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {

@@ -1,6 +1,6 @@
 # Mobbur
 
-[![Heroku](http://heroku-badge.herokuapp.com/?app=mobbur&style=flat)]
+![Heroku](http://heroku-badge.herokuapp.com/?app=mobbur&style=flat)
 
 A Proof-of-Concept mob programming timer web app built using Elixir/Phoenix and Elm.
 
@@ -20,7 +20,7 @@ Working example here: https://mobbur.herokuapp.com/
   - [x] Removable
 - [x] Auto-restart of timer (configurable)
 - [x] Countdown to timer restart (configurable)
-- [ ] Active team member (incl. auto-rotation)
+- [x] Active team member (incl. auto-rotation)
 - [x] Fast forward active team member
 - [ ] Less fugly layout/graphics!
 

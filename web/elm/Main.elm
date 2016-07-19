@@ -173,14 +173,13 @@ view model =
             , activeTimerView model
             , timer
             , Html.App.map TeamMsg (Team.view model.team)
-            , text (toString model)
             ]
 
 
 optionView : Model -> Html Msg
 optionView model =
     div []
-        [ label [] [ text "Use break timer" ]
+        [ label [] [ text "Use cooldown" ]
         , input
             [ type' "checkbox"
             , checked model.useBreakTimer
