@@ -1,6 +1,6 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input, span)
+import Html exposing (Html, text, div, button, input, span, h4)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
@@ -228,7 +228,7 @@ renderTeamName model =
                 []
 
         _ ->
-            span [ onClick EditTeam ] [ text model.name ]
+            h4 [ onClick EditTeam ] [ text model.name ]
 
 
 renderMemberList : Int -> List TeamMember -> Html Msg

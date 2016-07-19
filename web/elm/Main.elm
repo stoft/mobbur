@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, input, label)
+import Html exposing (Html, text, div, input, label, h3)
 import Html.App
 import Html.Attributes exposing (type', name, checked)
 import Html.Events exposing (onCheck)
@@ -179,30 +179,36 @@ view model =
 optionView : Model -> Html Msg
 optionView model =
     div []
-        [ label [] [ text "Use cooldown" ]
-        , input
-            [ type' "checkbox"
-            , checked model.useBreakTimer
-            , name "use-break-timer"
-            , onCheck UpdateUseBreakTimer
+        [ div []
+            [ input
+                [ type' "checkbox"
+                , checked model.useBreakTimer
+                , name "use-break-timer"
+                , onCheck UpdateUseBreakTimer
+                ]
+                []
+            , label [] [ text "Use cooldown" ]
             ]
-            []
-        , label [] [ text "Auto-restart" ]
-        , input
-            [ type' "checkbox"
-            , checked model.autoRestart
-            , name "auto-restart"
-            , onCheck UpdateAutoRestart
+        , div []
+            [ input
+                [ type' "checkbox"
+                , checked model.autoRestart
+                , name "auto-restart"
+                , onCheck UpdateAutoRestart
+                ]
+                []
+            , label [] [ text "Auto-restart" ]
             ]
-            []
-        , label [] [ text "Auto-rotate team" ]
-        , input
-            [ type' "checkbox"
-            , checked model.autoRotateTeam
-            , name "auto-rotate-team"
-            , onCheck UpdateAutoRotateTeam
+        , div []
+            [ input
+                [ type' "checkbox"
+                , checked model.autoRotateTeam
+                , name "auto-rotate-team"
+                , onCheck UpdateAutoRotateTeam
+                ]
+                []
+            , label [] [ text "Auto-rotate team" ]
             ]
-            []
         ]
 
 
@@ -211,10 +217,10 @@ activeTimerView model =
     div []
         [ case model.activeTimer of
             WorkTimer ->
-                text "Work!"
+                h3 [] [ text "Work!" ]
 
             BreakTimer ->
-                text "Cooldown!"
+                h3 [] [ text "Cooldown!" ]
         ]
 
 

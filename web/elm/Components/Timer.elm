@@ -1,10 +1,6 @@
 port module Components.Timer exposing (..)
 
 import Html exposing (..)
-
-
--- import Html.App as App
-
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (toInt)
@@ -188,7 +184,7 @@ countdownTimer model =
                 inputFields model
 
             _ ->
-                div [ onClick Edit ] [ text <| secondsToString <| model.countdown ]
+                h1 [ onClick Edit ] [ text <| secondsToString <| model.countdown ]
         ]
 
 

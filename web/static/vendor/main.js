@@ -7903,7 +7903,7 @@ var _user$project$Components_Team$renderTeamName = function (model) {
 				[]));
 	} else {
 		return A2(
-			_elm_lang$html$Html$span,
+			_elm_lang$html$Html$h4,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$EditTeam)
@@ -8165,7 +8165,7 @@ var _user$project$Components_Timer$countdownTimer = function (model) {
 					return _user$project$Components_Timer$inputFields(model);
 				} else {
 					return A2(
-						_elm_lang$html$Html$div,
+						_elm_lang$html$Html$h1,
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Edit)
@@ -8296,9 +8296,23 @@ var _user$project$Main$activeTimerView = function (model) {
 				function () {
 				var _p0 = model.activeTimer;
 				if (_p0.ctor === 'WorkTimer') {
-					return _elm_lang$html$Html$text('Work!');
+					return A2(
+						_elm_lang$html$Html$h3,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Work!')
+							]));
 				} else {
-					return _elm_lang$html$Html$text('Cooldown!');
+					return A2(
+						_elm_lang$html$Html$h3,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Cooldown!')
+							]));
 				}
 			}()
 			]));
@@ -8335,62 +8349,83 @@ var _user$project$Main$optionView = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_elm_lang$html$Html$label,
+				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Use cooldown')
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('checkbox'),
+								_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
+								_elm_lang$html$Html_Attributes$name('use-break-timer'),
+								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Use cooldown')
+							]))
 					])),
 				A2(
-				_elm_lang$html$Html$input,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$type$('checkbox'),
-						_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
-						_elm_lang$html$Html_Attributes$name('use-break-timer'),
-						_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[])),
-				A2(
-				_elm_lang$html$Html$label,
+				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Auto-restart')
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('checkbox'),
+								_elm_lang$html$Html_Attributes$checked(model.autoRestart),
+								_elm_lang$html$Html_Attributes$name('auto-restart'),
+								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Auto-restart')
+							]))
 					])),
 				A2(
-				_elm_lang$html$Html$input,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$type$('checkbox'),
-						_elm_lang$html$Html_Attributes$checked(model.autoRestart),
-						_elm_lang$html$Html_Attributes$name('auto-restart'),
-						_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[])),
-				A2(
-				_elm_lang$html$Html$label,
+				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Auto-rotate team')
-					])),
-				A2(
-				_elm_lang$html$Html$input,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$type$('checkbox'),
-						_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
-						_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
-						_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[]))
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('checkbox'),
+								_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
+								_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
+								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Auto-rotate team')
+							]))
+					]))
 			]));
 };
 var _user$project$Main$WorkTimerMsg = function (a) {
