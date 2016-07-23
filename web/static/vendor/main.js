@@ -7668,6 +7668,8 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Components_Team$initMembers = _elm_lang$core$Native_List.fromArray(
+	[]);
 var _user$project$Components_Team$Model = F5(
 	function (a, b, c, d, e) {
 		return {name: a, members: b, state: c, newNick: d, activeMember: e};
@@ -7678,11 +7680,6 @@ var _user$project$Components_Team$TeamMember = F3(
 	});
 var _user$project$Components_Team$Editing = {ctor: 'Editing'};
 var _user$project$Components_Team$DisplayingMember = {ctor: 'DisplayingMember'};
-var _user$project$Components_Team$initMembers = _elm_lang$core$Native_List.fromArray(
-	[
-		{id$: 1, nick: 'pippo', state: _user$project$Components_Team$DisplayingMember},
-		{id$: 2, nick: 'pluto', state: _user$project$Components_Team$DisplayingMember}
-	]);
 var _user$project$Components_Team$Displaying = {ctor: 'Displaying'};
 var _user$project$Components_Team$initialModel = {name: 'Inglorious Anonymous', members: _user$project$Components_Team$initMembers, state: _user$project$Components_Team$Displaying, newNick: '', activeMember: 0};
 var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
@@ -7717,6 +7714,14 @@ var _user$project$Components_Team$update = F2(
 						{members: updatedMembers, newNick: ''}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'DoKey':
+				var _p1 = {
+					ctor: '_Tuple2',
+					_0: A2(_elm_lang$core$Debug$log, 'Key press: ', _p0._0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+				var cmd = _p1._1;
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'EditMember':
 				var updatedMembers = A2(
 					_elm_lang$core$List$map,
@@ -7745,18 +7750,18 @@ var _user$project$Components_Team$update = F2(
 				var tail = _elm_lang$core$List$tail(model.members);
 				var head = _elm_lang$core$List$head(model.members);
 				var rotatedMembers = function () {
-					var _p1 = tail;
-					if (_p1.ctor === 'Just') {
-						var _p3 = _p1._0;
-						var _p2 = head;
-						if (_p2.ctor === 'Just') {
+					var _p2 = tail;
+					if (_p2.ctor === 'Just') {
+						var _p4 = _p2._0;
+						var _p3 = head;
+						if (_p3.ctor === 'Just') {
 							return A2(
 								_elm_lang$core$Basics_ops['++'],
-								_p3,
+								_p4,
 								_elm_lang$core$Native_List.fromArray(
-									[_p2._0]));
+									[_p3._0]));
 						} else {
-							return _p3;
+							return _p4;
 						}
 					} else {
 						return _elm_lang$core$Native_List.fromArray(
@@ -7764,9 +7769,9 @@ var _user$project$Components_Team$update = F2(
 					}
 				}();
 				var nextActiveMember = function () {
-					var _p4 = _elm_lang$core$List$head(rotatedMembers);
-					if (_p4.ctor === 'Just') {
-						return _p4._0.id$;
+					var _p5 = _elm_lang$core$List$head(rotatedMembers);
+					if (_p5.ctor === 'Just') {
+						return _p5._0.id$;
 					} else {
 						return 0;
 					}
@@ -7779,15 +7784,15 @@ var _user$project$Components_Team$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SubmitNick':
-				var _p6 = _p0._0;
+				var _p7 = _p0._0;
 				var removeMember = A2(
 					_elm_lang$core$List$filter,
 					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id$, _p6);
+						return !_elm_lang$core$Native_Utils.eq(m.id$, _p7);
 					},
 					model.members);
 				var changeToDisplaying = function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id$, _p6) ? _elm_lang$core$Native_Utils.update(
+					return _elm_lang$core$Native_Utils.eq(m.id$, _p7) ? _elm_lang$core$Native_Utils.update(
 						m,
 						{state: _user$project$Components_Team$DisplayingMember}) : m;
 				};
@@ -7795,13 +7800,13 @@ var _user$project$Components_Team$update = F2(
 					A2(
 						_elm_lang$core$List$filter,
 						function (m) {
-							return _elm_lang$core$Native_Utils.eq(m.id$, _p6);
+							return _elm_lang$core$Native_Utils.eq(m.id$, _p7);
 						},
 						model.members));
 				var updatedMembers = function () {
-					var _p5 = member;
-					if (_p5.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p5._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
+					var _p6 = member;
+					if (_p6.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(_p6._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
 					} else {
 						return model.members;
 					}
@@ -7872,6 +7877,12 @@ var _user$project$Components_Team$renderMemberInput = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$html$Html_Attributes$type$('text'),
+				_elm_lang$html$Html_Attributes$class('input'),
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'width', _1: '200px'}
+					])),
 				_elm_lang$html$Html_Attributes$placeholder('Nick...'),
 				_elm_lang$html$Html_Attributes$name('nick'),
 				_elm_lang$html$Html_Attributes$value(model.newNick),
@@ -7887,13 +7898,19 @@ var _user$project$Components_Team$SubmitNick = function (a) {
 var _user$project$Components_Team$SetNextMemberActive = {ctor: 'SetNextMemberActive'};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
 var _user$project$Components_Team$renderTeamName = function (model) {
-	var _p7 = model.state;
-	if (_p7.ctor === 'EditingTeam') {
+	var _p8 = model.state;
+	if (_p8.ctor === 'EditingTeam') {
 		return A2(
 			_elm_lang$html$Html$input,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$html$Html_Attributes$type$('text'),
+					_elm_lang$html$Html_Attributes$class('input'),
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'width', _1: '200px'}
+						])),
 					_elm_lang$html$Html_Attributes$value(model.name),
 					_elm_lang$html$Html_Attributes$name('team-name'),
 					_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateTeamName),
@@ -7906,6 +7923,7 @@ var _user$project$Components_Team$renderTeamName = function (model) {
 			_elm_lang$html$Html$h4,
 			_elm_lang$core$Native_List.fromArray(
 				[
+					_elm_lang$html$Html_Attributes$class('title is-medium'),
 					_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$EditTeam)
 				]),
 			_elm_lang$core$Native_List.fromArray(
@@ -7919,13 +7937,14 @@ var _user$project$Components_Team$EditMember = function (a) {
 };
 var _user$project$Components_Team$renderMember = F2(
 	function (activeMember, member) {
-		var _p8 = member.state;
-		if (_p8.ctor === 'Editing') {
+		var _p9 = member.state;
+		if (_p9.ctor === 'Editing') {
 			return A2(
 				_elm_lang$html$Html$input,
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$type$('text'),
+						_elm_lang$html$Html_Attributes$class('input'),
 						_elm_lang$html$Html_Attributes$name('nick'),
 						_elm_lang$html$Html_Attributes$value(member.nick),
 						_elm_lang$html$Html_Events$onInput(
@@ -7971,36 +7990,84 @@ var _user$project$Components_Team$renderMemberList = F2(
 				_user$project$Components_Team$renderMember(activeMember),
 				members));
 	});
+var _user$project$Components_Team$DoKey = function (a) {
+	return {ctor: 'DoKey', _0: a};
+};
 var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
 var _user$project$Components_Team$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_user$project$Components_Team$renderTeamName(model),
 				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
-				_user$project$Components_Team$renderMemberInput(model),
 				A2(
-				_elm_lang$html$Html$button,
+				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+						_elm_lang$html$Html_Attributes$class('has-addons')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('+')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('>>')
+						_user$project$Components_Team$renderMemberInput(model),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('button is-primary'),
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$span,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('icon')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$i,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[]))
+									]))
+							])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('button is-primary'),
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$span,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('icon')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$i,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[]))
+									]))
+							]))
 					]))
 			]));
 };
@@ -8069,7 +8136,9 @@ var _user$project$Components_Timer$inputFields = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
@@ -8077,6 +8146,12 @@ var _user$project$Components_Timer$inputFields = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$type$('number'),
+						_elm_lang$html$Html_Attributes$class('input'),
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'width', _1: '100px'}
+							])),
 						_elm_lang$html$Html_Attributes$placeholder(
 						_elm_lang$core$Basics$toString(
 							function (_) {
@@ -8100,6 +8175,12 @@ var _user$project$Components_Timer$inputFields = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$type$('number'),
+						_elm_lang$html$Html_Attributes$class('input'),
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'width', _1: '100px'}
+							])),
 						_elm_lang$html$Html_Attributes$placeholder(
 						_elm_lang$core$Basics$toString(
 							function (_) {
@@ -8133,61 +8214,89 @@ var _user$project$Components_Timer$startButton = A2(
 	_elm_lang$html$Html$button,
 	_elm_lang$core$Native_List.fromArray(
 		[
+			_elm_lang$html$Html_Attributes$class('button is-primary is-large'),
 			_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Start)
 		]),
 	_elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html$text('>')
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('icon is-medium')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('fa fa-play')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[]))
+				]))
 		]));
 var _user$project$Components_Timer$Pause = {ctor: 'Pause'};
 var _user$project$Components_Timer$pauseButton = A2(
 	_elm_lang$html$Html$button,
 	_elm_lang$core$Native_List.fromArray(
 		[
+			_elm_lang$html$Html_Attributes$class('button is-primary is-large'),
 			_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Pause)
 		]),
 	_elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html$text('||')
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('icon is-medium')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('fa fa-pause')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[]))
+				]))
 		]));
 var _user$project$Components_Timer$Reset = {ctor: 'Reset'};
 var _user$project$Components_Timer$Edit = {ctor: 'Edit'};
 var _user$project$Components_Timer$countdownTimer = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				function () {
-				var _p1 = model.state;
-				if (_p1.ctor === 'Editing') {
-					return _user$project$Components_Timer$inputFields(model);
-				} else {
-					return A2(
-						_elm_lang$html$Html$h1,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Edit)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(
-								_user$project$Components_Timer$secondsToString(model.countdown))
-							]));
-				}
-			}()
-			]));
+	var _p1 = model.state;
+	if (_p1.ctor === 'Editing') {
+		return _user$project$Components_Timer$inputFields(model);
+	} else {
+		return A2(
+			_elm_lang$html$Html$h1,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('title is-1'),
+					_elm_lang$html$Html_Events$onClick(_user$project$Components_Timer$Edit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(
+					_user$project$Components_Timer$secondsToString(model.countdown))
+				]));
+	}
 };
 var _user$project$Components_Timer$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) ? _user$project$Components_Timer$pauseButton : _user$project$Components_Timer$startButton,
-				_user$project$Components_Timer$countdownTimer(model)
+				_user$project$Components_Timer$countdownTimer(model),
+				_elm_lang$core$Native_Utils.eq(model.state, _user$project$Components_Timer$Started) ? _user$project$Components_Timer$pauseButton : _user$project$Components_Timer$startButton
 			]));
 };
 var _user$project$Components_Timer$Alarm = {ctor: 'Alarm'};
@@ -8290,25 +8399,27 @@ var _user$project$Main$activeTimerView = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('column')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				function () {
 				var _p0 = model.activeTimer;
 				if (_p0.ctor === 'WorkTimer') {
 					return A2(
-						_elm_lang$html$Html$h3,
+						_elm_lang$html$Html$span,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Work!')
-							]));
+							[]));
 				} else {
 					return A2(
-						_elm_lang$html$Html$h3,
+						_elm_lang$html$Html$span,
 						_elm_lang$core$Native_List.fromArray(
-							[]),
+							[
+								_elm_lang$html$Html_Attributes$class('title is-5')
+							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text('Cooldown!')
@@ -8345,84 +8456,98 @@ var _user$project$Main$optionView = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow is-grouped')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
-					[]),
+					[
+						_elm_lang$html$Html_Attributes$class('')
+					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('checkbox'),
-								_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
-								_elm_lang$html$Html_Attributes$name('use-break-timer'),
-								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
 						_elm_lang$html$Html$label,
 						_elm_lang$core$Native_List.fromArray(
-							[]),
+							[
+								_elm_lang$html$Html_Attributes$class('checkbox')
+							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(
+								_elm_lang$html$Html$input,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$type$('checkbox'),
+										_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
+										_elm_lang$html$Html_Attributes$name('use-break-timer'),
+										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
 								_elm_lang$html$Html$text('Use cooldown')
 							]))
 					])),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
-					[]),
+					[
+						_elm_lang$html$Html_Attributes$class('')
+					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('checkbox'),
-								_elm_lang$html$Html_Attributes$checked(model.autoRestart),
-								_elm_lang$html$Html_Attributes$name('auto-restart'),
-								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
 						_elm_lang$html$Html$label,
 						_elm_lang$core$Native_List.fromArray(
-							[]),
+							[
+								_elm_lang$html$Html_Attributes$class('checkbox')
+							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(
+								_elm_lang$html$Html$input,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$type$('checkbox'),
+										_elm_lang$html$Html_Attributes$checked(model.autoRestart),
+										_elm_lang$html$Html_Attributes$name('auto-restart'),
+										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
 								_elm_lang$html$Html$text('Auto-restart')
 							]))
 					])),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
-					[]),
+					[
+						_elm_lang$html$Html_Attributes$class('')
+					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('checkbox'),
-								_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
-								_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
-								_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
 						_elm_lang$html$Html$label,
 						_elm_lang$core$Native_List.fromArray(
-							[]),
+							[
+								_elm_lang$html$Html_Attributes$class('checkbox')
+							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(
+								_elm_lang$html$Html$input,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$type$('checkbox'),
+										_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
+										_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
+										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[])),
 								_elm_lang$html$Html$text('Auto-rotate team')
 							]))
 					]))
@@ -8565,16 +8690,18 @@ var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$class('has-text-centered')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_user$project$Main$optionView(model),
 				_user$project$Main$activeTimerView(model),
 				timer,
 				A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$TeamMsg,
-				_user$project$Components_Team$view(model.team))
+				_user$project$Components_Team$view(model.team)),
+				_user$project$Main$optionView(model)
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {

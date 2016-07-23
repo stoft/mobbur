@@ -165,34 +165,33 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ (if model.state == Started then
+    div [ class "column is-narrow" ]
+        [ countdownTimer model
+        , (if model.state == Started then
             pauseButton
            else
             startButton
           )
-        , countdownTimer model
-          -- , text (toString model)
         ]
 
 
 countdownTimer : Model -> Html Msg
 countdownTimer model =
-    div []
-        [ case model.state of
-            Editing ->
-                inputFields model
+    case model.state of
+        Editing ->
+            inputFields model
 
-            _ ->
-                h1 [ onClick Edit ] [ text <| secondsToString <| model.countdown ]
-        ]
+        _ ->
+            h1 [ class "title is-1", onClick Edit ] [ text <| secondsToString <| model.countdown ]
 
 
 inputFields : Model -> Html Msg
 inputFields model =
-    div []
+    div [ class "column is-narrow" ]
         [ input
             [ type' "number"
+            , class "input"
+            , style [ ( "width", "100px" ) ]
             , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
             , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
             , name "minutes"
@@ -202,6 +201,8 @@ inputFields model =
         , text ":"
         , input
             [ type' "number"
+            , class "input"
+            , style [ ( "width", "100px" ) ]
             , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
             , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
             , name "seconds"
@@ -213,9 +214,13 @@ inputFields model =
 
 startButton : Html Msg
 startButton =
-    button [ onClick Start ] [ text ">" ]
+    button [ class "button is-primary is-large", onClick Start ]
+        [ span [ class "icon is-medium" ] [ span [ class "fa fa-play" ] [] ]
+        ]
 
 
 pauseButton : Html Msg
 pauseButton =
-    button [ onClick Pause ] [ text "||" ]
+    button [ class "button is-primary is-large", onClick Pause ]
+        [ span [ class "icon is-medium" ] [ span [ class "fa fa-pause" ] [] ]
+        ]

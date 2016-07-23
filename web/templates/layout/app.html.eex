@@ -8,11 +8,20 @@
     <meta name="author" content="">
 
     <title>Hello Mobbur!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <!-- <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   </head>
 
   <body>
-    <div class="container">
+    <section class="hero is-fullheight">
+      <div class="hero-head">
+        <div class="container">
+          <h3 class="title">mobbur</h1>
+        </div>
+      </div>
+      <div class="hero-body">
+      <div class="container">
       <!-- <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
@@ -25,13 +34,18 @@
       <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p> -->
 
-      <div id="elm-app-lives-here" name="elm-app-lives-here"></div>
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-      <audio id="alarm" src="/audio/start1.mp3" preload="auto"></audio>
+        <div id="elm-app-lives-here" class="" name="elm-app-lives-here"></div>
+        <!-- <main role="main"> -->
+          <!-- <%= #render @view_module, @view_template, assigns %> -->
+        <!-- </main> -->
+        <audio id="alarm" src="/audio/start1.mp3" preload="auto"></audio>
 
-    </div> <!-- /container -->
+      </div> <!-- /container -->
+    </div>
+    <div class="hero-footer">
+      <div class="container"></div>
+    </div>
+    </section>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

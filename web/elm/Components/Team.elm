@@ -1,6 +1,6 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input, span, h4)
+import Html exposing (Html, text, div, button, input, span, h4, i)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
@@ -47,18 +47,20 @@ initialModel =
 
 initMembers : List TeamMember
 initMembers =
-    [ { id' = 1, nick = "pippo", state = DisplayingMember }
-    , { id' = 2, nick = "pluto", state = DisplayingMember }
-    ]
+    []
 
 
 
+-- [ { id' = 1, nick = "pippo", state = DisplayingMember }
+-- , { id' = 2, nick = "pluto", state = DisplayingMember }
+-- ]
 --UPDATE
 
 
 type Msg
     = NoOp
     | AddMember
+    | DoKey String
     | EditMember Int
     | EditTeam
     | SetNextMemberActive
@@ -95,6 +97,13 @@ update msg model =
                     model.members ++ [ newMember ]
             in
                 ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+
+        DoKey key ->
+            let
+                ( _, cmd ) =
+                    ( (Debug.log "Key press: " key), Cmd.none )
+            in
+                ( model, Cmd.none )
 
         EditMember id' ->
             let
@@ -203,13 +212,21 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "column is-narrow" ]
         [ renderTeamName model
         , renderMemberList model.activeMember model.members
-        , renderMemberInput model
-        , button [ onClick AddMember ]
-            [ text "+" ]
-        , button [ onClick SetNextMemberActive ] [ text ">>" ]
+        , div [ class "has-addons" ]
+            [ renderMemberInput model
+            , button [ class "button is-primary", onClick AddMember ]
+                [ span [ class "icon" ]
+                    [ i [ class "fa fa-plus-square" ] [] ]
+                ]
+            , button [ class "button is-primary", onClick SetNextMemberActive ]
+                [ span [ class "icon" ]
+                    [ i [ class "fa fa-fast-forward" ] []
+                    ]
+                ]
+            ]
           -- , div [] [ text (toString model) ]
         ]
 
@@ -220,6 +237,8 @@ renderTeamName model =
         EditingTeam ->
             input
                 [ type' "text"
+                , class "input"
+                , style [ ( "width", "200px" ) ]
                 , value model.name
                 , name "team-name"
                 , onInput UpdateTeamName
@@ -228,7 +247,7 @@ renderTeamName model =
                 []
 
         _ ->
-            h4 [ onClick EditTeam ] [ text model.name ]
+            h4 [ class "title is-medium", onClick EditTeam ] [ text model.name ]
 
 
 renderMemberList : Int -> List TeamMember -> Html Msg
@@ -240,6 +259,8 @@ renderMemberInput : Model -> Html Msg
 renderMemberInput model =
     input
         [ type' "text"
+        , class "input"
+        , style [ ( "width", "200px" ) ]
         , placeholder "Nick..."
         , name "nick"
         , value model.newNick
@@ -254,6 +275,7 @@ renderMember activeMember member =
         Editing ->
             input
                 [ type' "text"
+                , class "input"
                 , name "nick"
                 , value member.nick
                 , onInput (UpdateNick member.id')

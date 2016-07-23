@@ -1,8 +1,8 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, input, label, h3)
+import Html exposing (..)
 import Html.App
-import Html.Attributes exposing (type', name, checked)
+import Html.Attributes exposing (type', name, checked, class)
 import Html.Events exposing (onCheck)
 import Components.Timer as Timer
 import Components.Team as Team
@@ -168,59 +168,66 @@ view model =
             else
                 Html.App.map WorkTimerMsg (Timer.view model.workTimer)
     in
-        div []
-            [ optionView model
-            , activeTimerView model
+        div [ class "has-text-centered" ]
+            [ activeTimerView model
             , timer
             , Html.App.map TeamMsg (Team.view model.team)
+            , optionView model
             ]
 
 
 optionView : Model -> Html Msg
 optionView model =
-    div []
-        [ div []
-            [ input
-                [ type' "checkbox"
-                , checked model.useBreakTimer
-                , name "use-break-timer"
-                , onCheck UpdateUseBreakTimer
+    div [ class "column is-narrow is-grouped" ]
+        [ div [ class "" ]
+            [ label [ class "checkbox" ]
+                [ input
+                    [ type' "checkbox"
+                    , checked model.useBreakTimer
+                    , name "use-break-timer"
+                    , onCheck UpdateUseBreakTimer
+                    ]
+                    []
+                , text "Use cooldown"
                 ]
-                []
-            , label [] [ text "Use cooldown" ]
             ]
-        , div []
-            [ input
-                [ type' "checkbox"
-                , checked model.autoRestart
-                , name "auto-restart"
-                , onCheck UpdateAutoRestart
+        , div [ class "" ]
+            [ label [ class "checkbox" ]
+                [ input
+                    [ type' "checkbox"
+                    , checked model.autoRestart
+                    , name "auto-restart"
+                    , onCheck UpdateAutoRestart
+                    ]
+                    []
+                , text "Auto-restart"
                 ]
-                []
-            , label [] [ text "Auto-restart" ]
             ]
-        , div []
-            [ input
-                [ type' "checkbox"
-                , checked model.autoRotateTeam
-                , name "auto-rotate-team"
-                , onCheck UpdateAutoRotateTeam
+        , div [ class "" ]
+            [ label [ class "checkbox" ]
+                [ input
+                    [ type' "checkbox"
+                    , checked model.autoRotateTeam
+                    , name "auto-rotate-team"
+                    , onCheck UpdateAutoRotateTeam
+                    ]
+                    []
+                , text "Auto-rotate team"
                 ]
-                []
-            , label [] [ text "Auto-rotate team" ]
             ]
         ]
 
 
 activeTimerView : Model -> Html Msg
 activeTimerView model =
-    div []
+    div [ class "column" ]
         [ case model.activeTimer of
             WorkTimer ->
-                h3 [] [ text "Work!" ]
+                span [] []
 
+            -- span [ class "title is-5" ] [ text "Work!" ]
             BreakTimer ->
-                h3 [] [ text "Cooldown!" ]
+                span [ class "title is-5" ] [ text "Cooldown!" ]
         ]
 
 
