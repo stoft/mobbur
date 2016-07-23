@@ -10,10 +10,10 @@ defmodule Mobbur do
       # Start the endpoint when the application starts
       supervisor(Mobbur.Endpoint, []),
       # Start the Ecto repository
-      supervisor(Mobbur.Repo, []),
+      supervisor(Mobbur.Repo, [])
       # Here you could define other workers and supervisors as children
       # worker(Mobbur.Worker, [arg1, arg2, arg3]),
-      worker(Mobbur.ActiveTeams, [])
+      # worker(Mobbur.ActiveTeams, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
