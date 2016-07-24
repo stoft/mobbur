@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.App
-import Html.Attributes exposing (type', name, checked, class)
-import Html.Events exposing (onCheck)
+import Html.Attributes exposing (type', name, checked, class, href, style, value, max)
+import Html.Events exposing (onCheck, onClick)
 import Components.Timer as Timer
 import Components.Team as Team
 
@@ -34,7 +34,13 @@ type alias Model =
     , autoRestart : Bool
     , autoRotateTeam : Bool
     , team : Team.Model
+    , currentView : Page
     }
+
+
+type Page
+    = MainView
+    | SettingsView
 
 
 type ActiveTimer
@@ -51,6 +57,7 @@ initialModel =
     , autoRestart = True
     , autoRotateTeam = True
     , team = Team.initialModel
+    , currentView = MainView
     }
 
 
@@ -66,6 +73,7 @@ type Msg
     | UpdateAutoRestart Bool
     | UpdateAutoRotateTeam Bool
     | UpdateUseBreakTimer Bool
+    | UpdateView Page
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -158,9 +166,99 @@ update msg model =
         UpdateUseBreakTimer flag ->
             ( { model | useBreakTimer = flag }, Cmd.none )
 
+        UpdateView page ->
+            ( { model | currentView = page }, Cmd.none )
+
 
 view : Model -> Html Msg
 view model =
+    section [ class "hero is-fullheight" ]
+        [ div [ class "hero-head" ] [ navigationBar model ]
+        , div [ class "hero-body" ]
+            [ div [ class "container" ]
+                [ pageView model
+                ]
+            ]
+        , div [ class "hero-footer" ]
+            []
+        ]
+
+
+navigationBar : Model -> Html Msg
+navigationBar model =
+    let
+        settingsItem =
+            a [ href "#settings", onClick (UpdateView SettingsView) ]
+                [ span [ class "icon is-medium" ]
+                    [ i [ class "fa fa-cog" ] []
+                    ]
+                ]
+
+        mainItem =
+            a [ href "#", onClick (UpdateView MainView) ]
+                [ span [ class "icon is-medium" ]
+                    [ i [ class "fa fa-clock-o" ] []
+                    ]
+                ]
+
+        item =
+            case model.currentView of
+                MainView ->
+                    settingsItem
+
+                SettingsView ->
+                    mainItem
+    in
+        nav [ class "nav" ]
+            [ div [ class "nav-left" ]
+                [ div [ class "nav-item" ]
+                    [ h1 [ class "title is-5" ] [ text "mobbur" ]
+                    ]
+                ]
+            , div [ class "nav-right" ]
+                [ div [ class "nav-item" ] [ item ]
+                ]
+            ]
+
+
+
+-- , div [ class "nav-center" ]
+--     [ div [ class "nav-item" ]
+--         [ span [ class "tag is-primary is-medium" ] [ text ("the " ++ model.team.name) ]
+--         ]
+--     ]
+
+
+pageView : Model -> Html Msg
+pageView model =
+    case model.currentView of
+        MainView ->
+            frontPageView model
+
+        SettingsView ->
+            settingsView model
+
+
+frontPageView : Model -> Html Msg
+frontPageView model =
+    let
+        ( activeTimer, msgType ) =
+            case model.activeTimer of
+                WorkTimer ->
+                    ( model.workTimer, WorkTimerMsg )
+
+                BreakTimer ->
+                    ( model.breakTimer, BreakTimerMsg )
+    in
+        div [ class "has-text-centered" ]
+            [ h4 [ class "title is-medium" ] [ text (model.team.name) ]
+            , Html.App.map msgType (Timer.displayView activeTimer)
+            , progress [ class "is-primary is-small is-responsive", value "30", Html.Attributes.max "100" ] [ text "foo" ]
+            ]
+
+
+settingsView : Model -> Html Msg
+settingsView model =
     let
         timer =
             if model.activeTimer == BreakTimer then
@@ -171,6 +269,8 @@ view model =
         div [ class "has-text-centered" ]
             [ activeTimerView model
             , timer
+            , Html.App.map WorkTimerMsg (Timer.settingsView model.workTimer)
+            , Html.App.map BreakTimerMsg (Timer.settingsView model.breakTimer)
             , Html.App.map TeamMsg (Team.view model.team)
             , optionView model
             ]

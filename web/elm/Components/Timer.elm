@@ -175,6 +175,27 @@ view model =
         ]
 
 
+displayView : Model -> Html Msg
+displayView model =
+    let
+        action =
+            case model.state of
+                Paused ->
+                    Start
+
+                _ ->
+                    Pause
+    in
+        div [ class "column is-narrow" ]
+            [ h1 [ class "title is-1", onClick action ] [ text <| secondsToString <| model.countdown ]
+            ]
+
+
+settingsView : Model -> Html Msg
+settingsView model =
+    inputFields model
+
+
 countdownTimer : Model -> Html Msg
 countdownTimer model =
     case model.state of
@@ -188,27 +209,32 @@ countdownTimer model =
 inputFields : Model -> Html Msg
 inputFields model =
     div [ class "column is-narrow" ]
-        [ input
-            [ type' "number"
-            , class "input"
-            , style [ ( "width", "100px" ) ]
-            , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-            , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-            , name "minutes"
-            , onInput UpdateMinutes
+        [ label [ class "" ]
+            [ text "minutes: "
+            , input
+                [ type' "number"
+                , class "input"
+                , style [ ( "width", "100px" ) ]
+                , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+                , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+                , name "minutes"
+                , onInput UpdateMinutes
+                ]
+                []
             ]
-            []
-        , text ":"
-        , input
-            [ type' "number"
-            , class "input"
-            , style [ ( "width", "100px" ) ]
-            , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-            , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-            , name "seconds"
-            , onInput UpdateSeconds
+        , label [ class "" ]
+            [ text "seconds: "
+            , input
+                [ type' "number"
+                , class "input"
+                , style [ ( "width", "100px" ) ]
+                , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+                , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+                , name "seconds"
+                , onInput UpdateSeconds
+                ]
+                []
             ]
-            []
         ]
 
 
