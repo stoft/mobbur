@@ -83,72 +83,10 @@ update msg model =
             ( model, Cmd.none )
 
         BreakTimerMsg timerMsg ->
-            let
-                ( tmodel, tmsg ) =
-                    Timer.update timerMsg model.breakTimer
-
-                activeTimer =
-                    case timerMsg of
-                        Timer.Alarm ->
-                            WorkTimer
-
-                        _ ->
-                            model.activeTimer
-
-                ( workTimer, _ ) =
-                    if model.autoRestart && timerMsg == Timer.Alarm then
-                        Timer.update Timer.Start model.workTimer
-                    else
-                        ( model.workTimer, Cmd.none )
-            in
-                ( { model | breakTimer = tmodel, activeTimer = activeTimer, workTimer = workTimer }
-                , Cmd.map BreakTimerMsg tmsg
-                )
+            handleBreakTimerMsg timerMsg model
 
         WorkTimerMsg timerMsg ->
-            let
-                ( tmodel, tcmd ) =
-                    Timer.update timerMsg model.workTimer
-
-                ( ( breakTimer, bcmd ), ( workTimer, wcmd ) ) =
-                    if timerMsg == Timer.Alarm && model.autoRestart then
-                        if model.useBreakTimer then
-                            (,) (Timer.update Timer.Start model.breakTimer) ( tmodel, tcmd )
-                        else
-                            (,) ( model.breakTimer, Cmd.none ) (Timer.update Timer.Start tmodel)
-                    else
-                        (,) ( model.breakTimer, Cmd.none ) ( tmodel, tcmd )
-
-                activeTimer =
-                    case timerMsg of
-                        Timer.Alarm ->
-                            if model.useBreakTimer then
-                                BreakTimer
-                            else
-                                WorkTimer
-
-                        _ ->
-                            model.activeTimer
-
-                ( team, _ ) =
-                    case timerMsg of
-                        Timer.Alarm ->
-                            if model.autoRotateTeam then
-                                (Team.update Team.SetNextMemberActive model.team)
-                            else
-                                ( model.team, Cmd.none )
-
-                        _ ->
-                            ( model.team, Cmd.none )
-            in
-                ( { model
-                    | workTimer = workTimer
-                    , activeTimer = activeTimer
-                    , breakTimer = breakTimer
-                    , team = team
-                  }
-                , Cmd.map WorkTimerMsg tcmd
-                )
+            handleWorkTimerMsg timerMsg model
 
         TeamMsg teamMsg ->
             let
@@ -170,6 +108,88 @@ update msg model =
             ( { model | currentView = page }, Cmd.none )
 
 
+handleBreakTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )
+handleBreakTimerMsg timerMsg model =
+    let
+        ( tmodel, tmsg ) =
+            Timer.update timerMsg model.breakTimer
+
+        activeTimer =
+            case timerMsg of
+                Timer.Alarm ->
+                    WorkTimer
+
+                _ ->
+                    model.activeTimer
+
+        ( workTimer, _ ) =
+            if model.autoRestart && timerMsg == Timer.Alarm then
+                Timer.update Timer.Start model.workTimer
+            else
+                ( model.workTimer, Cmd.none )
+    in
+        ( { model | breakTimer = tmodel, activeTimer = activeTimer, workTimer = workTimer }
+        , Cmd.map BreakTimerMsg tmsg
+        )
+
+
+handleWorkTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )
+handleWorkTimerMsg timerMsg model =
+    let
+        ( tmodel, tcmd ) =
+            Timer.update timerMsg model.workTimer
+
+        ( ( breakTimer, bcmd ), ( workTimer, wcmd ) ) =
+            if timerMsg == Timer.Alarm && model.autoRestart then
+                if model.useBreakTimer then
+                    (,) (Timer.update Timer.Start model.breakTimer) ( tmodel, tcmd )
+                else
+                    (,) ( model.breakTimer, Cmd.none ) (Timer.update Timer.Start tmodel)
+            else
+                (,) ( model.breakTimer, Cmd.none ) ( tmodel, tcmd )
+
+        activeTimer =
+            case timerMsg of
+                Timer.Alarm ->
+                    if model.useBreakTimer then
+                        BreakTimer
+                    else
+                        WorkTimer
+
+                _ ->
+                    model.activeTimer
+
+        ( team, _ ) =
+            case timerMsg of
+                Timer.Alarm ->
+                    if model.autoRotateTeam then
+                        (Team.update Team.SetNextMemberActive model.team)
+                    else
+                        ( model.team, Cmd.none )
+
+                Timer.Start ->
+                    if model.autoRotateTeam && model.team.activeMember == 0 then
+                        (Team.update Team.SetNextMemberActive model.team)
+                    else
+                        ( model.team, Cmd.none )
+
+                _ ->
+                    ( model.team, Cmd.none )
+    in
+        ( { model
+            | workTimer = workTimer
+            , activeTimer = activeTimer
+            , breakTimer = breakTimer
+            , team = team
+          }
+        , Cmd.map WorkTimerMsg tcmd
+        )
+
+
+
+-- VIEW
+
+
 view : Model -> Html Msg
 view model =
     section [ class "hero is-fullheight" ]
@@ -180,7 +200,8 @@ view model =
                 ]
             ]
         , div [ class "hero-footer" ]
-            []
+            [ navFooter model
+            ]
         ]
 
 
@@ -212,13 +233,24 @@ navigationBar model =
         nav [ class "nav" ]
             [ div [ class "nav-left" ]
                 [ div [ class "nav-item" ]
-                    [ h1 [ class "title is-5" ] [ text "mobbur" ]
+                    [ h5 [ class "title is-5" ]
+                        [ text "mobbur" ]
                     ]
                 ]
             , div [ class "nav-right" ]
                 [ div [ class "nav-item" ] [ item ]
                 ]
             ]
+
+
+navFooter : Model -> Html Msg
+navFooter model =
+    nav [ class "nav" ]
+        [ div [ class "nav-center" ]
+            [ div [ class "nav-item" ]
+                [ h5 [ class "title is-5" ] [ text model.team.name ] ]
+            ]
+        ]
 
 
 
@@ -249,12 +281,41 @@ frontPageView model =
 
                 BreakTimer ->
                     ( model.breakTimer, BreakTimerMsg )
+
+        activeMember =
+            List.filter (\m -> m.id' == model.team.activeMember) model.team.members
+                |> List.head
+
+        timerContent =
+            Html.App.map msgType (Timer.displayView activeTimer)
+
+        getNick member =
+            Maybe.withDefault { nick = "", id' = 0, state = Team.DisplayingMember } member |> .nick
+
+        content =
+            if (model.activeTimer == BreakTimer && activeMember /= Nothing) then
+                [ h4 [ class "title is-4" ] [ text (getNick activeMember) ]
+                , timerContent
+                , h3 [ class "title is-3" ] [ text "Cooldown!" ]
+                ]
+            else if activeMember /= Nothing then
+                [ h4 [ class "title is-4" ] [ text (getNick activeMember) ]
+                , timerContent
+                ]
+            else
+                [ timerContent ]
     in
-        div [ class "has-text-centered" ]
-            [ h4 [ class "title is-medium" ] [ text (model.team.name) ]
-            , Html.App.map msgType (Timer.displayView activeTimer)
-            , progress [ class "is-primary is-small is-responsive", value "30", Html.Attributes.max "100" ] [ text "foo" ]
-            ]
+        div [ class "has-text-centered" ] content
+
+
+progressBar : Html Msg
+progressBar =
+    progress
+        [ class "progress is-primary is-small"
+        , value "30"
+        , Html.Attributes.max "100"
+        ]
+        [ text "foo" ]
 
 
 settingsView : Model -> Html Msg

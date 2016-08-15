@@ -123,35 +123,7 @@ update msg model =
             ( { model | state = EditingTeam }, Cmd.none )
 
         SetNextMemberActive ->
-            let
-                head =
-                    List.head model.members
-
-                tail =
-                    List.tail model.members
-
-                rotatedMembers =
-                    case tail of
-                        Just list ->
-                            case head of
-                                Just m ->
-                                    list ++ [ m ]
-
-                                Nothing ->
-                                    list
-
-                        Nothing ->
-                            []
-
-                nextActiveMember =
-                    case List.head rotatedMembers of
-                        Just m ->
-                            m.id'
-
-                        Nothing ->
-                            0
-            in
-                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+            handleSetNextMemberActive model
 
         SubmitNick id' ->
             let
@@ -204,6 +176,39 @@ update msg model =
 
         UpdateTeamName name ->
             ( { model | name = name }, Cmd.none )
+
+
+handleSetNextMemberActive : Model -> ( Model, Cmd Msg )
+handleSetNextMemberActive model =
+    let
+        head =
+            List.head model.members
+
+        tail =
+            List.tail model.members
+
+        rotatedMembers =
+            case tail of
+                Just list ->
+                    case head of
+                        Just m ->
+                            list ++ [ m ]
+
+                        Nothing ->
+                            list
+
+                Nothing ->
+                    []
+
+        nextActiveMember =
+            case List.head model.members of
+                Just m ->
+                    m.id'
+
+                Nothing ->
+                    0
+    in
+        ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
 
 
 

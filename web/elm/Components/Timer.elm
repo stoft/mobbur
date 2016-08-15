@@ -66,6 +66,18 @@ secondsToString seconds =
         minutes ++ ":" ++ secs
 
 
+secondsToStrings : Int -> { minutes : String, seconds : String }
+secondsToStrings seconds =
+    let
+        minutes =
+            seconds // 60 |> toString |> String.padLeft 2 '0'
+
+        secs =
+            rem seconds 60 |> toString |> String.padLeft 2 '0'
+    in
+        { minutes = minutes, seconds = secs }
+
+
 stringToSeconds : String -> Int
 stringToSeconds string =
     Result.withDefault 0 (String.toInt string)
@@ -178,16 +190,25 @@ view model =
 displayView : Model -> Html Msg
 displayView model =
     let
-        action =
+        ( action, iconClass ) =
             case model.state of
                 Paused ->
-                    Start
+                    ( Start, "fa fa-play-circle" )
+
+                Stopped ->
+                    ( Start, "fa fa-play-circle" )
 
                 _ ->
-                    Pause
+                    ( Pause, "fa fa-pause-circle" )
     in
         div [ class "column is-narrow" ]
-            [ h1 [ class "title is-1", onClick action ] [ text <| secondsToString <| model.countdown ]
+            [ a
+                [ class "title box is-1 is-large"
+                , onClick action
+                , style [ ( "font-size", "10em" ), ( "font-size", "28vw" ), ( "border", "none" ) ]
+                ]
+                [ text <| secondsToString <| model.countdown
+                ]
             ]
 
 
