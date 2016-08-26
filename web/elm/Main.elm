@@ -321,59 +321,81 @@ progressBar =
 settingsView : Model -> Html Msg
 settingsView model =
     let
-        timer =
-            if model.activeTimer == BreakTimer then
-                Html.App.map BreakTimerMsg (Timer.view model.breakTimer)
+        optionSettings =
+            optionView model
+
+        workTimerSettings =
+            div [ class "tile is-parent" ]
+                [ div [ class "tile notification is-primary is-child" ]
+                    [ h4 [ class "title" ] [ text "Timer" ]
+                    , Html.App.map WorkTimerMsg (Timer.settingsView model.workTimer)
+                    ]
+                ]
+
+        breakTimerSettings =
+            div [ class "tile is-parent" ]
+                [ div [ class "tile notification is-warning is-child" ]
+                    [ h4 [ class "title" ] [ text "Cooldown" ]
+                    , Html.App.map BreakTimerMsg (Timer.settingsView model.breakTimer)
+                    ]
+                ]
+
+        team =
+            Html.App.map TeamMsg (Team.settingsView model.team)
+
+        timerSettings =
+            if model.useBreakTimer then
+                [ optionSettings, team, workTimerSettings, breakTimerSettings ]
             else
-                Html.App.map WorkTimerMsg (Timer.view model.workTimer)
+                [ optionSettings, team, workTimerSettings ]
     in
-        div [ class "has-text-centered" ]
-            [ activeTimerView model
-            , timer
-            , Html.App.map WorkTimerMsg (Timer.settingsView model.workTimer)
-            , Html.App.map BreakTimerMsg (Timer.settingsView model.breakTimer)
-            , Html.App.map TeamMsg (Team.view model.team)
-            , optionView model
-            ]
+        div [ class "tile is-ancestor" ]
+            timerSettings
 
 
 optionView : Model -> Html Msg
 optionView model =
-    div [ class "column is-narrow is-grouped" ]
-        [ div [ class "" ]
-            [ label [ class "checkbox" ]
-                [ input
-                    [ type' "checkbox"
-                    , checked model.useBreakTimer
-                    , name "use-break-timer"
-                    , onCheck UpdateUseBreakTimer
+    div [ class "tile is-parent" ]
+        [ div [ class "tile is-child notification is-success" ]
+            [ h4 [ class "title" ]
+                [ text "General" ]
+            , div [ class "control-group is-grouped" ]
+                [ div [ class "control" ]
+                    [ label [ class "checkbox" ]
+                        [ input
+                            [ type' "checkbox"
+                            , checked model.useBreakTimer
+                            , name "use-break-timer"
+                            , onCheck UpdateUseBreakTimer
+                            ]
+                            []
+                        , text "Use cooldown"
+                        ]
                     ]
-                    []
-                , text "Use cooldown"
-                ]
-            ]
-        , div [ class "" ]
-            [ label [ class "checkbox" ]
-                [ input
-                    [ type' "checkbox"
-                    , checked model.autoRestart
-                    , name "auto-restart"
-                    , onCheck UpdateAutoRestart
+                , div [ class "control" ]
+                    [ label [ class "checkbox" ]
+                        [ input
+                            [ type' "checkbox"
+                            , checked model.autoRestart
+                            , name "auto-restart"
+                            , onCheck UpdateAutoRestart
+                            ]
+                            []
+                        , text "Auto-restart"
+                        ]
                     ]
-                    []
-                , text "Auto-restart"
-                ]
-            ]
-        , div [ class "" ]
-            [ label [ class "checkbox" ]
-                [ input
-                    [ type' "checkbox"
-                    , checked model.autoRotateTeam
-                    , name "auto-rotate-team"
-                    , onCheck UpdateAutoRotateTeam
+                , div [ class "control" ]
+                    [ label [ class "checkbox" ]
+                        [ input
+                            [ type' "checkbox"
+                            , checked model.autoRotateTeam
+                            , name "auto-rotate-team"
+                            , onCheck UpdateAutoRotateTeam
+                            ]
+                            []
+                        , text "Auto-rotate team"
+                        ]
                     ]
-                    []
-                , text "Auto-rotate team"
                 ]
             ]
         ]

@@ -7881,12 +7881,7 @@ var _user$project$Components_Team$renderMemberInput = function (model) {
 			[
 				_elm_lang$html$Html_Attributes$type$('text'),
 				_elm_lang$html$Html_Attributes$class('input'),
-				_elm_lang$html$Html_Attributes$style(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						{ctor: '_Tuple2', _0: 'width', _1: '200px'}
-					])),
-				_elm_lang$html$Html_Attributes$placeholder('Nick...'),
+				_elm_lang$html$Html_Attributes$placeholder('Add member nick...'),
 				_elm_lang$html$Html_Attributes$name('nick'),
 				_elm_lang$html$Html_Attributes$value(model.newNick),
 				_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateNewNick)
@@ -8074,6 +8069,134 @@ var _user$project$Components_Team$view = function (model) {
 					]))
 			]));
 };
+var _user$project$Components_Team$settingsView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Team')
+							])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('label')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Team Name')
+							])),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('text'),
+								_elm_lang$html$Html_Attributes$class('input'),
+								_elm_lang$html$Html_Attributes$value(model.name),
+								_elm_lang$html$Html_Attributes$name('team-name'),
+								_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateTeamName),
+								_elm_lang$html$Html_Events$onBlur(_user$project$Components_Team$SubmitTeamName)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('label')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Members')
+							])),
+						A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('has-addons')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Components_Team$renderMemberInput(model),
+								A2(
+								_elm_lang$html$Html$button,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('button is-primary'),
+										_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$span,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('icon')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$i,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[]))
+											]))
+									])),
+								A2(
+								_elm_lang$html$Html$button,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('button is-primary'),
+										_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$span,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('icon')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$i,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[]))
+											]))
+									]))
+							]))
+					]))
+			]));
+};
 var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
 
 var _user$project$Components_Timer$stringToSeconds = function (string) {
@@ -8154,7 +8277,7 @@ var _user$project$Components_Timer$inputFields = function (model) {
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('column is-narrow')
+				_elm_lang$html$Html_Attributes$class('control-group')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -8162,11 +8285,11 @@ var _user$project$Components_Timer$inputFields = function (model) {
 				_elm_lang$html$Html$label,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('')
+						_elm_lang$html$Html_Attributes$class('label')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('minutes: '),
+						_elm_lang$html$Html$text('mins: '),
 						A2(
 						_elm_lang$html$Html$input,
 						_elm_lang$core$Native_List.fromArray(
@@ -8200,11 +8323,11 @@ var _user$project$Components_Timer$inputFields = function (model) {
 				_elm_lang$html$Html$label,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('')
+						_elm_lang$html$Html_Attributes$class('label')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('seconds: '),
+						_elm_lang$html$Html$text('secs: '),
 						A2(
 						_elm_lang$html$Html$input,
 						_elm_lang$core$Native_List.fromArray(
@@ -8278,19 +8401,22 @@ var _user$project$Components_Timer$startButton = A2(
 		]));
 var _user$project$Components_Timer$Pause = {ctor: 'Pause'};
 var _user$project$Components_Timer$displayView = function (model) {
+	var percentage = _elm_lang$core$Basics$round(
+		(_elm_lang$core$Basics$toFloat(model.countdown) / _elm_lang$core$Basics$toFloat(model.interval)) * 100);
+	var getColor = (_elm_lang$core$Native_Utils.cmp(percentage, 30) > 0) ? 'is-primary' : ((_elm_lang$core$Native_Utils.cmp(percentage, 10) > 0) ? 'is-warning' : 'is-danger');
 	var _p1 = function () {
 		var _p2 = model.state;
 		switch (_p2.ctor) {
 			case 'Paused':
-				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'fa fa-play-circle'};
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'is-default'};
 			case 'Stopped':
-				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'fa fa-play-circle'};
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'is-default'};
 			default:
-				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Pause, _1: 'fa fa-pause-circle'};
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Pause, _1: getColor};
 		}
 	}();
 	var action = _p1._0;
-	var iconClass = _p1._1;
+	var color$ = _p1._1;
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -8303,12 +8429,12 @@ var _user$project$Components_Timer$displayView = function (model) {
 				_elm_lang$html$Html$a,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('title box is-1 is-large'),
+						_elm_lang$html$Html_Attributes$class(
+						A2(_elm_lang$core$Basics_ops['++'], 'title box is-1 is-large notification ', color$)),
 						_elm_lang$html$Html_Events$onClick(action),
 						_elm_lang$html$Html_Attributes$style(
 						_elm_lang$core$Native_List.fromArray(
 							[
-								{ctor: '_Tuple2', _0: 'font-size', _1: '10em'},
 								{ctor: '_Tuple2', _0: 'font-size', _1: '28vw'},
 								{ctor: '_Tuple2', _0: 'border', _1: 'none'}
 							]))
@@ -8716,7 +8842,7 @@ var _user$project$Main$optionView = function (model) {
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('column is-narrow is-grouped')
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -8724,90 +8850,118 @@ var _user$project$Main$optionView = function (model) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('')
+						_elm_lang$html$Html_Attributes$class('tile is-child notification is-success')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_elm_lang$html$Html$label,
+						_elm_lang$html$Html$h4,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
+								_elm_lang$html$Html_Attributes$class('title')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								A2(
-								_elm_lang$html$Html$input,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
-										_elm_lang$html$Html_Attributes$name('use-break-timer'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Use cooldown')
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
+								_elm_lang$html$Html$text('General')
+							])),
 						A2(
-						_elm_lang$html$Html$label,
+						_elm_lang$html$Html$div,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
+								_elm_lang$html$Html_Attributes$class('control-group is-grouped')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								A2(
-								_elm_lang$html$Html$input,
+								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.autoRestart),
-										_elm_lang$html$Html_Attributes$name('auto-restart'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+										_elm_lang$html$Html_Attributes$class('control')
 									]),
 								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Auto-restart')
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$label,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
+														_elm_lang$html$Html_Attributes$name('use-break-timer'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Use cooldown')
+											]))
+									])),
 								A2(
-								_elm_lang$html$Html$input,
+								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
-										_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+										_elm_lang$html$Html_Attributes$class('control')
 									]),
 								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Auto-rotate team')
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.autoRestart),
+														_elm_lang$html$Html_Attributes$name('auto-restart'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Auto-restart')
+											]))
+									])),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('control')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
+														_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Auto-rotate team')
+											]))
+									]))
 							]))
 					]))
 			]));
@@ -9035,37 +9189,85 @@ var _user$project$Main$frontPageView = function (model) {
 		content);
 };
 var _user$project$Main$settingsView = function (model) {
-	var timer = _elm_lang$core$Native_Utils.eq(model.activeTimer, _user$project$Main$BreakTimer) ? A2(
+	var team = A2(
 		_elm_lang$html$Html_App$map,
-		_user$project$Main$BreakTimerMsg,
-		_user$project$Components_Timer$view(model.breakTimer)) : A2(
-		_elm_lang$html$Html_App$map,
-		_user$project$Main$WorkTimerMsg,
-		_user$project$Components_Timer$view(model.workTimer));
+		_user$project$Main$TeamMsg,
+		_user$project$Components_Team$settingsView(model.team));
+	var breakTimerSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile notification is-warning is-child')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Cooldown')
+							])),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$BreakTimerMsg,
+						_user$project$Components_Timer$settingsView(model.breakTimer))
+					]))
+			]));
+	var workTimerSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile notification is-primary is-child')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Timer')
+							])),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$WorkTimerMsg,
+						_user$project$Components_Timer$settingsView(model.workTimer))
+					]))
+			]));
+	var optionSettings = _user$project$Main$optionView(model);
+	var timerSettings = model.useBreakTimer ? _elm_lang$core$Native_List.fromArray(
+		[optionSettings, team, workTimerSettings, breakTimerSettings]) : _elm_lang$core$Native_List.fromArray(
+		[optionSettings, team, workTimerSettings]);
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('has-text-centered')
+				_elm_lang$html$Html_Attributes$class('tile is-ancestor')
 			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_user$project$Main$activeTimerView(model),
-				timer,
-				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$WorkTimerMsg,
-				_user$project$Components_Timer$settingsView(model.workTimer)),
-				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$BreakTimerMsg,
-				_user$project$Components_Timer$settingsView(model.breakTimer)),
-				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$TeamMsg,
-				_user$project$Components_Team$view(model.team)),
-				_user$project$Main$optionView(model)
-			]));
+		timerSettings);
 };
 var _user$project$Main$pageView = function (model) {
 	var _p14 = model.currentView;

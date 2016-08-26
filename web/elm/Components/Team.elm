@@ -1,6 +1,6 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input, span, h4, i)
+import Html exposing (Html, text, div, button, input, span, h4, i, label)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
@@ -236,6 +236,40 @@ view model =
         ]
 
 
+settingsView : Model -> Html Msg
+settingsView model =
+    div [ class "tile is-parent" ]
+        [ div [ class "tile is-child notification is-info" ]
+            [ h4 [ class "title" ] [ text "Team" ]
+            , label [ class "label" ]
+                [ text "Team Name" ]
+            , input
+                [ type' "text"
+                , class "input"
+                , value model.name
+                , name "team-name"
+                , onInput UpdateTeamName
+                , onBlur SubmitTeamName
+                ]
+                []
+            , label [ class "label" ] [ text "Members" ]
+            , renderMemberList model.activeMember model.members
+            , div [ class "has-addons" ]
+                [ renderMemberInput model
+                , button [ class "button is-primary", onClick AddMember ]
+                    [ span [ class "icon" ]
+                        [ i [ class "fa fa-plus-square" ] [] ]
+                    ]
+                , button [ class "button is-primary", onClick SetNextMemberActive ]
+                    [ span [ class "icon" ]
+                        [ i [ class "fa fa-fast-forward" ] []
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
 renderTeamName : Model -> Html Msg
 renderTeamName model =
     case model.state of
@@ -265,8 +299,7 @@ renderMemberInput model =
     input
         [ type' "text"
         , class "input"
-        , style [ ( "width", "200px" ) ]
-        , placeholder "Nick..."
+        , placeholder "Add member nick..."
         , name "nick"
         , value model.newNick
         , onInput UpdateNewNick

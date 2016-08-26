@@ -190,25 +190,35 @@ view model =
 displayView : Model -> Html Msg
 displayView model =
     let
-        ( action, iconClass ) =
+        percentage =
+            (toFloat model.countdown) / (toFloat model.interval) * 100 |> round
+
+        getColor =
+            if percentage > 30 then
+                "is-primary"
+            else if percentage > 10 then
+                "is-warning"
+            else
+                "is-danger"
+
+        ( action, color' ) =
             case model.state of
                 Paused ->
-                    ( Start, "fa fa-play-circle" )
+                    ( Start, "is-default" )
 
                 Stopped ->
-                    ( Start, "fa fa-play-circle" )
+                    ( Start, "is-default" )
 
                 _ ->
-                    ( Pause, "fa fa-pause-circle" )
+                    ( Pause, getColor )
     in
         div [ class "column is-narrow" ]
             [ a
-                [ class "title box is-1 is-large"
+                [ class ("title box is-1 is-large notification " ++ color')
                 , onClick action
-                , style [ ( "font-size", "10em" ), ( "font-size", "28vw" ), ( "border", "none" ) ]
+                , style [ ( "font-size", "28vw" ), ( "border", "none" ) ]
                 ]
-                [ text <| secondsToString <| model.countdown
-                ]
+                [ text <| secondsToString <| model.countdown ]
             ]
 
 
@@ -229,9 +239,9 @@ countdownTimer model =
 
 inputFields : Model -> Html Msg
 inputFields model =
-    div [ class "column is-narrow" ]
-        [ label [ class "" ]
-            [ text "minutes: "
+    div [ class "control-group" ]
+        [ label [ class "label" ]
+            [ text "mins: "
             , input
                 [ type' "number"
                 , class "input"
@@ -243,8 +253,8 @@ inputFields model =
                 ]
                 []
             ]
-        , label [ class "" ]
-            [ text "seconds: "
+        , label [ class "label" ]
+            [ text "secs: "
             , input
                 [ type' "number"
                 , class "input"
