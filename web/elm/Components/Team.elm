@@ -1,6 +1,6 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input, span, h4, i, label)
+import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
@@ -236,10 +236,10 @@ view model =
         ]
 
 
-settingsView : Model -> Html Msg
-settingsView model =
-    div [ class "tile is-parent" ]
-        [ div [ class "tile is-child notification is-info" ]
+teamSettingsView : Model -> Html Msg
+teamSettingsView model =
+    div [ class "tile notification is-info" ]
+        [ div [ class "tile is-child" ]
             [ h4 [ class "title" ] [ text "Team" ]
             , label [ class "label" ]
                 [ text "Team Name" ]
@@ -252,19 +252,26 @@ settingsView model =
                 , onBlur SubmitTeamName
                 ]
                 []
-            , label [ class "label" ] [ text "Members" ]
-            , renderMemberList model.activeMember model.members
-            , div [ class "has-addons" ]
+            , label [ class "label" ] [ text "Add Member" ]
+            , div [ class "control has-addons" ]
                 [ renderMemberInput model
-                , button [ class "button is-primary", onClick AddMember ]
+                , button [ class "button is-info is-inverted", onClick AddMember ]
                     [ span [ class "icon" ]
                         [ i [ class "fa fa-plus-square" ] [] ]
                     ]
-                , button [ class "button is-primary", onClick SetNextMemberActive ]
-                    [ span [ class "icon" ]
-                        [ i [ class "fa fa-fast-forward" ] []
-                        ]
-                    ]
+                ]
+            ]
+        ]
+
+
+memberSettingsView : Model -> Html Msg
+memberSettingsView model =
+    div [ class "tile is-child notification is-info" ]
+        [ h4 [ class "title" ] [ text "Members" ]
+        , renderMemberList model.activeMember model.members
+        , button [ class "button is-info is-inverted", onClick SetNextMemberActive ]
+            [ span [ class "icon" ]
+                [ i [ class "fa fa-fast-forward" ] []
                 ]
             ]
         ]
@@ -324,7 +331,8 @@ renderMember activeMember member =
         DisplayingMember ->
             if member.id' == activeMember then
                 div [ onClick (EditMember member.id') ]
-                    [ text ("*" ++ member.nick) ]
+                    [ a [ class "title label is-4" ] [ text (member.nick) ] ]
             else
-                div [ onClick (EditMember member.id') ]
-                    [ text member.nick ]
+                div [ class "", onClick (EditMember member.id') ]
+                    [ a [ class "title is-5" ] [ text member.nick ]
+                    ]

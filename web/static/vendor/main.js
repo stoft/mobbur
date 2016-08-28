@@ -7962,18 +7962,36 @@ var _user$project$Components_Team$renderMember = F2(
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(
-						A2(_elm_lang$core$Basics_ops['++'], '*', member.nick))
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title label is-4')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
 					])) : A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
+						_elm_lang$html$Html_Attributes$class(''),
 						_elm_lang$html$Html_Events$onClick(
 						_user$project$Components_Team$EditMember(member.id$))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(member.nick)
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title is-5')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
 					]));
 		}
 	});
@@ -7988,6 +8006,55 @@ var _user$project$Components_Team$renderMemberList = F2(
 				_user$project$Components_Team$renderMember(activeMember),
 				members));
 	});
+var _user$project$Components_Team$memberSettingsView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h4,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('title')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Members')
+					])),
+				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
+						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('icon')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$i,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[]))
+							]))
+					]))
+			]));
+};
 var _user$project$Components_Team$DoKey = function (a) {
 	return {ctor: 'DoKey', _0: a};
 };
@@ -8069,12 +8136,12 @@ var _user$project$Components_Team$view = function (model) {
 					]))
 			]));
 };
-var _user$project$Components_Team$settingsView = function (model) {
+var _user$project$Components_Team$teamSettingsView = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('tile is-parent')
+				_elm_lang$html$Html_Attributes$class('tile notification is-info')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -8082,7 +8149,7 @@ var _user$project$Components_Team$settingsView = function (model) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
+						_elm_lang$html$Html_Attributes$class('tile is-child')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -8127,14 +8194,13 @@ var _user$project$Components_Team$settingsView = function (model) {
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('Members')
+								_elm_lang$html$Html$text('Add Member')
 							])),
-						A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
 						A2(
 						_elm_lang$html$Html$div,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('has-addons')
+								_elm_lang$html$Html_Attributes$class('control has-addons')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
@@ -8143,7 +8209,7 @@ var _user$project$Components_Team$settingsView = function (model) {
 								_elm_lang$html$Html$button,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$class('button is-primary'),
+										_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
 										_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
 									]),
 								_elm_lang$core$Native_List.fromArray(
@@ -8161,33 +8227,6 @@ var _user$project$Components_Team$settingsView = function (model) {
 												_elm_lang$core$Native_List.fromArray(
 													[
 														_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
-													]),
-												_elm_lang$core$Native_List.fromArray(
-													[]))
-											]))
-									])),
-								A2(
-								_elm_lang$html$Html$button,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('button is-primary'),
-										_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										A2(
-										_elm_lang$html$Html$span,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Attributes$class('icon')
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												A2(
-												_elm_lang$html$Html$i,
-												_elm_lang$core$Native_List.fromArray(
-													[
-														_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
 													]),
 												_elm_lang$core$Native_List.fromArray(
 													[]))
@@ -8702,7 +8741,7 @@ var _user$project$Main$initialModel = {
 	autoRestart: true,
 	autoRotateTeam: true,
 	team: _user$project$Components_Team$initialModel,
-	currentView: _user$project$Main$MainView
+	currentView: _user$project$Main$SettingsView
 };
 var _user$project$Main$BreakTimer = {ctor: 'BreakTimer'};
 var _user$project$Main$UpdateView = function (a) {
@@ -9167,10 +9206,12 @@ var _user$project$Main$frontPageView = function (model) {
 		]) : ((!_elm_lang$core$Native_Utils.eq(activeMember, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Native_List.fromArray(
 		[
 			A2(
-			_elm_lang$html$Html$h4,
+			_elm_lang$html$Html$a,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Attributes$class('title is-4')
+					_elm_lang$html$Html_Attributes$class('title is-4'),
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Main$TeamMsg(_user$project$Components_Team$SetNextMemberActive))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9189,10 +9230,50 @@ var _user$project$Main$frontPageView = function (model) {
 		content);
 };
 var _user$project$Main$settingsView = function (model) {
-	var team = A2(
-		_elm_lang$html$Html_App$map,
-		_user$project$Main$TeamMsg,
-		_user$project$Components_Team$settingsView(model.team));
+	var teamMemberSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$TeamMsg,
+				_user$project$Components_Team$memberSettingsView(model.team))
+			]));
+	var teamSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$TeamMsg,
+				_user$project$Components_Team$teamSettingsView(model.team))
+			]));
+	var team = (!_elm_lang$core$Native_Utils.eq(
+		model.team.members,
+		_elm_lang$core$Native_List.fromArray(
+			[]))) ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[teamSettings, teamMemberSettings])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[teamSettings]));
 	var breakTimerSettings = A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -9258,16 +9339,29 @@ var _user$project$Main$settingsView = function (model) {
 					]))
 			]));
 	var optionSettings = _user$project$Main$optionView(model);
-	var timerSettings = model.useBreakTimer ? _elm_lang$core$Native_List.fromArray(
-		[optionSettings, team, workTimerSettings, breakTimerSettings]) : _elm_lang$core$Native_List.fromArray(
-		[optionSettings, team, workTimerSettings]);
+	var timerSettings = model.useBreakTimer ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[optionSettings, workTimerSettings, breakTimerSettings])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[optionSettings, workTimerSettings]));
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('tile is-ancestor')
+				_elm_lang$html$Html_Attributes$class('tile is-ancestor is-vertical')
 			]),
-		timerSettings);
+		_elm_lang$core$Native_List.fromArray(
+			[timerSettings, team]));
 };
 var _user$project$Main$pageView = function (model) {
 	var _p14 = model.currentView;
@@ -9308,7 +9402,7 @@ var _user$project$Main$view = function (model) {
 						_elm_lang$html$Html$div,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('container')
+								_elm_lang$html$Html_Attributes$class('container is-fluid')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[

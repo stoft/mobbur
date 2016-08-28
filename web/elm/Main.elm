@@ -57,7 +57,9 @@ initialModel =
     , autoRestart = True
     , autoRotateTeam = True
     , team = Team.initialModel
-    , currentView = MainView
+    , currentView =
+        SettingsView
+        --MainView
     }
 
 
@@ -195,7 +197,7 @@ view model =
     section [ class "hero is-fullheight" ]
         [ div [ class "hero-head" ] [ navigationBar model ]
         , div [ class "hero-body" ]
-            [ div [ class "container" ]
+            [ div [ class "container is-fluid" ]
                 [ pageView model
                 ]
             ]
@@ -299,7 +301,8 @@ frontPageView model =
                 , h3 [ class "title is-3" ] [ text "Cooldown!" ]
                 ]
             else if activeMember /= Nothing then
-                [ h4 [ class "title is-4" ] [ text (getNick activeMember) ]
+                [ a [ class "title is-4", onClick (TeamMsg Team.SetNextMemberActive) ]
+                    [ text (getNick activeMember) ]
                 , timerContent
                 ]
             else
@@ -340,17 +343,26 @@ settingsView model =
                     ]
                 ]
 
+        teamSettings =
+            div [ class "tile is-parent" ] [ Html.App.map TeamMsg (Team.teamSettingsView model.team) ]
+
+        teamMemberSettings =
+            div [ class "tile is-parent" ] [ Html.App.map TeamMsg (Team.memberSettingsView model.team) ]
+
         team =
-            Html.App.map TeamMsg (Team.settingsView model.team)
+            if model.team.members /= [] then
+                div [ class "tile" ] [ teamSettings, teamMemberSettings ]
+            else
+                div [ class "tile" ] [ teamSettings ]
 
         timerSettings =
             if model.useBreakTimer then
-                [ optionSettings, team, workTimerSettings, breakTimerSettings ]
+                div [ class "tile" ] [ optionSettings, workTimerSettings, breakTimerSettings ]
             else
-                [ optionSettings, team, workTimerSettings ]
+                div [ class "tile" ] [ optionSettings, workTimerSettings ]
     in
-        div [ class "tile is-ancestor" ]
-            timerSettings
+        div [ class "tile is-ancestor is-vertical" ]
+            [ timerSettings, team ]
 
 
 optionView : Model -> Html Msg
