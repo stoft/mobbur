@@ -7,6 +7,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :mobbur, Mobbur.Endpoint,
+  ecto_repos: [Mobbur.Repo],
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "57G+1VM97k94iKJ/B2WHvyiEmAufID3I8Qf38kjnVja5HIZ1YGYyesJA7yc3lHDp",
