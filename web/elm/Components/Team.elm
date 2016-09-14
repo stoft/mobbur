@@ -1,6 +1,6 @@
 module Components.Team exposing (..)
 
-import Html exposing (Html, text, div, button, input, span, h4, i)
+import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 
@@ -13,7 +13,7 @@ type alias Model =
     , members : List TeamMember
     , state : TeamState
     , newNick : String
-    , activeMember : Int
+    , activeMember : Maybe Int
     }
 
 
@@ -41,7 +41,7 @@ initialModel =
     , members = initMembers
     , state = Displaying
     , newNick = ""
-    , activeMember = 0
+    , activeMember = Nothing
     }
 
 
@@ -51,9 +51,6 @@ initMembers =
 
 
 
--- [ { id' = 1, nick = "pippo", state = DisplayingMember }
--- , { id' = 2, nick = "pluto", state = DisplayingMember }
--- ]
 --UPDATE
 
 
@@ -78,25 +75,7 @@ update msg model =
             ( model, Cmd.none )
 
         AddMember ->
-            let
-                findMax =
-                    (\m max ->
-                        if m.id' > max then
-                            m.id'
-                        else
-                            max
-                    )
-
-                nextId =
-                    List.foldl findMax 0 model.members |> (+) 1
-
-                newMember =
-                    TeamMember nextId model.newNick DisplayingMember
-
-                updatedMembers =
-                    model.members ++ [ newMember ]
-            in
-                ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+            handleAddMember model
 
         DoKey key ->
             let
@@ -123,35 +102,7 @@ update msg model =
             ( { model | state = EditingTeam }, Cmd.none )
 
         SetNextMemberActive ->
-            let
-                head =
-                    List.head model.members
-
-                tail =
-                    List.tail model.members
-
-                rotatedMembers =
-                    case tail of
-                        Just list ->
-                            case head of
-                                Just m ->
-                                    list ++ [ m ]
-
-                                Nothing ->
-                                    list
-
-                        Nothing ->
-                            []
-
-                nextActiveMember =
-                    case List.head rotatedMembers of
-                        Just m ->
-                            m.id'
-
-                        Nothing ->
-                            0
-            in
-                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+            handleSetNextMemberActive model
 
         SubmitNick id' ->
             let
@@ -206,6 +157,75 @@ update msg model =
             ( { model | name = name }, Cmd.none )
 
 
+handleAddMember : Model -> ( Model, Cmd Msg )
+handleAddMember model =
+    let
+        findMax =
+            (\m max ->
+                if m.id' > max then
+                    m.id'
+                else
+                    max
+            )
+
+        nextId =
+            List.foldl findMax 0 model.members |> (+) 1
+
+        newMember =
+            TeamMember nextId model.newNick DisplayingMember
+
+        updatedMembers =
+            model.members ++ [ newMember ]
+    in
+        ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+
+
+handleSetNextMemberActive : Model -> ( Model, Cmd Msg )
+handleSetNextMemberActive model =
+    let
+        head =
+            List.head model.members
+
+        tail =
+            List.tail model.members
+
+        rotatedMembers =
+            case tail of
+                Just list ->
+                    case head of
+                        Just m ->
+                            list ++ [ m ]
+
+                        Nothing ->
+                            list
+
+                Nothing ->
+                    []
+
+        getIdOfFirstMember members =
+            case List.head members of
+                Just m ->
+                    Just m.id'
+
+                Nothing ->
+                    Nothing
+
+        nextActiveMember =
+            case model.activeMember of
+                Just _ ->
+                    getIdOfFirstMember rotatedMembers
+
+                Nothing ->
+                    getIdOfFirstMember model.members
+    in
+        case model.activeMember of
+            Nothing ->
+                ( { model | activeMember = nextActiveMember, members = model.members }, Cmd.none )
+
+            Just _ ->
+                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+
+
 
 --VIEW
 
@@ -231,6 +251,47 @@ view model =
         ]
 
 
+teamSettingsView : Model -> Html Msg
+teamSettingsView model =
+    div [ class "tile notification is-info" ]
+        [ div [ class "tile is-child" ]
+            [ h4 [ class "title" ] [ text "Team" ]
+            , label [ class "label" ]
+                [ text "Team Name" ]
+            , input
+                [ type' "text"
+                , class "input"
+                , value model.name
+                , name "team-name"
+                , onInput UpdateTeamName
+                , onBlur SubmitTeamName
+                ]
+                []
+            , label [ class "label" ] [ text "Add Member" ]
+            , div [ class "control has-addons" ]
+                [ renderMemberInput model
+                , button [ class "button is-info is-inverted", onClick AddMember ]
+                    [ span [ class "icon" ]
+                        [ i [ class "fa fa-plus-square" ] [] ]
+                    ]
+                ]
+            ]
+        ]
+
+
+memberSettingsView : Model -> Html Msg
+memberSettingsView model =
+    div [ class "tile is-child notification is-info" ]
+        [ h4 [ class "title" ] [ text "Members" ]
+        , renderMemberList model.activeMember model.members
+        , button [ class "button is-info is-inverted", onClick SetNextMemberActive ]
+            [ span [ class "icon" ]
+                [ i [ class "fa fa-fast-forward" ] []
+                ]
+            ]
+        ]
+
+
 renderTeamName : Model -> Html Msg
 renderTeamName model =
     case model.state of
@@ -250,9 +311,14 @@ renderTeamName model =
             h4 [ class "title is-medium", onClick EditTeam ] [ text model.name ]
 
 
-renderMemberList : Int -> List TeamMember -> Html Msg
+renderMemberList : Maybe Int -> List TeamMember -> Html Msg
 renderMemberList activeMember members =
-    div [] (List.map (renderMember activeMember) members)
+    case activeMember of
+        Just id' ->
+            div [] (List.map (renderMember id') members)
+
+        Nothing ->
+            div [] (List.map (renderMember 0) members)
 
 
 renderMemberInput : Model -> Html Msg
@@ -260,11 +326,11 @@ renderMemberInput model =
     input
         [ type' "text"
         , class "input"
-        , style [ ( "width", "200px" ) ]
-        , placeholder "Nick..."
+        , placeholder "Add member nick..."
         , name "nick"
         , value model.newNick
         , onInput UpdateNewNick
+        , onSubmit AddMember
         ]
         []
 
@@ -286,7 +352,8 @@ renderMember activeMember member =
         DisplayingMember ->
             if member.id' == activeMember then
                 div [ onClick (EditMember member.id') ]
-                    [ text ("*" ++ member.nick) ]
+                    [ a [ class "title label is-4" ] [ text (member.nick) ] ]
             else
-                div [ onClick (EditMember member.id') ]
-                    [ text member.nick ]
+                div [ class "", onClick (EditMember member.id') ]
+                    [ a [ class "title is-5" ] [ text member.nick ]
+                    ]

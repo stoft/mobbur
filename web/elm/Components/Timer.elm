@@ -66,6 +66,18 @@ secondsToString seconds =
         minutes ++ ":" ++ secs
 
 
+secondsToStrings : Int -> { minutes : String, seconds : String }
+secondsToStrings seconds =
+    let
+        minutes =
+            seconds // 60 |> toString |> String.padLeft 2 '0'
+
+        secs =
+            rem seconds 60 |> toString |> String.padLeft 2 '0'
+    in
+        { minutes = minutes, seconds = secs }
+
+
 stringToSeconds : String -> Int
 stringToSeconds string =
     Result.withDefault 0 (String.toInt string)
@@ -175,6 +187,46 @@ view model =
         ]
 
 
+displayView : Model -> Html Msg
+displayView model =
+    let
+        percentage =
+            (toFloat model.countdown) / (toFloat model.interval) * 100 |> round
+
+        getColor =
+            if percentage > 30 then
+                "is-primary"
+            else if percentage > 10 then
+                "is-warning"
+            else
+                "is-danger"
+
+        ( action, color' ) =
+            case model.state of
+                Paused ->
+                    ( Start, "is-default" )
+
+                Stopped ->
+                    ( Start, "is-default" )
+
+                _ ->
+                    ( Pause, getColor )
+    in
+        div [ class "column is-narrow" ]
+            [ a
+                [ class ("title box is-1 is-large notification " ++ color')
+                , onClick action
+                , style [ ( "font-size", "28vw" ), ( "border", "none" ) ]
+                ]
+                [ text <| secondsToString <| model.countdown ]
+            ]
+
+
+settingsView : Model -> Html Msg
+settingsView model =
+    inputFields model
+
+
 countdownTimer : Model -> Html Msg
 countdownTimer model =
     case model.state of
@@ -187,28 +239,33 @@ countdownTimer model =
 
 inputFields : Model -> Html Msg
 inputFields model =
-    div [ class "column is-narrow" ]
-        [ input
-            [ type' "number"
-            , class "input"
-            , style [ ( "width", "100px" ) ]
-            , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-            , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-            , name "minutes"
-            , onInput UpdateMinutes
+    div [ class "control-group" ]
+        [ label [ class "label" ]
+            [ text "mins: "
+            , input
+                [ type' "number"
+                , class "input"
+                , style [ ( "width", "100px" ) ]
+                , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+                , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+                , name "minutes"
+                , onInput UpdateMinutes
+                ]
+                []
             ]
-            []
-        , text ":"
-        , input
-            [ type' "number"
-            , class "input"
-            , style [ ( "width", "100px" ) ]
-            , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-            , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-            , name "seconds"
-            , onInput UpdateSeconds
+        , label [ class "label" ]
+            [ text "secs: "
+            , input
+                [ type' "number"
+                , class "input"
+                , style [ ( "width", "100px" ) ]
+                , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+                , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+                , name "seconds"
+                , onInput UpdateSeconds
+                ]
+                []
             ]
-            []
         ]
 
 

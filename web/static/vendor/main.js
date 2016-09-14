@@ -7668,6 +7668,63 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Components_Team$handleSetNextMemberActive = function (model) {
+	var getIdOfFirstMember = function (members) {
+		var _p0 = _elm_lang$core$List$head(members);
+		if (_p0.ctor === 'Just') {
+			return _elm_lang$core$Maybe$Just(_p0._0.id$);
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	var tail = _elm_lang$core$List$tail(model.members);
+	var head = _elm_lang$core$List$head(model.members);
+	var rotatedMembers = function () {
+		var _p1 = tail;
+		if (_p1.ctor === 'Just') {
+			var _p3 = _p1._0;
+			var _p2 = head;
+			if (_p2.ctor === 'Just') {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p3,
+					_elm_lang$core$Native_List.fromArray(
+						[_p2._0]));
+			} else {
+				return _p3;
+			}
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	}();
+	var nextActiveMember = function () {
+		var _p4 = model.activeMember;
+		if (_p4.ctor === 'Just') {
+			return getIdOfFirstMember(rotatedMembers);
+		} else {
+			return getIdOfFirstMember(model.members);
+		}
+	}();
+	var _p5 = model.activeMember;
+	if (_p5.ctor === 'Nothing') {
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{activeMember: nextActiveMember, members: model.members}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	} else {
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{activeMember: nextActiveMember, members: rotatedMembers}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	}
+};
 var _user$project$Components_Team$initMembers = _elm_lang$core$Native_List.fromArray(
 	[]);
 var _user$project$Components_Team$Model = F5(
@@ -7680,53 +7737,56 @@ var _user$project$Components_Team$TeamMember = F3(
 	});
 var _user$project$Components_Team$Editing = {ctor: 'Editing'};
 var _user$project$Components_Team$DisplayingMember = {ctor: 'DisplayingMember'};
+var _user$project$Components_Team$handleAddMember = function (model) {
+	var findMax = F2(
+		function (m, max) {
+			return (_elm_lang$core$Native_Utils.cmp(m.id$, max) > 0) ? m.id$ : max;
+		});
+	var nextId = A2(
+		F2(
+			function (x, y) {
+				return x + y;
+			}),
+		1,
+		A3(_elm_lang$core$List$foldl, findMax, 0, model.members));
+	var newMember = A3(_user$project$Components_Team$TeamMember, nextId, model.newNick, _user$project$Components_Team$DisplayingMember);
+	var updatedMembers = A2(
+		_elm_lang$core$Basics_ops['++'],
+		model.members,
+		_elm_lang$core$Native_List.fromArray(
+			[newMember]));
+	return {
+		ctor: '_Tuple2',
+		_0: _elm_lang$core$Native_Utils.update(
+			model,
+			{members: updatedMembers, newNick: ''}),
+		_1: _elm_lang$core$Platform_Cmd$none
+	};
+};
 var _user$project$Components_Team$Displaying = {ctor: 'Displaying'};
-var _user$project$Components_Team$initialModel = {name: 'Inglorious Anonymous', members: _user$project$Components_Team$initMembers, state: _user$project$Components_Team$Displaying, newNick: '', activeMember: 0};
+var _user$project$Components_Team$initialModel = {name: 'Inglorious Anonymous', members: _user$project$Components_Team$initMembers, state: _user$project$Components_Team$Displaying, newNick: '', activeMember: _elm_lang$core$Maybe$Nothing};
 var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
 var _user$project$Components_Team$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p6 = msg;
+		switch (_p6.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'AddMember':
-				var findMax = F2(
-					function (m, max) {
-						return (_elm_lang$core$Native_Utils.cmp(m.id$, max) > 0) ? m.id$ : max;
-					});
-				var nextId = A2(
-					F2(
-						function (x, y) {
-							return x + y;
-						}),
-					1,
-					A3(_elm_lang$core$List$foldl, findMax, 0, model.members));
-				var newMember = A3(_user$project$Components_Team$TeamMember, nextId, model.newNick, _user$project$Components_Team$DisplayingMember);
-				var updatedMembers = A2(
-					_elm_lang$core$Basics_ops['++'],
-					model.members,
-					_elm_lang$core$Native_List.fromArray(
-						[newMember]));
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers, newNick: ''}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				return _user$project$Components_Team$handleAddMember(model);
 			case 'DoKey':
-				var _p1 = {
+				var _p7 = {
 					ctor: '_Tuple2',
-					_0: A2(_elm_lang$core$Debug$log, 'Key press: ', _p0._0),
+					_0: A2(_elm_lang$core$Debug$log, 'Key press: ', _p6._0),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-				var cmd = _p1._1;
+				var cmd = _p7._1;
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'EditMember':
 				var updatedMembers = A2(
 					_elm_lang$core$List$map,
 					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p0._0) ? _elm_lang$core$Native_Utils.update(
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p6._0) ? _elm_lang$core$Native_Utils.update(
 							m,
 							{state: _user$project$Components_Team$Editing}) : m;
 					},
@@ -7747,52 +7807,17 @@ var _user$project$Components_Team$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SetNextMemberActive':
-				var tail = _elm_lang$core$List$tail(model.members);
-				var head = _elm_lang$core$List$head(model.members);
-				var rotatedMembers = function () {
-					var _p2 = tail;
-					if (_p2.ctor === 'Just') {
-						var _p4 = _p2._0;
-						var _p3 = head;
-						if (_p3.ctor === 'Just') {
-							return A2(
-								_elm_lang$core$Basics_ops['++'],
-								_p4,
-								_elm_lang$core$Native_List.fromArray(
-									[_p3._0]));
-						} else {
-							return _p4;
-						}
-					} else {
-						return _elm_lang$core$Native_List.fromArray(
-							[]);
-					}
-				}();
-				var nextActiveMember = function () {
-					var _p5 = _elm_lang$core$List$head(rotatedMembers);
-					if (_p5.ctor === 'Just') {
-						return _p5._0.id$;
-					} else {
-						return 0;
-					}
-				}();
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{activeMember: nextActiveMember, members: rotatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				return _user$project$Components_Team$handleSetNextMemberActive(model);
 			case 'SubmitNick':
-				var _p7 = _p0._0;
+				var _p9 = _p6._0;
 				var removeMember = A2(
 					_elm_lang$core$List$filter,
 					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id$, _p7);
+						return !_elm_lang$core$Native_Utils.eq(m.id$, _p9);
 					},
 					model.members);
 				var changeToDisplaying = function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id$, _p7) ? _elm_lang$core$Native_Utils.update(
+					return _elm_lang$core$Native_Utils.eq(m.id$, _p9) ? _elm_lang$core$Native_Utils.update(
 						m,
 						{state: _user$project$Components_Team$DisplayingMember}) : m;
 				};
@@ -7800,13 +7825,13 @@ var _user$project$Components_Team$update = F2(
 					A2(
 						_elm_lang$core$List$filter,
 						function (m) {
-							return _elm_lang$core$Native_Utils.eq(m.id$, _p7);
+							return _elm_lang$core$Native_Utils.eq(m.id$, _p9);
 						},
 						model.members));
 				var updatedMembers = function () {
-					var _p6 = member;
-					if (_p6.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p6._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
+					var _p8 = member;
+					if (_p8.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(_p8._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
 					} else {
 						return model.members;
 					}
@@ -7830,9 +7855,9 @@ var _user$project$Components_Team$update = F2(
 				var updatedMembers = A2(
 					_elm_lang$core$List$map,
 					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p0._0) ? _elm_lang$core$Native_Utils.update(
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p6._0) ? _elm_lang$core$Native_Utils.update(
 							m,
-							{nick: _p0._1}) : m;
+							{nick: _p6._1}) : m;
 					},
 					model.members);
 				return {
@@ -7847,7 +7872,7 @@ var _user$project$Components_Team$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{newNick: _p0._0}),
+						{newNick: _p6._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -7855,7 +7880,7 @@ var _user$project$Components_Team$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{name: _p0._0}),
+						{name: _p6._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
@@ -7871,26 +7896,6 @@ var _user$project$Components_Team$UpdateNick = F2(
 var _user$project$Components_Team$UpdateNewNick = function (a) {
 	return {ctor: 'UpdateNewNick', _0: a};
 };
-var _user$project$Components_Team$renderMemberInput = function (model) {
-	return A2(
-		_elm_lang$html$Html$input,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$type$('text'),
-				_elm_lang$html$Html_Attributes$class('input'),
-				_elm_lang$html$Html_Attributes$style(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						{ctor: '_Tuple2', _0: 'width', _1: '200px'}
-					])),
-				_elm_lang$html$Html_Attributes$placeholder('Nick...'),
-				_elm_lang$html$Html_Attributes$name('nick'),
-				_elm_lang$html$Html_Attributes$value(model.newNick),
-				_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateNewNick)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[]));
-};
 var _user$project$Components_Team$SubmitTeamName = {ctor: 'SubmitTeamName'};
 var _user$project$Components_Team$SubmitNick = function (a) {
 	return {ctor: 'SubmitNick', _0: a};
@@ -7898,8 +7903,8 @@ var _user$project$Components_Team$SubmitNick = function (a) {
 var _user$project$Components_Team$SetNextMemberActive = {ctor: 'SetNextMemberActive'};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
 var _user$project$Components_Team$renderTeamName = function (model) {
-	var _p8 = model.state;
-	if (_p8.ctor === 'EditingTeam') {
+	var _p10 = model.state;
+	if (_p10.ctor === 'EditingTeam') {
 		return A2(
 			_elm_lang$html$Html$input,
 			_elm_lang$core$Native_List.fromArray(
@@ -7937,8 +7942,8 @@ var _user$project$Components_Team$EditMember = function (a) {
 };
 var _user$project$Components_Team$renderMember = F2(
 	function (activeMember, member) {
-		var _p9 = member.state;
-		if (_p9.ctor === 'Editing') {
+		var _p11 = member.state;
+		if (_p11.ctor === 'Editing') {
 			return A2(
 				_elm_lang$html$Html$input,
 				_elm_lang$core$Native_List.fromArray(
@@ -7964,36 +7969,131 @@ var _user$project$Components_Team$renderMember = F2(
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(
-						A2(_elm_lang$core$Basics_ops['++'], '*', member.nick))
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title label is-4')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
 					])) : A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
+						_elm_lang$html$Html_Attributes$class(''),
 						_elm_lang$html$Html_Events$onClick(
 						_user$project$Components_Team$EditMember(member.id$))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(member.nick)
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title is-5')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
 					]));
 		}
 	});
 var _user$project$Components_Team$renderMemberList = F2(
 	function (activeMember, members) {
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			A2(
-				_elm_lang$core$List$map,
-				_user$project$Components_Team$renderMember(activeMember),
-				members));
+		var _p12 = activeMember;
+		if (_p12.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Components_Team$renderMember(_p12._0),
+					members));
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Components_Team$renderMember(0),
+					members));
+		}
 	});
+var _user$project$Components_Team$memberSettingsView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h4,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('title')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Members')
+					])),
+				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
+						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('icon')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$i,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[]))
+							]))
+					]))
+			]));
+};
 var _user$project$Components_Team$DoKey = function (a) {
 	return {ctor: 'DoKey', _0: a};
 };
 var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
+var _user$project$Components_Team$renderMemberInput = function (model) {
+	return A2(
+		_elm_lang$html$Html$input,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$type$('text'),
+				_elm_lang$html$Html_Attributes$class('input'),
+				_elm_lang$html$Html_Attributes$placeholder('Add member nick...'),
+				_elm_lang$html$Html_Attributes$name('nick'),
+				_elm_lang$html$Html_Attributes$value(model.newNick),
+				_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateNewNick),
+				_elm_lang$html$Html_Events$onSubmit(_user$project$Components_Team$AddMember)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
 var _user$project$Components_Team$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8071,6 +8171,106 @@ var _user$project$Components_Team$view = function (model) {
 					]))
 			]));
 };
+var _user$project$Components_Team$teamSettingsView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile notification is-info')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile is-child')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Team')
+							])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('label')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Team Name')
+							])),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('text'),
+								_elm_lang$html$Html_Attributes$class('input'),
+								_elm_lang$html$Html_Attributes$value(model.name),
+								_elm_lang$html$Html_Attributes$name('team-name'),
+								_elm_lang$html$Html_Events$onInput(_user$project$Components_Team$UpdateTeamName),
+								_elm_lang$html$Html_Events$onBlur(_user$project$Components_Team$SubmitTeamName)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('label')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Add Member')
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('control has-addons')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Components_Team$renderMemberInput(model),
+								A2(
+								_elm_lang$html$Html$button,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
+										_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$span,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('icon')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$i,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[]))
+											]))
+									]))
+							]))
+					]))
+			]));
+};
 var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
 
 var _user$project$Components_Timer$stringToSeconds = function (string) {
@@ -8078,6 +8278,20 @@ var _user$project$Components_Timer$stringToSeconds = function (string) {
 		_elm_lang$core$Result$withDefault,
 		0,
 		_elm_lang$core$String$toInt(string));
+};
+var _user$project$Components_Timer$secondsToStrings = function (seconds) {
+	var secs = A3(
+		_elm_lang$core$String$padLeft,
+		2,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString(
+			A2(_elm_lang$core$Basics$rem, seconds, 60)));
+	var minutes = A3(
+		_elm_lang$core$String$padLeft,
+		2,
+		_elm_lang$core$Native_Utils.chr('0'),
+		_elm_lang$core$Basics$toString((seconds / 60) | 0));
+	return {minutes: minutes, seconds: secs};
 };
 var _user$project$Components_Timer$secondsToString = function (seconds) {
 	var secs = A3(
@@ -8137,68 +8351,90 @@ var _user$project$Components_Timer$inputFields = function (model) {
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('column is-narrow')
+				_elm_lang$html$Html_Attributes$class('control-group')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_elm_lang$html$Html$input,
+				_elm_lang$html$Html$label,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$type$('number'),
-						_elm_lang$html$Html_Attributes$class('input'),
-						_elm_lang$html$Html_Attributes$style(
-						_elm_lang$core$Native_List.fromArray(
-							[
-								{ctor: '_Tuple2', _0: 'width', _1: '100px'}
-							])),
-						_elm_lang$html$Html_Attributes$placeholder(
-						_elm_lang$core$Basics$toString(
-							function (_) {
-								return _.minutes;
-							}(
-								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
-						_elm_lang$html$Html_Attributes$value(
-						_elm_lang$core$Basics$toString(
-							function (_) {
-								return _.minutes;
-							}(
-								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
-						_elm_lang$html$Html_Attributes$name('minutes'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateMinutes)
+						_elm_lang$html$Html_Attributes$class('label')
 					]),
 				_elm_lang$core$Native_List.fromArray(
-					[])),
-				_elm_lang$html$Html$text(':'),
+					[
+						_elm_lang$html$Html$text('mins: '),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('number'),
+								_elm_lang$html$Html_Attributes$class('input'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'width', _1: '100px'}
+									])),
+								_elm_lang$html$Html_Attributes$placeholder(
+								_elm_lang$core$Basics$toString(
+									function (_) {
+										return _.minutes;
+									}(
+										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+								_elm_lang$html$Html_Attributes$value(
+								_elm_lang$core$Basics$toString(
+									function (_) {
+										return _.minutes;
+									}(
+										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+								_elm_lang$html$Html_Attributes$name('minutes'),
+								_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateMinutes)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
 				A2(
-				_elm_lang$html$Html$input,
+				_elm_lang$html$Html$label,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$type$('number'),
-						_elm_lang$html$Html_Attributes$class('input'),
-						_elm_lang$html$Html_Attributes$style(
-						_elm_lang$core$Native_List.fromArray(
-							[
-								{ctor: '_Tuple2', _0: 'width', _1: '100px'}
-							])),
-						_elm_lang$html$Html_Attributes$placeholder(
-						_elm_lang$core$Basics$toString(
-							function (_) {
-								return _.seconds;
-							}(
-								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
-						_elm_lang$html$Html_Attributes$value(
-						_elm_lang$core$Basics$toString(
-							function (_) {
-								return _.seconds;
-							}(
-								_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
-						_elm_lang$html$Html_Attributes$name('seconds'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateSeconds)
+						_elm_lang$html$Html_Attributes$class('label')
 					]),
 				_elm_lang$core$Native_List.fromArray(
-					[]))
+					[
+						_elm_lang$html$Html$text('secs: '),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('number'),
+								_elm_lang$html$Html_Attributes$class('input'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'width', _1: '100px'}
+									])),
+								_elm_lang$html$Html_Attributes$placeholder(
+								_elm_lang$core$Basics$toString(
+									function (_) {
+										return _.seconds;
+									}(
+										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+								_elm_lang$html$Html_Attributes$value(
+								_elm_lang$core$Basics$toString(
+									function (_) {
+										return _.seconds;
+									}(
+										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+								_elm_lang$html$Html_Attributes$name('seconds'),
+								_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateSeconds)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
 			]));
+};
+var _user$project$Components_Timer$settingsView = function (model) {
+	return _user$project$Components_Timer$inputFields(model);
 };
 var _user$project$Components_Timer$Tick = {ctor: 'Tick'};
 var _user$project$Components_Timer$subscriptions = function (model) {
@@ -8238,6 +8474,52 @@ var _user$project$Components_Timer$startButton = A2(
 				]))
 		]));
 var _user$project$Components_Timer$Pause = {ctor: 'Pause'};
+var _user$project$Components_Timer$displayView = function (model) {
+	var percentage = _elm_lang$core$Basics$round(
+		(_elm_lang$core$Basics$toFloat(model.countdown) / _elm_lang$core$Basics$toFloat(model.interval)) * 100);
+	var getColor = (_elm_lang$core$Native_Utils.cmp(percentage, 30) > 0) ? 'is-primary' : ((_elm_lang$core$Native_Utils.cmp(percentage, 10) > 0) ? 'is-warning' : 'is-danger');
+	var _p1 = function () {
+		var _p2 = model.state;
+		switch (_p2.ctor) {
+			case 'Paused':
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'is-default'};
+			case 'Stopped':
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Start, _1: 'is-default'};
+			default:
+				return {ctor: '_Tuple2', _0: _user$project$Components_Timer$Pause, _1: getColor};
+		}
+	}();
+	var action = _p1._0;
+	var color$ = _p1._1;
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$a,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class(
+						A2(_elm_lang$core$Basics_ops['++'], 'title box is-1 is-large notification ', color$)),
+						_elm_lang$html$Html_Events$onClick(action),
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'font-size', _1: '28vw'},
+								{ctor: '_Tuple2', _0: 'border', _1: 'none'}
+							]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_user$project$Components_Timer$secondsToString(model.countdown))
+					]))
+			]));
+};
 var _user$project$Components_Timer$pauseButton = A2(
 	_elm_lang$html$Html$button,
 	_elm_lang$core$Native_List.fromArray(
@@ -8268,8 +8550,8 @@ var _user$project$Components_Timer$pauseButton = A2(
 var _user$project$Components_Timer$Reset = {ctor: 'Reset'};
 var _user$project$Components_Timer$Edit = {ctor: 'Edit'};
 var _user$project$Components_Timer$countdownTimer = function (model) {
-	var _p1 = model.state;
-	if (_p1.ctor === 'Editing') {
+	var _p3 = model.state;
+	if (_p3.ctor === 'Editing') {
 		return _user$project$Components_Timer$inputFields(model);
 	} else {
 		return A2(
@@ -8304,15 +8586,15 @@ var _user$project$Components_Timer$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
-			var _p2 = msg;
-			switch (_p2.ctor) {
+			var _p4 = msg;
+			switch (_p4.ctor) {
 				case 'NoOp':
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'Alarm':
-					var _v2 = _user$project$Components_Timer$Reset,
-						_v3 = model;
-					msg = _v2;
-					model = _v3;
+					var _v3 = _user$project$Components_Timer$Reset,
+						_v4 = model;
+					msg = _v3;
+					model = _v4;
 					continue update;
 				case 'Edit':
 					return {
@@ -8371,7 +8653,7 @@ var _user$project$Components_Timer$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 				case 'UpdateMinutes':
-					var minutes = _user$project$Components_Timer$stringToSeconds(_p2._0);
+					var minutes = _user$project$Components_Timer$stringToSeconds(_p4._0);
 					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60);
 					return {
 						ctor: '_Tuple2',
@@ -8381,7 +8663,7 @@ var _user$project$Components_Timer$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				default:
-					var seconds = _user$project$Components_Timer$stringToSeconds(_p2._0);
+					var seconds = _user$project$Components_Timer$stringToSeconds(_p4._0);
 					var total = (_elm_lang$core$Native_Utils.eq(seconds, -1) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? model.countdown : ((((model.countdown / 60) | 0) * 60) + seconds);
 					return {
 						ctor: '_Tuple2',
@@ -8428,21 +8710,198 @@ var _user$project$Main$activeTimerView = function (model) {
 			}()
 			]));
 };
-var _user$project$Main$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g};
+var _user$project$Main$progressBar = A2(
+	_elm_lang$html$Html$progress,
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html_Attributes$class('progress is-primary is-small'),
+			_elm_lang$html$Html_Attributes$value('30'),
+			_elm_lang$html$Html_Attributes$max('100')
+		]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html$text('foo')
+		]));
+var _user$project$Main$navFooter = function (model) {
+	return A2(
+		_elm_lang$html$Html$nav,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('nav')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('nav-center')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('nav-item')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$h5,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('title is-5')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(model.team.name)
+									]))
+							]))
+					]))
+			]));
+};
+var _user$project$Main$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h};
 	});
+var _user$project$Main$SettingsView = {ctor: 'SettingsView'};
+var _user$project$Main$MainView = {ctor: 'MainView'};
 var _user$project$Main$WorkTimer = {ctor: 'WorkTimer'};
 var _user$project$Main$initialModel = {
-	workTimer: _user$project$Components_Timer$initialModel(480),
+	workTimer: _user$project$Components_Timer$initialModel(300),
 	breakTimer: _user$project$Components_Timer$initialModel(30),
 	activeTimer: _user$project$Main$WorkTimer,
 	useBreakTimer: true,
 	autoRestart: true,
 	autoRotateTeam: true,
-	team: _user$project$Components_Team$initialModel
+	team: _user$project$Components_Team$initialModel,
+	currentView: _user$project$Main$MainView
 };
 var _user$project$Main$BreakTimer = {ctor: 'BreakTimer'};
+var _user$project$Main$UpdateView = function (a) {
+	return {ctor: 'UpdateView', _0: a};
+};
+var _user$project$Main$navigationBar = function (model) {
+	var mainItem = A2(
+		_elm_lang$html$Html$a,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$href('#'),
+				_elm_lang$html$Html_Events$onClick(
+				_user$project$Main$UpdateView(_user$project$Main$MainView))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('icon is-medium')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$i,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('fa fa-clock-o')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]));
+	var settingsItem = A2(
+		_elm_lang$html$Html$a,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$href('#settings'),
+				_elm_lang$html$Html_Events$onClick(
+				_user$project$Main$UpdateView(_user$project$Main$SettingsView))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('icon is-medium')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$i,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('fa fa-cog')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]));
+	var item = function () {
+		var _p1 = model.currentView;
+		if (_p1.ctor === 'MainView') {
+			return settingsItem;
+		} else {
+			return mainItem;
+		}
+	}();
+	return A2(
+		_elm_lang$html$Html$nav,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('nav')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('nav-left')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('nav-item')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$h5,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('title is-5')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('mobbur')
+									]))
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('nav-right')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('nav-item')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[item]))
+					]))
+			]));
+};
 var _user$project$Main$UpdateUseBreakTimer = function (a) {
 	return {ctor: 'UpdateUseBreakTimer', _0: a};
 };
@@ -8457,7 +8916,7 @@ var _user$project$Main$optionView = function (model) {
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('column is-narrow is-grouped')
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -8465,90 +8924,118 @@ var _user$project$Main$optionView = function (model) {
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('')
+						_elm_lang$html$Html_Attributes$class('tile is-child notification is-success')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						A2(
-						_elm_lang$html$Html$label,
+						_elm_lang$html$Html$h4,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
+								_elm_lang$html$Html_Attributes$class('title')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								A2(
-								_elm_lang$html$Html$input,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
-										_elm_lang$html$Html_Attributes$name('use-break-timer'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Use cooldown')
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
+								_elm_lang$html$Html$text('General')
+							])),
 						A2(
-						_elm_lang$html$Html$label,
+						_elm_lang$html$Html$div,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
+								_elm_lang$html$Html_Attributes$class('control-group is-grouped')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								A2(
-								_elm_lang$html$Html$input,
+								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.autoRestart),
-										_elm_lang$html$Html_Attributes$name('auto-restart'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+										_elm_lang$html$Html_Attributes$class('control')
 									]),
 								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Auto-restart')
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$label,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('checkbox')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.useBreakTimer),
+														_elm_lang$html$Html_Attributes$name('use-break-timer'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateUseBreakTimer)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Use cooldown')
+											]))
+									])),
 								A2(
-								_elm_lang$html$Html$input,
+								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$type$('checkbox'),
-										_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
-										_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
-										_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+										_elm_lang$html$Html_Attributes$class('control')
 									]),
 								_elm_lang$core$Native_List.fromArray(
-									[])),
-								_elm_lang$html$Html$text('Auto-rotate team')
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.autoRestart),
+														_elm_lang$html$Html_Attributes$name('auto-restart'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRestart)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Auto-restart')
+											]))
+									])),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('control')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$label,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('checkbox')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$input,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$type$('checkbox'),
+														_elm_lang$html$Html_Attributes$checked(model.autoRotateTeam),
+														_elm_lang$html$Html_Attributes$name('auto-rotate-team'),
+														_elm_lang$html$Html_Events$onCheck(_user$project$Main$UpdateAutoRotateTeam)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[])),
+												_elm_lang$html$Html$text('Auto-rotate team')
+											]))
+									]))
 							]))
 					]))
 			]));
@@ -8556,96 +9043,105 @@ var _user$project$Main$optionView = function (model) {
 var _user$project$Main$WorkTimerMsg = function (a) {
 	return {ctor: 'WorkTimerMsg', _0: a};
 };
+var _user$project$Main$handleWorkTimerMsg = F2(
+	function (timerMsg, model) {
+		var _p2 = function () {
+			var _p3 = timerMsg;
+			switch (_p3.ctor) {
+				case 'Alarm':
+					return model.autoRotateTeam ? A2(_user$project$Components_Team$update, _user$project$Components_Team$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'Start':
+					return (model.autoRotateTeam && _elm_lang$core$Native_Utils.eq(model.team.activeMember, _elm_lang$core$Maybe$Nothing)) ? A2(_user$project$Components_Team$update, _user$project$Components_Team$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+				default:
+					return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+			}
+		}();
+		var team = _p2._0;
+		var activeTimer = function () {
+			var _p4 = timerMsg;
+			if (_p4.ctor === 'Alarm') {
+				return model.useBreakTimer ? _user$project$Main$BreakTimer : _user$project$Main$WorkTimer;
+			} else {
+				return model.activeTimer;
+			}
+		}();
+		var _p5 = A2(_user$project$Components_Timer$update, timerMsg, model.workTimer);
+		var tmodel = _p5._0;
+		var tcmd = _p5._1;
+		var _p6 = (_elm_lang$core$Native_Utils.eq(timerMsg, _user$project$Components_Timer$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, model.breakTimer),
+			{ctor: '_Tuple2', _0: tmodel, _1: tcmd}) : A2(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
+			A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, tmodel))) : A2(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
+			{ctor: '_Tuple2', _0: tmodel, _1: tcmd});
+		var breakTimer = _p6._0._0;
+		var bcmd = _p6._0._1;
+		var workTimer = _p6._1._0;
+		var wcmd = _p6._1._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{workTimer: workTimer, activeTimer: activeTimer, breakTimer: breakTimer, team: team}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$WorkTimerMsg, tcmd)
+		};
+	});
 var _user$project$Main$TeamMsg = function (a) {
 	return {ctor: 'TeamMsg', _0: a};
 };
 var _user$project$Main$BreakTimerMsg = function (a) {
 	return {ctor: 'BreakTimerMsg', _0: a};
 };
+var _user$project$Main$handleBreakTimerMsg = F2(
+	function (timerMsg, model) {
+		var _p7 = (model.autoRestart && _elm_lang$core$Native_Utils.eq(timerMsg, _user$project$Components_Timer$Alarm)) ? A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, model.workTimer) : {ctor: '_Tuple2', _0: model.workTimer, _1: _elm_lang$core$Platform_Cmd$none};
+		var workTimer = _p7._0;
+		var activeTimer = function () {
+			var _p8 = timerMsg;
+			if (_p8.ctor === 'Alarm') {
+				return _user$project$Main$WorkTimer;
+			} else {
+				return model.activeTimer;
+			}
+		}();
+		var _p9 = A2(_user$project$Components_Timer$update, timerMsg, model.breakTimer);
+		var tmodel = _p9._0;
+		var tmsg = _p9._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{breakTimer: tmodel, activeTimer: activeTimer, workTimer: workTimer}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$BreakTimerMsg, tmsg)
+		};
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p10 = msg;
+		switch (_p10.ctor) {
 			case 'Noop':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'BreakTimerMsg':
-				var _p5 = _p1._0;
-				var _p2 = (model.autoRestart && _elm_lang$core$Native_Utils.eq(_p5, _user$project$Components_Timer$Alarm)) ? A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, model.workTimer) : {ctor: '_Tuple2', _0: model.workTimer, _1: _elm_lang$core$Platform_Cmd$none};
-				var workTimer = _p2._0;
-				var activeTimer = function () {
-					var _p3 = _p5;
-					if (_p3.ctor === 'Alarm') {
-						return _user$project$Main$WorkTimer;
-					} else {
-						return model.activeTimer;
-					}
-				}();
-				var _p4 = A2(_user$project$Components_Timer$update, _p5, model.breakTimer);
-				var tmodel = _p4._0;
-				var tmsg = _p4._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{breakTimer: tmodel, activeTimer: activeTimer, workTimer: workTimer}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$BreakTimerMsg, tmsg)
-				};
+				return A2(_user$project$Main$handleBreakTimerMsg, _p10._0, model);
 			case 'WorkTimerMsg':
-				var _p11 = _p1._0;
-				var _p6 = function () {
-					var _p7 = _p11;
-					if (_p7.ctor === 'Alarm') {
-						return model.autoRotateTeam ? A2(_user$project$Components_Team$update, _user$project$Components_Team$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
-					} else {
-						return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
-					}
-				}();
-				var team = _p6._0;
-				var activeTimer = function () {
-					var _p8 = _p11;
-					if (_p8.ctor === 'Alarm') {
-						return model.useBreakTimer ? _user$project$Main$BreakTimer : _user$project$Main$WorkTimer;
-					} else {
-						return model.activeTimer;
-					}
-				}();
-				var _p9 = A2(_user$project$Components_Timer$update, _p11, model.workTimer);
-				var tmodel = _p9._0;
-				var tcmd = _p9._1;
-				var _p10 = (_elm_lang$core$Native_Utils.eq(_p11, _user$project$Components_Timer$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, model.breakTimer),
-					{ctor: '_Tuple2', _0: tmodel, _1: tcmd}) : A2(
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
-					A2(_user$project$Components_Timer$update, _user$project$Components_Timer$Start, tmodel))) : A2(
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
-					{ctor: '_Tuple2', _0: tmodel, _1: tcmd});
-				var breakTimer = _p10._0._0;
-				var bcmd = _p10._0._1;
-				var workTimer = _p10._1._0;
-				var wcmd = _p10._1._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{workTimer: workTimer, activeTimer: activeTimer, breakTimer: breakTimer, team: team}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$WorkTimerMsg, tcmd)
-				};
+				return A2(_user$project$Main$handleWorkTimerMsg, _p10._0, model);
 			case 'TeamMsg':
-				var _p12 = A2(_user$project$Components_Team$update, _p1._0, model.team);
-				var tmodel = _p12._0;
-				var tmsg = _p12._1;
+				var _p11 = A2(_user$project$Components_Team$update, _p10._0, model.team);
+				var tmodel = _p11._0;
+				var tmsg = _p11._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -8658,7 +9154,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{autoRestart: _p1._0}),
+						{autoRestart: _p10._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'UpdateAutoRotateTeam':
@@ -8666,7 +9162,15 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{autoRotateTeam: _p1._0}),
+						{autoRotateTeam: _p10._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateUseBreakTimer':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{useBreakTimer: _p10._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -8674,34 +9178,292 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{useBreakTimer: _p1._0}),
+						{currentView: _p10._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
-var _user$project$Main$view = function (model) {
-	var timer = _elm_lang$core$Native_Utils.eq(model.activeTimer, _user$project$Main$BreakTimer) ? A2(
+var _user$project$Main$frontPageView = function (model) {
+	var getNick = function (member) {
+		return function (_) {
+			return _.nick;
+		}(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				{nick: '', id$: 0, state: _user$project$Components_Team$DisplayingMember},
+				member));
+	};
+	var activeMember = function () {
+		var _p12 = model.team.activeMember;
+		if (_p12.ctor === 'Just') {
+			return _elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p12._0);
+					},
+					model.team.members));
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	}();
+	var _p13 = function () {
+		var _p14 = model.activeTimer;
+		if (_p14.ctor === 'WorkTimer') {
+			return {ctor: '_Tuple2', _0: model.workTimer, _1: _user$project$Main$WorkTimerMsg};
+		} else {
+			return {ctor: '_Tuple2', _0: model.breakTimer, _1: _user$project$Main$BreakTimerMsg};
+		}
+	}();
+	var activeTimer = _p13._0;
+	var msgType = _p13._1;
+	var timerContent = A2(
 		_elm_lang$html$Html_App$map,
-		_user$project$Main$BreakTimerMsg,
-		_user$project$Components_Timer$view(model.breakTimer)) : A2(
-		_elm_lang$html$Html_App$map,
-		_user$project$Main$WorkTimerMsg,
-		_user$project$Components_Timer$view(model.workTimer));
+		msgType,
+		_user$project$Components_Timer$displayView(activeTimer));
+	var content = (_elm_lang$core$Native_Utils.eq(model.activeTimer, _user$project$Main$BreakTimer) && (!_elm_lang$core$Native_Utils.eq(activeMember, _elm_lang$core$Maybe$Nothing))) ? _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$h3,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('title is-3')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Cooldown!')
+				])),
+			A2(
+			_elm_lang$html$Html$h4,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('title is-4')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'Up next: ',
+						getNick(activeMember)))
+				])),
+			timerContent
+		]) : ((!_elm_lang$core$Native_Utils.eq(activeMember, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$a,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('title is-4'),
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Main$TeamMsg(_user$project$Components_Team$SetNextMemberActive))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(
+					getNick(activeMember))
+				])),
+			timerContent
+		]) : _elm_lang$core$Native_List.fromArray(
+		[timerContent]));
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$html$Html_Attributes$class('has-text-centered')
 			]),
+		content);
+};
+var _user$project$Main$settingsView = function (model) {
+	var teamMemberSettings = A2(
+		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_user$project$Main$activeTimerView(model),
-				timer,
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
 				A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$TeamMsg,
-				_user$project$Components_Team$view(model.team)),
-				_user$project$Main$optionView(model)
+				_user$project$Components_Team$memberSettingsView(model.team))
+			]));
+	var teamSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$TeamMsg,
+				_user$project$Components_Team$teamSettingsView(model.team))
+			]));
+	var team = (!_elm_lang$core$Native_Utils.eq(
+		model.team.members,
+		_elm_lang$core$Native_List.fromArray(
+			[]))) ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[teamSettings, teamMemberSettings])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[teamSettings]));
+	var breakTimerSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile notification is-warning is-child')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Cooldown')
+							])),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$BreakTimerMsg,
+						_user$project$Components_Timer$settingsView(model.breakTimer))
+					]))
+			]));
+	var workTimerSettings = A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-parent')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('tile notification is-primary is-child')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h4,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Timer')
+							])),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$WorkTimerMsg,
+						_user$project$Components_Timer$settingsView(model.workTimer))
+					]))
+			]));
+	var optionSettings = _user$project$Main$optionView(model);
+	var timerSettings = model.useBreakTimer ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[optionSettings, workTimerSettings, breakTimerSettings])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[optionSettings, workTimerSettings]));
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-ancestor is-vertical')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[timerSettings, team]));
+};
+var _user$project$Main$pageView = function (model) {
+	var _p15 = model.currentView;
+	if (_p15.ctor === 'MainView') {
+		return _user$project$Main$frontPageView(model);
+	} else {
+		return _user$project$Main$settingsView(model);
+	}
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$section,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('hero is-fullheight')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('hero-head')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$navigationBar(model)
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('hero-body')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('container is-fluid')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Main$pageView(model)
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('hero-footer')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$navFooter(model)
+					]))
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {
