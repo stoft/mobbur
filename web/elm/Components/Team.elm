@@ -13,7 +13,7 @@ type alias Model =
     , members : List TeamMember
     , state : TeamState
     , newNick : String
-    , activeMember : Int
+    , activeMember : Maybe Int
     }
 
 
@@ -41,7 +41,7 @@ initialModel =
     , members = initMembers
     , state = Displaying
     , newNick = ""
-    , activeMember = 0
+    , activeMember = Nothing
     }
 
 
@@ -51,9 +51,6 @@ initMembers =
 
 
 
--- [ { id' = 1, nick = "pippo", state = DisplayingMember }
--- , { id' = 2, nick = "pluto", state = DisplayingMember }
--- ]
 --UPDATE
 
 
@@ -78,25 +75,7 @@ update msg model =
             ( model, Cmd.none )
 
         AddMember ->
-            let
-                findMax =
-                    (\m max ->
-                        if m.id' > max then
-                            m.id'
-                        else
-                            max
-                    )
-
-                nextId =
-                    List.foldl findMax 0 model.members |> (+) 1
-
-                newMember =
-                    TeamMember nextId model.newNick DisplayingMember
-
-                updatedMembers =
-                    model.members ++ [ newMember ]
-            in
-                ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+            handleAddMember model
 
         DoKey key ->
             let
@@ -178,6 +157,29 @@ update msg model =
             ( { model | name = name }, Cmd.none )
 
 
+handleAddMember : Model -> ( Model, Cmd Msg )
+handleAddMember model =
+    let
+        findMax =
+            (\m max ->
+                if m.id' > max then
+                    m.id'
+                else
+                    max
+            )
+
+        nextId =
+            List.foldl findMax 0 model.members |> (+) 1
+
+        newMember =
+            TeamMember nextId model.newNick DisplayingMember
+
+        updatedMembers =
+            model.members ++ [ newMember ]
+    in
+        ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
+
+
 handleSetNextMemberActive : Model -> ( Model, Cmd Msg )
 handleSetNextMemberActive model =
     let
@@ -200,15 +202,28 @@ handleSetNextMemberActive model =
                 Nothing ->
                     []
 
-        nextActiveMember =
-            case List.head model.members of
+        getIdOfFirstMember members =
+            case List.head members of
                 Just m ->
-                    m.id'
+                    Just m.id'
 
                 Nothing ->
-                    0
+                    Nothing
+
+        nextActiveMember =
+            case model.activeMember of
+                Just _ ->
+                    getIdOfFirstMember rotatedMembers
+
+                Nothing ->
+                    getIdOfFirstMember model.members
     in
-        ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+        case model.activeMember of
+            Nothing ->
+                ( { model | activeMember = nextActiveMember, members = model.members }, Cmd.none )
+
+            Just _ ->
+                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
 
 
 
@@ -296,9 +311,14 @@ renderTeamName model =
             h4 [ class "title is-medium", onClick EditTeam ] [ text model.name ]
 
 
-renderMemberList : Int -> List TeamMember -> Html Msg
+renderMemberList : Maybe Int -> List TeamMember -> Html Msg
 renderMemberList activeMember members =
-    div [] (List.map (renderMember activeMember) members)
+    case activeMember of
+        Just id' ->
+            div [] (List.map (renderMember id') members)
+
+        Nothing ->
+            div [] (List.map (renderMember 0) members)
 
 
 renderMemberInput : Model -> Html Msg
@@ -310,6 +330,7 @@ renderMemberInput model =
         , name "nick"
         , value model.newNick
         , onInput UpdateNewNick
+        , onSubmit AddMember
         ]
         []
 

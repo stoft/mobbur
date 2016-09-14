@@ -50,7 +50,7 @@ type ActiveTimer
 
 initialModel : Model
 initialModel =
-    { workTimer = Timer.initialModel 480
+    { workTimer = Timer.initialModel 300
     , breakTimer = Timer.initialModel 30
     , activeTimer = WorkTimer
     , useBreakTimer = True
@@ -58,8 +58,8 @@ initialModel =
     , autoRotateTeam = True
     , team = Team.initialModel
     , currentView =
-        SettingsView
-        --MainView
+        -- SettingsView
+        MainView
     }
 
 
@@ -170,7 +170,7 @@ handleWorkTimerMsg timerMsg model =
                         ( model.team, Cmd.none )
 
                 Timer.Start ->
-                    if model.autoRotateTeam && model.team.activeMember == 0 then
+                    if model.autoRotateTeam && model.team.activeMember == Nothing then
                         (Team.update Team.SetNextMemberActive model.team)
                     else
                         ( model.team, Cmd.none )
@@ -285,8 +285,13 @@ frontPageView model =
                     ( model.breakTimer, BreakTimerMsg )
 
         activeMember =
-            List.filter (\m -> m.id' == model.team.activeMember) model.team.members
-                |> List.head
+            case model.team.activeMember of
+                Just id' ->
+                    List.filter (\m -> m.id' == id') model.team.members
+                        |> List.head
+
+                Nothing ->
+                    Nothing
 
         timerContent =
             Html.App.map msgType (Timer.displayView activeTimer)
@@ -296,9 +301,9 @@ frontPageView model =
 
         content =
             if (model.activeTimer == BreakTimer && activeMember /= Nothing) then
-                [ h4 [ class "title is-4" ] [ text (getNick activeMember) ]
+                [ h3 [ class "title is-3" ] [ text "Cooldown!" ]
+                , h4 [ class "title is-4" ] [ text ("Up next: " ++ (getNick activeMember)) ]
                 , timerContent
-                , h3 [ class "title is-3" ] [ text "Cooldown!" ]
                 ]
             else if activeMember /= Nothing then
                 [ a [ class "title is-4", onClick (TeamMsg Team.SetNextMemberActive) ]
