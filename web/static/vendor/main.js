@@ -8872,14 +8872,23 @@ var _user$project$Main$navigationBar = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								A2(
-								_elm_lang$html$Html$h5,
+								_elm_lang$html$Html$a,
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html_Attributes$class('title is-5')
+										_elm_lang$html$Html_Attributes$href('https://github.com/stoft/mobbur')
 									]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('mobbur')
+										A2(
+										_elm_lang$html$Html$h5,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('title is-5')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text('mobbur')
+											]))
 									]))
 							]))
 					])),
