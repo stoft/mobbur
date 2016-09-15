@@ -138,6 +138,12 @@ handleKeyPress code model =
                 else
                     ( model, Cmd.none )
 
+            'e' ->
+                if model.currentView == MainView then
+                    ( { model | currentView = SettingsView }, Cmd.none )
+                else
+                    ( model, Cmd.none )
+
             _ ->
                 ( model, Cmd.none )
 

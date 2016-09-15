@@ -9843,16 +9843,25 @@ var _user$project$Main$handleKeyPress = F2(
 		var workTimer$ = _p2._0;
 		var breakTimer$ = _p2._1;
 		var _p4 = _elm_lang$core$Char$fromCode(code);
-		if (_p4.valueOf() === ' ') {
-			return _elm_lang$core$Native_Utils.eq(model.currentView, _user$project$Main$MainView) ? {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{workTimer: workTimer$, breakTimer: breakTimer$}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-		} else {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		switch (_p4.valueOf()) {
+			case ' ':
+				return _elm_lang$core$Native_Utils.eq(model.currentView, _user$project$Main$MainView) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{workTimer: workTimer$, breakTimer: breakTimer$}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'e':
+				return _elm_lang$core$Native_Utils.eq(model.currentView, _user$project$Main$MainView) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentView: _user$project$Main$SettingsView}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
 var _user$project$Main$WorkTimer = {ctor: 'WorkTimer'};
