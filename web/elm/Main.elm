@@ -1,14 +1,13 @@
 module Main exposing (..)
 
+import Char exposing (fromCode)
+import Components.Team as Team
+import Components.Timer as Timer
 import Html exposing (..)
 import Html.App
 import Html.Attributes exposing (type', name, checked, class, href, style, value, max)
 import Html.Events exposing (onCheck, onClick)
-import Components.Timer as Timer
-import Components.Team as Team
-
-
--- import Components.Team as Team
+import Keyboard exposing (KeyCode, presses)
 
 
 main : Program Never
@@ -71,6 +70,7 @@ type Msg
     = Noop
     | BreakTimerMsg Timer.Msg
     | TeamMsg Team.Msg
+    | KeyPress KeyCode
     | WorkTimerMsg Timer.Msg
     | UpdateAutoRestart Bool
     | UpdateAutoRotateTeam Bool
@@ -83,6 +83,9 @@ update msg model =
     case msg of
         Noop ->
             ( model, Cmd.none )
+
+        KeyPress code ->
+            handleKeyPress code model
 
         BreakTimerMsg timerMsg ->
             handleBreakTimerMsg timerMsg model
@@ -108,6 +111,35 @@ update msg model =
 
         UpdateView page ->
             ( { model | currentView = page }, Cmd.none )
+
+
+handleKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
+handleKeyPress code model =
+    let
+        toggleTimer timer =
+            let
+                ( model', _ ) =
+                    Timer.update Timer.Toggle timer
+            in
+                model'
+
+        ( workTimer', breakTimer' ) =
+            case model.activeTimer of
+                WorkTimer ->
+                    ( (toggleTimer model.workTimer), model.breakTimer )
+
+                BreakTimer ->
+                    ( model.workTimer, (toggleTimer model.breakTimer) )
+    in
+        case (fromCode code) of
+            ' ' ->
+                if model.currentView == MainView then
+                    ( { model | workTimer = workTimer', breakTimer = breakTimer' }, Cmd.none )
+                else
+                    ( model, Cmd.none )
+
+            _ ->
+                ( model, Cmd.none )
 
 
 handleBreakTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )
@@ -189,6 +221,19 @@ handleWorkTimerMsg timerMsg model =
 
 
 
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ Sub.map WorkTimerMsg (Timer.subscriptions model.workTimer)
+        , Sub.map BreakTimerMsg (Timer.subscriptions model.breakTimer)
+        , Sub.map KeyPress (Keyboard.presses (\code -> code))
+        ]
+
+
+
 -- VIEW
 
 
@@ -255,14 +300,6 @@ navFooter model =
                 [ h5 [ class "title is-5" ] [ text model.team.name ] ]
             ]
         ]
-
-
-
--- , div [ class "nav-center" ]
---     [ div [ class "nav-item" ]
---         [ span [ class "tag is-primary is-medium" ] [ text ("the " ++ model.team.name) ]
---         ]
---     ]
 
 
 pageView : Model -> Html Msg
@@ -430,12 +467,4 @@ activeTimerView model =
             -- span [ class "title is-5" ] [ text "Work!" ]
             BreakTimer ->
                 span [ class "title is-5" ] [ text "Cooldown!" ]
-        ]
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.batch
-        [ Sub.map WorkTimerMsg (Timer.subscriptions model.workTimer)
-        , Sub.map BreakTimerMsg (Timer.subscriptions model.breakTimer)
         ]

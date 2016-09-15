@@ -94,6 +94,7 @@ type Msg
     | Reset
     | Pause
     | Start
+    | Toggle
     | Tick
     | UpdateMinutes String
     | UpdateSeconds String
@@ -119,6 +120,21 @@ update msg model =
 
         Pause ->
             ( { model | state = Paused }, Cmd.none )
+
+        Toggle ->
+            let
+                newState =
+                    case model.state of
+                        Paused ->
+                            Started
+
+                        Stopped ->
+                            Started
+
+                        _ ->
+                            Paused
+            in
+                ( { model | state = newState }, Cmd.none )
 
         Tick ->
             if (model.state == Started) && (model.countdown == 1) then
