@@ -3,6 +3,7 @@ module Components.Team exposing (..)
 import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
+import Keyboard exposing (KeyCode, presses)
 
 
 --MODEL
@@ -57,9 +58,9 @@ initMembers =
 type Msg
     = NoOp
     | AddMember
-    | DoKey String
     | EditMember Int
     | EditTeam
+    | KeyPress KeyCode
     | SetNextMemberActive
     | SubmitNick Int
     | SubmitTeamName
@@ -77,12 +78,8 @@ update msg model =
         AddMember ->
             handleAddMember model
 
-        DoKey key ->
-            let
-                ( _, cmd ) =
-                    ( (Debug.log "Key press: " key), Cmd.none )
-            in
-                ( model, Cmd.none )
+        KeyPress code ->
+            handleKeyPress code model
 
         EditMember id' ->
             let
@@ -157,6 +154,16 @@ update msg model =
             ( { model | name = name }, Cmd.none )
 
 
+handleKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
+handleKeyPress code model =
+    case code of
+        13 ->
+            update AddMember model
+
+        _ ->
+            ( model, Cmd.none )
+
+
 handleAddMember : Model -> ( Model, Cmd Msg )
 handleAddMember model =
     let
@@ -224,6 +231,15 @@ handleSetNextMemberActive model =
 
             Just _ ->
                 ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+
+
+
+--SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Keyboard.presses (\code -> KeyPress code)
 
 
 

@@ -235,6 +235,7 @@ subscriptions model =
     Sub.batch
         [ Sub.map WorkTimerMsg (Timer.subscriptions model.workTimer)
         , Sub.map BreakTimerMsg (Timer.subscriptions model.breakTimer)
+        , Sub.map TeamMsg (Team.subscriptions model.team)
         , Sub.map KeyPress (Keyboard.presses (\code -> code))
         ]
 

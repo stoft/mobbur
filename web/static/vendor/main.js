@@ -8796,125 +8796,6 @@ var _user$project$Components_Team$handleAddMember = function (model) {
 var _user$project$Components_Team$Displaying = {ctor: 'Displaying'};
 var _user$project$Components_Team$initialModel = {name: 'Inglorious Anonymous', members: _user$project$Components_Team$initMembers, state: _user$project$Components_Team$Displaying, newNick: '', activeMember: _elm_lang$core$Maybe$Nothing};
 var _user$project$Components_Team$EditingTeam = {ctor: 'EditingTeam'};
-var _user$project$Components_Team$update = F2(
-	function (msg, model) {
-		var _p6 = msg;
-		switch (_p6.ctor) {
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'AddMember':
-				return _user$project$Components_Team$handleAddMember(model);
-			case 'DoKey':
-				var _p7 = {
-					ctor: '_Tuple2',
-					_0: A2(_elm_lang$core$Debug$log, 'Key press: ', _p6._0),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-				var cmd = _p7._1;
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'EditMember':
-				var updatedMembers = A2(
-					_elm_lang$core$List$map,
-					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p6._0) ? _elm_lang$core$Native_Utils.update(
-							m,
-							{state: _user$project$Components_Team$Editing}) : m;
-					},
-					model.members);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'EditTeam':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{state: _user$project$Components_Team$EditingTeam}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SetNextMemberActive':
-				return _user$project$Components_Team$handleSetNextMemberActive(model);
-			case 'SubmitNick':
-				var _p9 = _p6._0;
-				var removeMember = A2(
-					_elm_lang$core$List$filter,
-					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id$, _p9);
-					},
-					model.members);
-				var changeToDisplaying = function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id$, _p9) ? _elm_lang$core$Native_Utils.update(
-						m,
-						{state: _user$project$Components_Team$DisplayingMember}) : m;
-				};
-				var member = _elm_lang$core$List$head(
-					A2(
-						_elm_lang$core$List$filter,
-						function (m) {
-							return _elm_lang$core$Native_Utils.eq(m.id$, _p9);
-						},
-						model.members));
-				var updatedMembers = function () {
-					var _p8 = member;
-					if (_p8.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p8._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
-					} else {
-						return model.members;
-					}
-				}();
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SubmitTeamName':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{state: _user$project$Components_Team$Displaying}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UpdateNick':
-				var updatedMembers = A2(
-					_elm_lang$core$List$map,
-					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p6._0) ? _elm_lang$core$Native_Utils.update(
-							m,
-							{nick: _p6._1}) : m;
-					},
-					model.members);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UpdateNewNick':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newNick: _p6._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{name: _p6._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
 var _user$project$Components_Team$EditingMember = {ctor: 'EditingMember'};
 var _user$project$Components_Team$UpdateTeamName = function (a) {
 	return {ctor: 'UpdateTeamName', _0: a};
@@ -8931,10 +8812,19 @@ var _user$project$Components_Team$SubmitNick = function (a) {
 	return {ctor: 'SubmitNick', _0: a};
 };
 var _user$project$Components_Team$SetNextMemberActive = {ctor: 'SetNextMemberActive'};
+var _user$project$Components_Team$KeyPress = function (a) {
+	return {ctor: 'KeyPress', _0: a};
+};
+var _user$project$Components_Team$subscriptions = function (model) {
+	return _elm_lang$keyboard$Keyboard$presses(
+		function (code) {
+			return _user$project$Components_Team$KeyPress(code);
+		});
+};
 var _user$project$Components_Team$EditTeam = {ctor: 'EditTeam'};
 var _user$project$Components_Team$renderTeamName = function (model) {
-	var _p10 = model.state;
-	if (_p10.ctor === 'EditingTeam') {
+	var _p6 = model.state;
+	if (_p6.ctor === 'EditingTeam') {
 		return A2(
 			_elm_lang$html$Html$input,
 			_elm_lang$core$Native_List.fromArray(
@@ -8972,8 +8862,8 @@ var _user$project$Components_Team$EditMember = function (a) {
 };
 var _user$project$Components_Team$renderMember = F2(
 	function (activeMember, member) {
-		var _p11 = member.state;
-		if (_p11.ctor === 'Editing') {
+		var _p7 = member.state;
+		if (_p7.ctor === 'Editing') {
 			return A2(
 				_elm_lang$html$Html$input,
 				_elm_lang$core$Native_List.fromArray(
@@ -9034,15 +8924,15 @@ var _user$project$Components_Team$renderMember = F2(
 	});
 var _user$project$Components_Team$renderMemberList = F2(
 	function (activeMember, members) {
-		var _p12 = activeMember;
-		if (_p12.ctor === 'Just') {
+		var _p8 = activeMember;
+		if (_p8.ctor === 'Just') {
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				A2(
 					_elm_lang$core$List$map,
-					_user$project$Components_Team$renderMember(_p12._0),
+					_user$project$Components_Team$renderMember(_p8._0),
 					members));
 		} else {
 			return A2(
@@ -9104,10 +8994,129 @@ var _user$project$Components_Team$memberSettingsView = function (model) {
 					]))
 			]));
 };
-var _user$project$Components_Team$DoKey = function (a) {
-	return {ctor: 'DoKey', _0: a};
-};
 var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
+var _user$project$Components_Team$handleKeyPress = F2(
+	function (code, model) {
+		var _p9 = code;
+		if (_p9 === 13) {
+			return A2(_user$project$Components_Team$update, _user$project$Components_Team$AddMember, model);
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Components_Team$update = F2(
+	function (msg, model) {
+		var _p10 = msg;
+		switch (_p10.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'AddMember':
+				return _user$project$Components_Team$handleAddMember(model);
+			case 'KeyPress':
+				return A2(_user$project$Components_Team$handleKeyPress, _p10._0, model);
+			case 'EditMember':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p10._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{state: _user$project$Components_Team$Editing}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'EditTeam':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{state: _user$project$Components_Team$EditingTeam}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SetNextMemberActive':
+				return _user$project$Components_Team$handleSetNextMemberActive(model);
+			case 'SubmitNick':
+				var _p12 = _p10._0;
+				var removeMember = A2(
+					_elm_lang$core$List$filter,
+					function (m) {
+						return !_elm_lang$core$Native_Utils.eq(m.id$, _p12);
+					},
+					model.members);
+				var changeToDisplaying = function (m) {
+					return _elm_lang$core$Native_Utils.eq(m.id$, _p12) ? _elm_lang$core$Native_Utils.update(
+						m,
+						{state: _user$project$Components_Team$DisplayingMember}) : m;
+				};
+				var member = _elm_lang$core$List$head(
+					A2(
+						_elm_lang$core$List$filter,
+						function (m) {
+							return _elm_lang$core$Native_Utils.eq(m.id$, _p12);
+						},
+						model.members));
+				var updatedMembers = function () {
+					var _p11 = member;
+					if (_p11.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(_p11._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
+					} else {
+						return model.members;
+					}
+				}();
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SubmitTeamName':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{state: _user$project$Components_Team$Displaying}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateNick':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p10._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{nick: _p10._1}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateNewNick':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newNick: _p10._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{name: _p10._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
 var _user$project$Components_Team$renderMemberInput = function (model) {
 	return A2(
 		_elm_lang$html$Html$input,
@@ -10306,6 +10315,10 @@ var _user$project$Main$subscriptions = function (model) {
 				_elm_lang$core$Platform_Sub$map,
 				_user$project$Main$BreakTimerMsg,
 				_user$project$Components_Timer$subscriptions(model.breakTimer)),
+				A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Main$TeamMsg,
+				_user$project$Components_Team$subscriptions(model.team)),
 				A2(
 				_elm_lang$core$Platform_Sub$map,
 				_user$project$Main$KeyPress,
