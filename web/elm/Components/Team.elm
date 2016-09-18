@@ -182,7 +182,10 @@ handleAddMember model =
             TeamMember nextId model.newNick DisplayingMember
 
         updatedMembers =
-            model.members ++ [ newMember ]
+            if model.newNick == "" then
+                model.members
+            else
+                model.members ++ [ newMember ]
     in
         ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
 

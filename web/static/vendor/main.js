@@ -8780,7 +8780,7 @@ var _user$project$Components_Team$handleAddMember = function (model) {
 		1,
 		A3(_elm_lang$core$List$foldl, findMax, 0, model.members));
 	var newMember = A3(_user$project$Components_Team$TeamMember, nextId, model.newNick, _user$project$Components_Team$DisplayingMember);
-	var updatedMembers = A2(
+	var updatedMembers = _elm_lang$core$Native_Utils.eq(model.newNick, '') ? model.members : A2(
 		_elm_lang$core$Basics_ops['++'],
 		model.members,
 		_elm_lang$core$Native_List.fromArray(
