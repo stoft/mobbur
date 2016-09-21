@@ -4,6 +4,7 @@ import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 import Keyboard exposing (KeyCode, presses)
+import String exposing (trim)
 
 
 --MODEL
@@ -120,7 +121,7 @@ update msg model =
                 updatedMembers =
                     case member of
                         Just m ->
-                            if m.nick == "" then
+                            if (String.trim m.nick) == "" then
                                 removeMember
                             else
                                 List.map changeToDisplaying model.members
@@ -182,7 +183,7 @@ handleAddMember model =
             TeamMember nextId model.newNick DisplayingMember
 
         updatedMembers =
-            if model.newNick == "" then
+            if (String.trim model.newNick) == "" then
                 model.members
             else
                 model.members ++ [ newMember ]

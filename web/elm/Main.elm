@@ -1,20 +1,23 @@
 module Main exposing (..)
 
 import Char exposing (fromCode)
+import Components.Iterations as Iterations
 import Components.Team as Team
 import Components.Timer as Timer
+import Date exposing (Date, now)
 import Html exposing (..)
 import Html.App
 import Html.Attributes exposing (type', name, checked, class, href, style, value, max)
 import Html.Events exposing (onCheck, onClick)
 import Keyboard exposing (KeyCode, presses)
+import Task exposing (perform)
 
 
 main : Program Never
 main =
     Html.App.program
         { init =
-            ( initialModel, Cmd.none )
+            ( initialModel, getCurrentDate )
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -34,6 +37,8 @@ type alias Model =
     , autoRotateTeam : Bool
     , team : Team.Model
     , currentView : Page
+    , today : Date
+    , iterations : Iterations.Model
     }
 
 
@@ -59,6 +64,8 @@ initialModel =
     , currentView =
         -- SettingsView
         MainView
+    , today = Date.fromTime 0
+    , iterations = { iterationsToday = 0, iterationsTotal = 0 }
     }
 
 
@@ -72,6 +79,7 @@ type Msg
     | TeamMsg Team.Msg
     | KeyPress KeyCode
     | WorkTimerMsg Timer.Msg
+    | SetCurrentDate Date
     | UpdateAutoRestart Bool
     | UpdateAutoRotateTeam Bool
     | UpdateUseBreakTimer Bool
@@ -83,6 +91,9 @@ update msg model =
     case msg of
         Noop ->
             ( model, Cmd.none )
+
+        SetCurrentDate date ->
+            ( { model | today = date }, Cmd.none )
 
         KeyPress code ->
             handleKeyPress code model
@@ -154,6 +165,9 @@ handleBreakTimerMsg timerMsg model =
         ( tmodel, tmsg ) =
             Timer.update timerMsg model.breakTimer
 
+        -- newToday =
+        --   case model.today == Date.fromTime 0 then
+        --
         activeTimer =
             case timerMsg of
                 Timer.Alarm ->
@@ -193,9 +207,11 @@ handleWorkTimerMsg timerMsg model =
                 Timer.Alarm ->
                     if model.useBreakTimer then
                         BreakTimer
+                        -- (BreakTimer, (Iterations.update Iterations.Increment model.iterations))
                     else
                         WorkTimer
 
+                -- (WorkTimer, (Iterations.update Iterations.Increment model.iterations))
                 _ ->
                     model.activeTimer
 
@@ -238,6 +254,15 @@ subscriptions model =
         , Sub.map TeamMsg (Team.subscriptions model.team)
         , Sub.map KeyPress (Keyboard.presses (\code -> code))
         ]
+
+
+
+-- EFFECTS
+
+
+getCurrentDate : Cmd Msg
+getCurrentDate =
+    Task.perform SetCurrentDate SetCurrentDate Date.now
 
 
 

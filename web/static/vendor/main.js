@@ -2709,6 +2709,39 @@ var _elm_lang$core$Char$isHexDigit = function ($char) {
 		$char));
 };
 
+//import Result //
+
+var _elm_lang$core$Native_Date = function() {
+
+function fromString(str)
+{
+	var date = new Date(str);
+	return isNaN(date.getTime())
+		? _elm_lang$core$Result$Err('Unable to parse \'' + str + '\' as a date. Dates must be in the ISO 8601 format.')
+		: _elm_lang$core$Result$Ok(date);
+}
+
+var dayTable = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var monthTable =
+	['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+	 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+
+return {
+	fromString: fromString,
+	year: function(d) { return d.getFullYear(); },
+	month: function(d) { return { ctor: monthTable[d.getMonth()] }; },
+	day: function(d) { return d.getDate(); },
+	hour: function(d) { return d.getHours(); },
+	minute: function(d) { return d.getMinutes(); },
+	second: function(d) { return d.getSeconds(); },
+	millisecond: function(d) { return d.getMilliseconds(); },
+	toTime: function(d) { return d.getTime(); },
+	fromTime: function(t) { return new Date(t); },
+	dayOfWeek: function(d) { return { ctor: dayTable[d.getDay()] }; }
+};
+
+}();
 //import Native.Utils //
 
 var _elm_lang$core$Native_Scheduler = function() {
@@ -5526,6 +5559,39 @@ var _elm_lang$core$Time$subMap = F2(
 			});
 	});
 _elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Time$init, onEffects: _elm_lang$core$Time$onEffects, onSelfMsg: _elm_lang$core$Time$onSelfMsg, tag: 'sub', subMap: _elm_lang$core$Time$subMap};
+
+var _elm_lang$core$Date$millisecond = _elm_lang$core$Native_Date.millisecond;
+var _elm_lang$core$Date$second = _elm_lang$core$Native_Date.second;
+var _elm_lang$core$Date$minute = _elm_lang$core$Native_Date.minute;
+var _elm_lang$core$Date$hour = _elm_lang$core$Native_Date.hour;
+var _elm_lang$core$Date$dayOfWeek = _elm_lang$core$Native_Date.dayOfWeek;
+var _elm_lang$core$Date$day = _elm_lang$core$Native_Date.day;
+var _elm_lang$core$Date$month = _elm_lang$core$Native_Date.month;
+var _elm_lang$core$Date$year = _elm_lang$core$Native_Date.year;
+var _elm_lang$core$Date$fromTime = _elm_lang$core$Native_Date.fromTime;
+var _elm_lang$core$Date$toTime = _elm_lang$core$Native_Date.toTime;
+var _elm_lang$core$Date$fromString = _elm_lang$core$Native_Date.fromString;
+var _elm_lang$core$Date$now = A2(_elm_lang$core$Task$map, _elm_lang$core$Date$fromTime, _elm_lang$core$Time$now);
+var _elm_lang$core$Date$Date = {ctor: 'Date'};
+var _elm_lang$core$Date$Sun = {ctor: 'Sun'};
+var _elm_lang$core$Date$Sat = {ctor: 'Sat'};
+var _elm_lang$core$Date$Fri = {ctor: 'Fri'};
+var _elm_lang$core$Date$Thu = {ctor: 'Thu'};
+var _elm_lang$core$Date$Wed = {ctor: 'Wed'};
+var _elm_lang$core$Date$Tue = {ctor: 'Tue'};
+var _elm_lang$core$Date$Mon = {ctor: 'Mon'};
+var _elm_lang$core$Date$Dec = {ctor: 'Dec'};
+var _elm_lang$core$Date$Nov = {ctor: 'Nov'};
+var _elm_lang$core$Date$Oct = {ctor: 'Oct'};
+var _elm_lang$core$Date$Sep = {ctor: 'Sep'};
+var _elm_lang$core$Date$Aug = {ctor: 'Aug'};
+var _elm_lang$core$Date$Jul = {ctor: 'Jul'};
+var _elm_lang$core$Date$Jun = {ctor: 'Jun'};
+var _elm_lang$core$Date$May = {ctor: 'May'};
+var _elm_lang$core$Date$Apr = {ctor: 'Apr'};
+var _elm_lang$core$Date$Mar = {ctor: 'Mar'};
+var _elm_lang$core$Date$Feb = {ctor: 'Feb'};
+var _elm_lang$core$Date$Jan = {ctor: 'Jan'};
 
 var _elm_lang$core$Debug$crash = _elm_lang$core$Native_Debug.crash;
 var _elm_lang$core$Debug$log = _elm_lang$core$Native_Debug.log;
@@ -8698,6 +8764,19 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
 
+var _user$project$Components_Iterations$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{iterationsToday: model.iterationsToday + 1, iterationsTotal: model.iterationsTotal + 1});
+	});
+var _user$project$Components_Iterations$Model = F2(
+	function (a, b) {
+		return {iterationsToday: a, iterationsTotal: b};
+	});
+var _user$project$Components_Iterations$Increment = {ctor: 'Increment'};
+
 var _user$project$Components_Team$handleSetNextMemberActive = function (model) {
 	var getIdOfFirstMember = function (members) {
 		var _p0 = _elm_lang$core$List$head(members);
@@ -8780,7 +8859,9 @@ var _user$project$Components_Team$handleAddMember = function (model) {
 		1,
 		A3(_elm_lang$core$List$foldl, findMax, 0, model.members));
 	var newMember = A3(_user$project$Components_Team$TeamMember, nextId, model.newNick, _user$project$Components_Team$DisplayingMember);
-	var updatedMembers = _elm_lang$core$Native_Utils.eq(model.newNick, '') ? model.members : A2(
+	var updatedMembers = _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$String$trim(model.newNick),
+		'') ? model.members : A2(
 		_elm_lang$core$Basics_ops['++'],
 		model.members,
 		_elm_lang$core$Native_List.fromArray(
@@ -9063,7 +9144,9 @@ var _user$project$Components_Team$update = F2(
 				var updatedMembers = function () {
 					var _p11 = member;
 					if (_p11.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(_p11._0.nick, '') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
+						return _elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$String$trim(_p11._0.nick),
+							'') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
 					} else {
 						return model.members;
 					}
@@ -9820,10 +9903,27 @@ var _user$project$Main$navFooter = function (model) {
 					]))
 			]));
 };
-var _user$project$Main$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h};
-	});
+var _user$project$Main$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h, today: i, iterations: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var _user$project$Main$SettingsView = {ctor: 'SettingsView'};
 var _user$project$Main$MainView = {ctor: 'MainView'};
 var _user$project$Main$handleKeyPress = F2(
@@ -9882,7 +9982,9 @@ var _user$project$Main$initialModel = {
 	autoRestart: true,
 	autoRotateTeam: true,
 	team: _user$project$Components_Team$initialModel,
-	currentView: _user$project$Main$MainView
+	currentView: _user$project$Main$MainView,
+	today: _elm_lang$core$Date$fromTime(0),
+	iterations: {iterationsToday: 0, iterationsTotal: 0}
 };
 var _user$project$Main$BreakTimer = {ctor: 'BreakTimer'};
 var _user$project$Main$UpdateView = function (a) {
@@ -10155,6 +10257,10 @@ var _user$project$Main$optionView = function (model) {
 					]))
 			]));
 };
+var _user$project$Main$SetCurrentDate = function (a) {
+	return {ctor: 'SetCurrentDate', _0: a};
+};
+var _user$project$Main$getCurrentDate = A3(_elm_lang$core$Task$perform, _user$project$Main$SetCurrentDate, _user$project$Main$SetCurrentDate, _elm_lang$core$Date$now);
 var _user$project$Main$WorkTimerMsg = function (a) {
 	return {ctor: 'WorkTimerMsg', _0: a};
 };
@@ -10252,6 +10358,14 @@ var _user$project$Main$update = F2(
 		switch (_p14.ctor) {
 			case 'Noop':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'SetCurrentDate':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{today: _p14._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'KeyPress':
 				return A2(_user$project$Main$handleKeyPress, _p14._0, model);
 			case 'BreakTimerMsg':
@@ -10614,7 +10728,7 @@ var _user$project$Main$view = function (model) {
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
 		{
-			init: {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none},
+			init: {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _user$project$Main$getCurrentDate},
 			view: _user$project$Main$view,
 			update: _user$project$Main$update,
 			subscriptions: _user$project$Main$subscriptions
