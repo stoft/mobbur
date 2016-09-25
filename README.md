@@ -4,6 +4,8 @@
 
 A Proof-of-Concept mob programming timer web app built using Elixir/Phoenix and Elm.
 
+Highly inspired by the [Agility Timer](http://oss.jahed.io/agility/timer.html).
+
 Esthetics may suck.
 
 Working example here: https://mobbur.herokuapp.com/

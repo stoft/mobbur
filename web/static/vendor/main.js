@@ -6511,6 +6511,12 @@ return {
 
 }();
 
+var _elm_lang$dom$Dom$blur = _elm_lang$dom$Native_Dom.blur;
+var _elm_lang$dom$Dom$focus = _elm_lang$dom$Native_Dom.focus;
+var _elm_lang$dom$Dom$NotFound = function (a) {
+	return {ctor: 'NotFound', _0: a};
+};
+
 var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
 var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
@@ -8941,265 +8947,7 @@ var _user$project$Components_Team$renderTeamName = function (model) {
 var _user$project$Components_Team$EditMember = function (a) {
 	return {ctor: 'EditMember', _0: a};
 };
-var _user$project$Components_Team$renderMember = F2(
-	function (activeMember, member) {
-		var _p7 = member.state;
-		if (_p7.ctor === 'Editing') {
-			return A2(
-				_elm_lang$html$Html$input,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$type$('text'),
-						_elm_lang$html$Html_Attributes$class('input'),
-						_elm_lang$html$Html_Attributes$name('nick'),
-						_elm_lang$html$Html_Attributes$value(member.nick),
-						_elm_lang$html$Html_Events$onInput(
-						_user$project$Components_Team$UpdateNick(member.id$)),
-						_elm_lang$html$Html_Events$onBlur(
-						_user$project$Components_Team$SubmitNick(member.id$))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[]));
-		} else {
-			return _elm_lang$core$Native_Utils.eq(member.id$, activeMember) ? A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$Components_Team$EditMember(member.id$))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$a,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('title label is-4')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(member.nick)
-							]))
-					])) : A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class(''),
-						_elm_lang$html$Html_Events$onClick(
-						_user$project$Components_Team$EditMember(member.id$))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$a,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('title is-5')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(member.nick)
-							]))
-					]));
-		}
-	});
-var _user$project$Components_Team$renderMemberList = F2(
-	function (activeMember, members) {
-		var _p8 = activeMember;
-		if (_p8.ctor === 'Just') {
-			return A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				A2(
-					_elm_lang$core$List$map,
-					_user$project$Components_Team$renderMember(_p8._0),
-					members));
-		} else {
-			return A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				A2(
-					_elm_lang$core$List$map,
-					_user$project$Components_Team$renderMember(0),
-					members));
-		}
-	});
-var _user$project$Components_Team$memberSettingsView = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$h4,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('title')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Members')
-					])),
-				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
-						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('icon')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$i,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[]))
-							]))
-					]))
-			]));
-};
 var _user$project$Components_Team$AddMember = {ctor: 'AddMember'};
-var _user$project$Components_Team$handleKeyPress = F2(
-	function (code, model) {
-		var _p9 = code;
-		if (_p9 === 13) {
-			return A2(_user$project$Components_Team$update, _user$project$Components_Team$AddMember, model);
-		} else {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-		}
-	});
-var _user$project$Components_Team$update = F2(
-	function (msg, model) {
-		var _p10 = msg;
-		switch (_p10.ctor) {
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'AddMember':
-				return _user$project$Components_Team$handleAddMember(model);
-			case 'KeyPress':
-				return A2(_user$project$Components_Team$handleKeyPress, _p10._0, model);
-			case 'EditMember':
-				var updatedMembers = A2(
-					_elm_lang$core$List$map,
-					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p10._0) ? _elm_lang$core$Native_Utils.update(
-							m,
-							{state: _user$project$Components_Team$Editing}) : m;
-					},
-					model.members);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'EditTeam':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{state: _user$project$Components_Team$EditingTeam}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SetNextMemberActive':
-				return _user$project$Components_Team$handleSetNextMemberActive(model);
-			case 'SubmitNick':
-				var _p12 = _p10._0;
-				var removeMember = A2(
-					_elm_lang$core$List$filter,
-					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id$, _p12);
-					},
-					model.members);
-				var changeToDisplaying = function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id$, _p12) ? _elm_lang$core$Native_Utils.update(
-						m,
-						{state: _user$project$Components_Team$DisplayingMember}) : m;
-				};
-				var member = _elm_lang$core$List$head(
-					A2(
-						_elm_lang$core$List$filter,
-						function (m) {
-							return _elm_lang$core$Native_Utils.eq(m.id$, _p12);
-						},
-						model.members));
-				var updatedMembers = function () {
-					var _p11 = member;
-					if (_p11.ctor === 'Just') {
-						return _elm_lang$core$Native_Utils.eq(
-							_elm_lang$core$String$trim(_p11._0.nick),
-							'') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
-					} else {
-						return model.members;
-					}
-				}();
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SubmitTeamName':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{state: _user$project$Components_Team$Displaying}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UpdateNick':
-				var updatedMembers = A2(
-					_elm_lang$core$List$map,
-					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id$, _p10._0) ? _elm_lang$core$Native_Utils.update(
-							m,
-							{nick: _p10._1}) : m;
-					},
-					model.members);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{members: updatedMembers}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UpdateNewNick':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newNick: _p10._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{name: _p10._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
 var _user$project$Components_Team$renderMemberInput = function (model) {
 	return A2(
 		_elm_lang$html$Html$input,
@@ -9215,83 +8963,6 @@ var _user$project$Components_Team$renderMemberInput = function (model) {
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[]));
-};
-var _user$project$Components_Team$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('column is-narrow')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_user$project$Components_Team$renderTeamName(model),
-				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('has-addons')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$Components_Team$renderMemberInput(model),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('button is-primary'),
-								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$span,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('icon')
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										A2(
-										_elm_lang$html$Html$i,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[]))
-									]))
-							])),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('button is-primary'),
-								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$span,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('icon')
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										A2(
-										_elm_lang$html$Html$i,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[]))
-									]))
-							]))
-					]))
-			]));
 };
 var _user$project$Components_Team$teamSettingsView = function (model) {
 	return A2(
@@ -9394,6 +9065,381 @@ var _user$project$Components_Team$teamSettingsView = function (model) {
 			]));
 };
 var _user$project$Components_Team$NoOp = {ctor: 'NoOp'};
+var _user$project$Components_Team$update = F2(
+	function (msg, model) {
+		var _p7 = msg;
+		switch (_p7.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'AddMember':
+				return _user$project$Components_Team$handleAddMember(model);
+			case 'KeyPress':
+				return A2(_user$project$Components_Team$handleKeyPress, _p7._0, model);
+			case 'EditMember':
+				var _p8 = _p7._0;
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p8) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{state: _user$project$Components_Team$Editing}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: A3(
+						_elm_lang$core$Task$perform,
+						_elm_lang$core$Basics$always(_user$project$Components_Team$NoOp),
+						_elm_lang$core$Basics$always(_user$project$Components_Team$NoOp),
+						_elm_lang$dom$Dom$focus(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'team-member-',
+								_elm_lang$core$Basics$toString(_p8))))
+				};
+			case 'EditTeam':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{state: _user$project$Components_Team$EditingTeam}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SetNextMemberActive':
+				return _user$project$Components_Team$handleSetNextMemberActive(model);
+			case 'SubmitNick':
+				var _p10 = _p7._0;
+				var removeMember = A2(
+					_elm_lang$core$List$filter,
+					function (m) {
+						return !_elm_lang$core$Native_Utils.eq(m.id$, _p10);
+					},
+					model.members);
+				var changeToDisplaying = function (m) {
+					return _elm_lang$core$Native_Utils.eq(m.id$, _p10) ? _elm_lang$core$Native_Utils.update(
+						m,
+						{state: _user$project$Components_Team$DisplayingMember}) : m;
+				};
+				var member = _elm_lang$core$List$head(
+					A2(
+						_elm_lang$core$List$filter,
+						function (m) {
+							return _elm_lang$core$Native_Utils.eq(m.id$, _p10);
+						},
+						model.members));
+				var updatedMembers = function () {
+					var _p9 = member;
+					if (_p9.ctor === 'Just') {
+						return _elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$String$trim(_p9._0.nick),
+							'') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
+					} else {
+						return model.members;
+					}
+				}();
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SubmitTeamName':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{state: _user$project$Components_Team$Displaying}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateNick':
+				var updatedMembers = A2(
+					_elm_lang$core$List$map,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id$, _p7._0) ? _elm_lang$core$Native_Utils.update(
+							m,
+							{nick: _p7._1}) : m;
+					},
+					model.members);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{members: updatedMembers}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateNewNick':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newNick: _p7._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{name: _p7._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Components_Team$handleKeyPress = F2(
+	function (code, model) {
+		var _p11 = code;
+		if (_p11 === 13) {
+			return A2(_user$project$Components_Team$update, _user$project$Components_Team$AddMember, model);
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Components_Team$renderMember = F2(
+	function (activeMember, member) {
+		var _p12 = member.state;
+		if (_p12.ctor === 'Editing') {
+			var _p13 = {
+				ctor: '_Tuple2',
+				_0: A3(
+					_elm_lang$core$Task$perform,
+					A2(
+						_elm_lang$core$Debug$log,
+						'failed',
+						_elm_lang$core$Basics$always(_user$project$Components_Team$NoOp)),
+					_elm_lang$core$Basics$always(_user$project$Components_Team$NoOp),
+					_elm_lang$dom$Dom$focus(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'team-member-',
+							_elm_lang$core$Basics$toString(member.id$)))),
+				_1: member.id$
+			};
+			var memberId = _p13._1;
+			return A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('text'),
+						_elm_lang$html$Html_Attributes$id(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'team-member-',
+							_elm_lang$core$Basics$toString(member.id$))),
+						_elm_lang$html$Html_Attributes$class('input'),
+						_elm_lang$html$Html_Attributes$name('nick'),
+						_elm_lang$html$Html_Attributes$value(member.nick),
+						_elm_lang$html$Html_Events$onInput(
+						_user$project$Components_Team$UpdateNick(member.id$)),
+						_elm_lang$html$Html_Events$onBlur(
+						_user$project$Components_Team$SubmitNick(member.id$))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]));
+		} else {
+			return _elm_lang$core$Native_Utils.eq(member.id$, activeMember) ? A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Components_Team$EditMember(member.id$)),
+						_elm_lang$html$Html_Attributes$id(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'team-member-',
+							_elm_lang$core$Basics$toString(member.id$)))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title label is-4')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
+					])) : A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Components_Team$EditMember(member.id$)),
+						_elm_lang$html$Html_Attributes$id(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'team-member-',
+							_elm_lang$core$Basics$toString(member.id$)))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$a,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('title is-5')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(member.nick)
+							]))
+					]));
+		}
+	});
+var _user$project$Components_Team$renderMemberList = F2(
+	function (activeMember, members) {
+		var _p14 = activeMember;
+		if (_p14.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Components_Team$renderMember(_p14._0),
+					members));
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Components_Team$renderMember(0),
+					members));
+		}
+	});
+var _user$project$Components_Team$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('column is-narrow')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Components_Team$renderTeamName(model),
+				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('has-addons')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Components_Team$renderMemberInput(model),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('button is-primary'),
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$AddMember)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$span,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('icon')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$i,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('fa fa-plus-square')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[]))
+									]))
+							])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('button is-primary'),
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$span,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('icon')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$i,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[]))
+									]))
+							]))
+					]))
+			]));
+};
+var _user$project$Components_Team$memberSettingsView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('tile is-child notification is-info')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h4,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('title')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Members')
+					])),
+				A2(_user$project$Components_Team$renderMemberList, model.activeMember, model.members),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('button is-info is-inverted'),
+						_elm_lang$html$Html_Events$onClick(_user$project$Components_Team$SetNextMemberActive)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('icon')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$i,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('fa fa-fast-forward')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[]))
+							]))
+					]))
+			]));
+};
 
 var _user$project$Components_Timer$stringToSeconds = function (string) {
 	return A2(

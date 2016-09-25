@@ -1,10 +1,12 @@
 module Components.Team exposing (..)
 
+import Dom exposing (focus)
 import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 import Keyboard exposing (KeyCode, presses)
 import String exposing (trim)
+import Task exposing (perform)
 
 
 --MODEL
@@ -94,7 +96,9 @@ update msg model =
                                     m
                             )
             in
-                ( { model | members = updatedMembers }, Cmd.none )
+                ( { model | members = updatedMembers }
+                , Task.perform (always NoOp) (always NoOp) (Dom.focus ("team-member-" ++ toString id'))
+                )
 
         EditTeam ->
             ( { model | state = EditingTeam }, Cmd.none )
@@ -359,21 +363,34 @@ renderMember : Int -> TeamMember -> Html Msg
 renderMember activeMember member =
     case member.state of
         Editing ->
-            input
-                [ type' "text"
-                , class "input"
-                , name "nick"
-                , value member.nick
-                , onInput (UpdateNick member.id')
-                , onBlur (SubmitNick member.id')
-                ]
-                []
+            let
+                ( _, memberId ) =
+                    ( Task.perform (Debug.log "failed" (always NoOp)) (always NoOp) (Dom.focus ("team-member-" ++ toString member.id'))
+                    , member.id'
+                    )
+            in
+                input
+                    [ type' "text"
+                    , id ("team-member-" ++ toString member.id')
+                    , class "input"
+                    , name "nick"
+                    , value member.nick
+                    , onInput (UpdateNick member.id')
+                    , onBlur (SubmitNick member.id')
+                    ]
+                    []
 
         DisplayingMember ->
             if member.id' == activeMember then
-                div [ onClick (EditMember member.id') ]
+                div
+                    [ onClick (EditMember member.id')
+                    , id ("team-member-" ++ toString member.id')
+                    ]
                     [ a [ class "title label is-4" ] [ text (member.nick) ] ]
             else
-                div [ class "", onClick (EditMember member.id') ]
+                div
+                    [ onClick (EditMember member.id')
+                    , id ("team-member-" ++ toString member.id')
+                    ]
                     [ a [ class "title is-5" ] [ text member.nick ]
                     ]
