@@ -8,7 +8,8 @@ defmodule Mobbur do
 
     children = [
       # Start the endpoint when the application starts
-      supervisor(Mobbur.Endpoint, [])
+      supervisor(Mobbur.Endpoint, []),
+      supervisor(Mobbur.Presence, [])
       # Start the Ecto repository
       # supervisor(Mobbur.Repo, [])
       # Here you could define other workers and supervisors as children

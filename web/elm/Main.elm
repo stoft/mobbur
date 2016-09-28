@@ -4,10 +4,11 @@ import Char exposing (fromCode)
 import Components.Iterations as Iterations
 import Components.Team as Team
 import Components.Timer as Timer
+import Components.Comm as Comm
 import Date exposing (Date, now)
 import Html exposing (..)
 import Html.App
-import Html.Attributes exposing (type', name, checked, class, href, style, value, max)
+import Html.Attributes exposing (type', name, checked, class, href, style, value, max, title)
 import Html.Events exposing (onCheck, onClick)
 import Keyboard exposing (KeyCode, presses)
 import Task exposing (perform)
@@ -39,6 +40,7 @@ type alias Model =
     , currentView : Page
     , today : Date
     , iterations : Iterations.Model
+    , globalTeams : Comm.Model
     }
 
 
@@ -66,6 +68,7 @@ initialModel =
         MainView
     , today = Date.fromTime 0
     , iterations = { iterationsToday = 0, iterationsTotal = 0 }
+    , globalTeams = Comm.initialModel
     }
 
 
@@ -84,6 +87,7 @@ type Msg
     | UpdateAutoRotateTeam Bool
     | UpdateUseBreakTimer Bool
     | UpdateView Page
+    | CommMsg Comm.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -91,6 +95,13 @@ update msg model =
     case msg of
         Noop ->
             ( model, Cmd.none )
+
+        CommMsg msg ->
+            let
+                ( newGlobalTeams, _ ) =
+                    (Comm.update msg model.globalTeams)
+            in
+                ( { model | globalTeams = newGlobalTeams }, Cmd.none )
 
         SetCurrentDate date ->
             ( { model | today = date }, Cmd.none )
@@ -253,6 +264,7 @@ subscriptions model =
         , Sub.map BreakTimerMsg (Timer.subscriptions model.breakTimer)
         , Sub.map TeamMsg (Team.subscriptions model.team)
         , Sub.map KeyPress (Keyboard.presses (\code -> code))
+        , Sub.map CommMsg (Comm.subscriptions model.globalTeams)
         ]
 
 
@@ -326,12 +338,45 @@ navigationBar model =
 
 navFooter : Model -> Html Msg
 navFooter model =
-    nav [ class "nav" ]
-        [ div [ class "nav-center" ]
-            [ div [ class "nav-item" ]
-                [ h5 [ class "title is-5" ] [ text model.team.name ] ]
+    let
+        numberOfTeams =
+            model.globalTeams.numberOfTeams
+
+        title' =
+            if numberOfTeams == 1 then
+                "1 team online"
+            else
+                toString numberOfTeams ++ " teams online"
+
+        icon size' =
+            span
+                [ class ("icon " ++ size')
+                , title title'
+                ]
+                [ i [ class "fa fa-globe", style [ ( "color", "#1fc8db" ) ] ] []
+                ]
+
+        globe =
+            if numberOfTeams < 5 then
+                icon "is-small"
+            else if numberOfTeams < 10 then
+                icon ""
+            else
+                icon "is-medium"
+    in
+        nav [ class "nav" ]
+            [ div [ class "nav-center" ]
+                [ div [ class "nav-item" ]
+                    [ h5 [ class "title is-5" ] [ text model.team.name ] ]
+                ]
+            , div [ class "nav-right" ]
+                [ div [ class "nav-item" ]
+                    [ globe
+                      -- h5 [ class "title is-5" alt (toString model.globalTeams.numberOfTeams) ]
+                      --     [ text <| toString model.globalTeams.numberOfTeams ]
+                    ]
+                ]
             ]
-        ]
 
 
 pageView : Model -> Html Msg

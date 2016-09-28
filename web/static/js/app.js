@@ -23,8 +23,9 @@ var elmDiv = document.getElementById('elm-app-lives-here');
 var app = Elm.Main.embed(elmDiv);
 
 // var audio = new Audio('/audio/start1.mp3')
-// let user = "foo"
-let socket = new Socket("/socket", {params: {user: "foo"}})
+let user = window.location.pathname.split('/')[1];
+
+let socket = new Socket("/socket", {params: {user: user}})
 socket.connect()
 
 let presences = {}
@@ -33,6 +34,7 @@ let formatTimestamp = (timestamp) => {
   let date = new Date(timestamp)
   return date.toLocaleTimeString()
 }
+
 let listBy = (user, {metas: metas}) => {
   return {
     user: user,
@@ -53,16 +55,27 @@ let listBy = (user, {metas: metas}) => {
 //     .join("")
 // }
 
+let sendToElm = (presences) => {
+  let count = countTeams(presences)
+  app.ports.globalStatus.send(count)
+}
+
+let countTeams = (presences) => {
+  return Presence.list(presences, listBy).length
+}
+
 // Channels
 let room = socket.channel("room:lobby")
 room.on("presence_state", state => {
   presences = Presence.syncState(presences, state)
   // render(presences)
+  sendToElm(presences)
 })
 
 room.on("presence_diff", diff => {
   presences = Presence.syncDiff(presences, diff)
   // render(presences)
+  sendToElm(presences)
 })
 
 room.join()
