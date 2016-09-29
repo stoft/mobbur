@@ -24,6 +24,7 @@ Working example here: https://mobbur.herokuapp.com/
 - [x] Countdown to timer restart (configurable)
 - [x] Active team member (incl. auto-rotation)
 - [x] Fast forward active team member
+- [x] Shows number of teams online (globe)
 - [ ] Less fugly layout/graphics!
 
 ## Running Mobbur
