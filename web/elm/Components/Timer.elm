@@ -153,9 +153,14 @@ update msg model =
                     stringToSeconds time
 
                 total =
-                    (minutes * 60) + (rem model.countdown 60)
+                    (minutes * 60) + (rem model.interval 60)
             in
-                ( { model | countdown = total, interval = total }, Cmd.none )
+                case model.state of
+                    Stopped ->
+                        ( { model | countdown = total, interval = total }, Cmd.none )
+
+                    _ ->
+                        ( { model | interval = total }, Cmd.none )
 
         UpdateSeconds time ->
             let
@@ -163,12 +168,17 @@ update msg model =
                     stringToSeconds time
 
                 total =
-                    if seconds == -1 && model.countdown < 1 then
-                        model.countdown
+                    if seconds == -1 && model.interval < 1 then
+                        model.interval
                     else
-                        ((model.countdown // 60) * 60) + seconds
+                        ((model.interval // 60) * 60) + seconds
             in
-                ( { model | countdown = total, interval = total }, Cmd.none )
+                case model.state of
+                    Stopped ->
+                        ( { model | countdown = total, interval = total }, Cmd.none )
+
+                    _ ->
+                        ( { model | interval = total }, Cmd.none )
 
 
 
@@ -262,8 +272,8 @@ inputFields model =
                 [ type' "number"
                 , class "input"
                 , style [ ( "width", "100px" ) ]
-                , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
-                , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.countdown
+                , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.interval
+                , Html.Attributes.value <| toString <| .minutes <| secondsToTimeRecord <| model.interval
                 , name "minutes"
                 , onInput UpdateMinutes
                 ]
@@ -275,8 +285,8 @@ inputFields model =
                 [ type' "number"
                 , class "input"
                 , style [ ( "width", "100px" ) ]
-                , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
-                , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.countdown
+                , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.interval
+                , Html.Attributes.value <| toString <| .seconds <| secondsToTimeRecord <| model.interval
                 , name "seconds"
                 , onInput UpdateSeconds
                 ]

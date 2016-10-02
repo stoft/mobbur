@@ -9579,13 +9579,13 @@ var _user$project$Components_Timer$inputFields = function (model) {
 									function (_) {
 										return _.minutes;
 									}(
-										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+										_user$project$Components_Timer$secondsToTimeRecord(model.interval)))),
 								_elm_lang$html$Html_Attributes$value(
 								_elm_lang$core$Basics$toString(
 									function (_) {
 										return _.minutes;
 									}(
-										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+										_user$project$Components_Timer$secondsToTimeRecord(model.interval)))),
 								_elm_lang$html$Html_Attributes$name('minutes'),
 								_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateMinutes)
 							]),
@@ -9617,13 +9617,13 @@ var _user$project$Components_Timer$inputFields = function (model) {
 									function (_) {
 										return _.seconds;
 									}(
-										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+										_user$project$Components_Timer$secondsToTimeRecord(model.interval)))),
 								_elm_lang$html$Html_Attributes$value(
 								_elm_lang$core$Basics$toString(
 									function (_) {
 										return _.seconds;
 									}(
-										_user$project$Components_Timer$secondsToTimeRecord(model.countdown)))),
+										_user$project$Components_Timer$secondsToTimeRecord(model.interval)))),
 								_elm_lang$html$Html_Attributes$name('seconds'),
 								_elm_lang$html$Html_Events$onInput(_user$project$Components_Timer$UpdateSeconds)
 							]),
@@ -9873,24 +9873,46 @@ var _user$project$Components_Timer$update = F2(
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 				case 'UpdateMinutes':
 					var minutes = _user$project$Components_Timer$stringToSeconds(_p4._0);
-					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.countdown, 60);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{countdown: total, interval: total}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.interval, 60);
+					var _p6 = model.state;
+					if (_p6.ctor === 'Stopped') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{countdown: total, interval: total}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{interval: total}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
 				default:
 					var seconds = _user$project$Components_Timer$stringToSeconds(_p4._0);
-					var total = (_elm_lang$core$Native_Utils.eq(seconds, -1) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? model.countdown : ((((model.countdown / 60) | 0) * 60) + seconds);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{countdown: total, interval: total}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					var total = (_elm_lang$core$Native_Utils.eq(seconds, -1) && (_elm_lang$core$Native_Utils.cmp(model.interval, 1) < 0)) ? model.interval : ((((model.interval / 60) | 0) * 60) + seconds);
+					var _p7 = model.state;
+					if (_p7.ctor === 'Stopped') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{countdown: total, interval: total}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{interval: total}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
 			}
 		}
 	});
