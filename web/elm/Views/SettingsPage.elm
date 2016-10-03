@@ -5,8 +5,8 @@ import Html exposing (Html, div, h3, h4, a, text, label, input)
 import Html.Attributes exposing (class, type', checked, name)
 import Html.Events exposing (onClick, onCheck)
 import Types.App as App exposing (Model, Msg)
-import Components.Timer as Timer
 import Views.Team as Team
+import Views.Timer as Timer
 
 
 settingsView : Model -> Html Msg
@@ -16,26 +16,25 @@ settingsView model =
             optionView model
 
         workTimerSettings =
-            div [ class "tile is-parent" ]
-                [ div [ class "tile notification is-primary is-child" ]
-                    [ h4 [ class "title" ] [ text "Timer" ]
-                    , Html.App.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
-                    ]
-                ]
+            [ h4 [ class "title" ] [ text "Timer" ]
+            , Html.App.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
+            ]
+                |> childTile "is-primary"
+                |> parentTile
 
         breakTimerSettings =
-            div [ class "tile is-parent" ]
-                [ div [ class "tile notification is-warning is-child" ]
-                    [ h4 [ class "title" ] [ text "Cooldown" ]
-                    , Html.App.map App.BreakTimerMsg (Timer.settingsView model.breakTimer)
-                    ]
-                ]
+            [ h4 [ class "title" ] [ text "Cooldown" ]
+            , Html.App.map App.BreakTimerMsg (Timer.settingsView model.breakTimer)
+            ]
+                |> childTile "is-warning"
+                |> parentTile
 
         teamSettings =
-            div [ class "tile is-parent" ] [ Html.App.map App.TeamMsg (Team.teamSettingsView model.team) ]
+            Html.App.map App.TeamMsg (Team.teamSettingsView model.team) |> parentTile
 
         teamMemberSettings =
-            div [ class "tile is-parent" ] [ Html.App.map App.TeamMsg (Team.memberSettingsView model.team) ]
+            Html.App.map App.TeamMsg (Team.memberSettingsView model.team)
+                |> parentTile
 
         team =
             if model.team.members /= [] then
@@ -60,42 +59,46 @@ optionView model =
             [ h4 [ class "title" ]
                 [ text "General" ]
             , div [ class "control-group is-grouped" ]
-                [ div [ class "control" ]
-                    [ label [ class "checkbox" ]
-                        [ input
-                            [ type' "checkbox"
-                            , checked model.useBreakTimer
-                            , name "use-break-timer"
-                            , onCheck App.UpdateUseBreakTimer
-                            ]
-                            []
-                        , text "Use cooldown"
-                        ]
-                    ]
-                , div [ class "control" ]
-                    [ label [ class "checkbox" ]
-                        [ input
-                            [ type' "checkbox"
-                            , checked model.autoRestart
-                            , name "auto-restart"
-                            , onCheck App.UpdateAutoRestart
-                            ]
-                            []
-                        , text "Auto-restart"
-                        ]
-                    ]
-                , div [ class "control" ]
-                    [ label [ class "checkbox" ]
-                        [ input
-                            [ type' "checkbox"
-                            , checked model.autoRotateTeam
-                            , name "auto-rotate-team"
-                            , onCheck App.UpdateAutoRotateTeam
-                            ]
-                            []
-                        , text "Auto-rotate team"
-                        ]
-                    ]
+                [ controlCheckBox "use-break-timer" "Use cooldown" model.useBreakTimer App.UpdateUseBreakTimer
+                , controlCheckBox "auto-restart" "Auto-restart" model.autoRestart App.UpdateAutoRestart
+                , controlCheckBox "auto-rotate-team" "Auto-rotate team" model.autoRotateTeam App.UpdateAutoRotateTeam
                 ]
             ]
         ]
+
+
+controlCheckBox : String -> String -> Bool -> (Bool -> App.Msg) -> Html Msg
+controlCheckBox name_ text_ flag msg =
+    div [ class "control" ]
+        [ label [ class "checkbox" ]
+            [ input
+                [ type' "checkbox"
+                , checked flag
+                , name name_
+                , onCheck msg
+                ]
+                []
+            , text text_
+            ]
+        ]
+
+
+
+--
+-- tile : String -> String -> Html Msg -> Html Msg
+-- tile title' color' content =
+--     [ h4 [ class "title" ] [ text "Timer" ]
+--     , Html.App.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
+--     ]
+--         |> childTile "is-primary"
+--         |> parentTile
+
+
+parentTile : Html Msg -> Html Msg
+parentTile child =
+    div [ class "tile is-parent" ] [ child ]
+
+
+childTile : String -> List (Html Msg) -> Html Msg
+childTile color' content =
+    div [ class ("tile is-child notification " ++ color') ] content

@@ -1,20 +1,6 @@
-module Components.Iterations exposing (..)
+module State.Iterations exposing (update)
 
--- MODEL
-
-
-type alias Model =
-    { iterationsToday : Int
-    , iterationsTotal : Int
-    }
-
-
-
--- UPDATE
-
-
-type Msg
-    = Increment
+import Types.Iterations exposing (Model, Msg(..))
 
 
 update : Msg -> Model -> Model

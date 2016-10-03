@@ -1,11 +1,11 @@
 module Types.App exposing (..)
 
 import Date exposing (Date, now)
-import Components.Timer as Timer
-import Components.Iterations as Iterations
-import Components.Comm as Comm
+import Types.Iterations as Iterations
+import Types.Comm as Comm
 import Keyboard exposing (KeyCode)
 import Types.Team as Team
+import Types.Timer as Timer
 
 
 type alias Model =

@@ -1,12 +1,13 @@
 module State.App exposing (..)
 
 import Char exposing (fromCode)
-import Components.Timer as Timer
-import Components.Comm as Comm
 import Date exposing (Date, now)
 import Keyboard exposing (KeyCode, presses)
-import Types.App as App exposing (Model, ActiveTimer, Page, Msg)
+import Types.App as App exposing (Model, ActiveTimer(..), Page(..), Msg(..))
+import State.Comm as Comm
 import State.Team as Team
+import State.Timer as Timer
+import Types.Timer as Timer
 import Types.Team as Team
 import Task exposing (perform)
 
@@ -16,7 +17,7 @@ import Task exposing (perform)
 
 getCurrentDate : Cmd Msg
 getCurrentDate =
-    Task.perform App.SetCurrentDate App.SetCurrentDate Date.now
+    Task.perform SetCurrentDate App.SetCurrentDate Date.now
 
 
 subscriptions : Model -> Sub Msg
@@ -28,6 +29,10 @@ subscriptions model =
         , Sub.map App.KeyPress (Keyboard.presses (\code -> code))
         , Sub.map App.CommMsg (Comm.subscriptions model.globalTeams)
         ]
+
+
+
+--INIT
 
 
 initialModel : Model
@@ -55,45 +60,45 @@ initialModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        App.Noop ->
+        Noop ->
             ( model, Cmd.none )
 
-        App.CommMsg msg ->
+        CommMsg msg ->
             let
                 ( newGlobalTeams, _ ) =
                     (Comm.update msg model.globalTeams)
             in
                 ( { model | globalTeams = newGlobalTeams }, Cmd.none )
 
-        App.SetCurrentDate date ->
+        SetCurrentDate date ->
             ( { model | today = date }, Cmd.none )
 
-        App.KeyPress code ->
+        KeyPress code ->
             handleKeyPress code model
 
-        App.BreakTimerMsg timerMsg ->
+        BreakTimerMsg timerMsg ->
             handleBreakTimerMsg timerMsg model
 
-        App.WorkTimerMsg timerMsg ->
+        WorkTimerMsg timerMsg ->
             handleWorkTimerMsg timerMsg model
 
-        App.TeamMsg teamMsg ->
+        TeamMsg teamMsg ->
             let
                 ( tmodel, tmsg ) =
                     Team.update teamMsg model.team
             in
-                ( { model | team = tmodel }, Cmd.map App.TeamMsg tmsg )
+                ( { model | team = tmodel }, Cmd.map TeamMsg tmsg )
 
-        App.UpdateAutoRestart flag ->
+        UpdateAutoRestart flag ->
             ( { model | autoRestart = flag }, Cmd.none )
 
-        App.UpdateAutoRotateTeam flag ->
+        UpdateAutoRotateTeam flag ->
             ( { model | autoRotateTeam = flag }, Cmd.none )
 
-        App.UpdateUseBreakTimer flag ->
+        UpdateUseBreakTimer flag ->
             ( { model | useBreakTimer = flag }, Cmd.none )
 
-        App.UpdateView page ->
+        UpdateView page ->
             ( { model | currentView = page }, Cmd.none )
 
 
@@ -117,14 +122,14 @@ handleKeyPress code model =
     in
         case (fromCode code) of
             ' ' ->
-                if model.currentView == App.MainView then
+                if model.currentView == MainView then
                     ( { model | workTimer = workTimer', breakTimer = breakTimer' }, Cmd.none )
                 else
                     ( model, Cmd.none )
 
             'e' ->
-                if model.currentView == App.MainView then
-                    ( { model | currentView = App.SettingsView }, Cmd.none )
+                if model.currentView == MainView then
+                    ( { model | currentView = SettingsView }, Cmd.none )
                 else
                     ( model, Cmd.none )
 
@@ -144,7 +149,7 @@ handleBreakTimerMsg timerMsg model =
         activeTimer =
             case timerMsg of
                 Timer.Alarm ->
-                    App.WorkTimer
+                    WorkTimer
 
                 _ ->
                     model.activeTimer
@@ -156,7 +161,7 @@ handleBreakTimerMsg timerMsg model =
                 ( model.workTimer, Cmd.none )
     in
         ( { model | breakTimer = tmodel, activeTimer = activeTimer, workTimer = workTimer }
-        , Cmd.map App.BreakTimerMsg tmsg
+        , Cmd.map BreakTimerMsg tmsg
         )
 
 
@@ -179,10 +184,10 @@ handleWorkTimerMsg timerMsg model =
             case timerMsg of
                 Timer.Alarm ->
                     if model.useBreakTimer then
-                        App.BreakTimer
+                        BreakTimer
                         -- (BreakTimer, (Iterations.update Iterations.Increment model.iterations))
                     else
-                        App.WorkTimer
+                        WorkTimer
 
                 -- (WorkTimer, (Iterations.update Iterations.Increment model.iterations))
                 _ ->
@@ -211,5 +216,5 @@ handleWorkTimerMsg timerMsg model =
             , breakTimer = breakTimer
             , team = team
           }
-        , Cmd.map App.WorkTimerMsg tcmd
+        , Cmd.map WorkTimerMsg tcmd
         )
