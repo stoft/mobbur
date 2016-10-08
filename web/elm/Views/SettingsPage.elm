@@ -4,7 +4,7 @@ import Html.App
 import Html exposing (Html, div, h3, h4, a, text, label, input)
 import Html.Attributes exposing (class, type', checked, name)
 import Html.Events exposing (onClick, onCheck)
-import Types.App as App exposing (Model, Msg)
+import App.Types as App exposing (Model, Msg)
 import Views.Team as Team
 import Views.Timer as Timer
 

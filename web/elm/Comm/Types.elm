@@ -1,4 +1,4 @@
-module Types.Comm exposing (..)
+module Comm.Types exposing (..)
 
 
 type alias Model =

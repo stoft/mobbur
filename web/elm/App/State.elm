@@ -1,14 +1,14 @@
-module State.App exposing (..)
+module App.State exposing (..)
 
 import Char exposing (fromCode)
 import Date exposing (Date, now)
 import Keyboard exposing (KeyCode, presses)
-import Types.App as App exposing (Model, ActiveTimer(..), Page(..), Msg(..))
-import State.Comm as Comm
-import State.Team as Team
-import State.Timer as Timer
-import Types.Timer as Timer
-import Types.Team as Team
+import App.Types as App exposing (Model, ActiveTimer(..), Page(..), Msg(..))
+import Comm.State as Comm
+import Team.State as Team
+import Timer.State as Timer
+import Timer.Types as Timer
+import Team.Types as Team
 import Task exposing (perform)
 
 

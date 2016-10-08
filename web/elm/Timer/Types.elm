@@ -1,4 +1,4 @@
-module Types.Timer exposing (..)
+module Timer.Types exposing (..)
 
 
 type alias Model =

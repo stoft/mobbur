@@ -3,9 +3,9 @@ module Views.App exposing (..)
 import Html exposing (Html, section, div, a, span, h5, h4, text, i, nav)
 import Html.Attributes exposing (class, type', name, checked, class, href, style, value, max, title)
 import Html.Events exposing (onCheck, onClick)
-import Types.App as App exposing (Model, Msg, Page)
-import Types.App as App exposing (Model, Msg)
+import App.Types as App exposing (Model, Msg, Page)
 import Views.FrontPage exposing (frontPageView)
+import Views.GlobalPage exposing (globalPageView)
 import Views.SettingsPage exposing (settingsView)
 
 
@@ -33,6 +33,9 @@ pageView model =
         App.SettingsView ->
             settingsView model
 
+        App.GlobalView ->
+            globalPageView model
+
 
 navigationBar : Model -> Html Msg
 navigationBar model =
@@ -57,6 +60,9 @@ navigationBar model =
                     settingsItem
 
                 App.SettingsView ->
+                    mainItem
+
+                App.GlobalView ->
                     mainItem
     in
         nav [ class "nav" ]
@@ -101,6 +107,17 @@ navFooter model =
                 icon ""
             else
                 icon "is-medium"
+
+        ( jumpToView, link' ) =
+            case model.currentView of
+                App.MainView ->
+                    ( App.GlobalView, "#globalStatus" )
+
+                App.GlobalView ->
+                    ( App.MainView, "#" )
+
+                App.SettingsView ->
+                    ( App.GlobalView, "#globalStatus" )
     in
         nav [ class "nav" ]
             [ div [ class "nav-center" ]
@@ -109,7 +126,8 @@ navFooter model =
                 ]
             , div [ class "nav-right" ]
                 [ div [ class "nav-item" ]
-                    [ globe
+                    [ a [ href link', onClick (App.UpdateView jumpToView) ]
+                        [ globe ]
                       -- h5 [ class "title is-5" alt (toString model.globalTeams.numberOfTeams) ]
                       --     [ text <| toString model.globalTeams.numberOfTeams ]
                     ]

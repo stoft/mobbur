@@ -1,7 +1,7 @@
-module Helpers.Timer exposing (..)
+module Timer.Helpers exposing (..)
 
 import String exposing (padLeft)
-import Types.Timer exposing (TimeRecord)
+import Timer.Types exposing (TimeRecord)
 
 
 secondsToTimeRecord : Int -> TimeRecord

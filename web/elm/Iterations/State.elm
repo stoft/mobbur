@@ -1,6 +1,6 @@
-module State.Iterations exposing (update)
+module Iterations.State exposing (update)
 
-import Types.Iterations exposing (Model, Msg(..))
+import Iterations.Types exposing (Model, Msg(..))
 
 
 update : Msg -> Model -> Model

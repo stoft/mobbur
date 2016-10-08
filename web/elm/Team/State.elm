@@ -1,10 +1,10 @@
-module State.Team exposing (..)
+module Team.State exposing (..)
 
 import Dom exposing (focus)
 import Keyboard exposing (KeyCode)
 import String
 import Task exposing (perform)
-import Types.Team as Team exposing (Model, Msg, TeamMember)
+import Team.Types as Team exposing (Model, Msg, TeamMember)
 
 
 --SUBSCRIPTIONS

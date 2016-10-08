@@ -3,8 +3,8 @@ module Views.Timer exposing (..)
 import Html exposing (Html, div, a, text, label, input)
 import Html.Attributes exposing (class, style, type', placeholder, name)
 import Html.Events exposing (onClick, onInput)
-import Helpers.Timer exposing (secondsToString, secondsToTimeRecord)
-import Types.Timer exposing (..)
+import Timer.Helpers exposing (secondsToString, secondsToTimeRecord)
+import Timer.Types exposing (..)
 
 
 displayView : Model -> Html Msg

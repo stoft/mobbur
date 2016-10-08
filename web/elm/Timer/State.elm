@@ -1,10 +1,10 @@
-module State.Timer exposing (..)
+module Timer.State exposing (..)
 
-import Helpers.Timer exposing (stringToSeconds)
-import State.Comm as Comm exposing (alarm)
+import Comm.State as Comm exposing (alarm)
 import Task exposing (perform)
 import Time exposing (every, second)
-import Types.Timer exposing (..)
+import Timer.Helpers exposing (stringToSeconds)
+import Timer.Types exposing (..)
 
 
 --INIT

@@ -1,4 +1,4 @@
-module Types.Iterations exposing (..)
+module Iterations.Types exposing (..)
 
 -- MODEL
 

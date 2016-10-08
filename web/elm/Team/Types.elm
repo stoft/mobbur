@@ -1,4 +1,4 @@
-module Types.Team exposing (..)
+module Team.Types exposing (..)
 
 import Keyboard exposing (KeyCode)
 

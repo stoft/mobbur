@@ -5,7 +5,7 @@ import Html exposing (Html, text, div, button, input, span, h4, i, label, a)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onBlur, onSubmit, onFocus)
 import Task exposing (perform)
-import Types.Team as Team exposing (Model, Msg)
+import Team.Types as Team exposing (Model, Msg)
 
 
 teamSettingsView : Model -> Html Msg

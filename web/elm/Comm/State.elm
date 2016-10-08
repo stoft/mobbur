@@ -1,6 +1,6 @@
-port module State.Comm exposing (..)
+port module Comm.State exposing (..)
 
-import Types.Comm as Comm exposing (Model, Msg)
+import Comm.Types as Comm exposing (Model, Msg)
 
 
 -- OUTBOUND PORTS

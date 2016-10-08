@@ -1,11 +1,11 @@
-module Types.App exposing (..)
+module App.Types exposing (..)
 
 import Date exposing (Date, now)
-import Types.Iterations as Iterations
-import Types.Comm as Comm
+import Iterations.Types as Iterations
+import Comm.Types as Comm
 import Keyboard exposing (KeyCode)
-import Types.Team as Team
-import Types.Timer as Timer
+import Team.Types as Team
+import Timer.Types as Timer
 
 
 type alias Model =
@@ -26,6 +26,7 @@ type alias Model =
 type Page
     = MainView
     | SettingsView
+    | GlobalView
 
 
 type ActiveTimer
