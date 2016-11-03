@@ -99,7 +99,7 @@ update msg model =
             ( { model | useBreakTimer = flag }, Cmd.none )
 
         UpdateView page ->
-            ( { model | currentView = page }, Cmd.none )
+            ( { model | currentView = page }, Comm.teamStatus model.team.name )
 
 
 handleKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )

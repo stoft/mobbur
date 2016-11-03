@@ -36,10 +36,14 @@ let formatTimestamp = (timestamp) => {
 }
 
 let listBy = (user, {metas: metas}) => {
-  return {
-    user: user,
-    onlineAt: formatTimestamp(metas[0].online_at)
-  }
+// let listBy = (user, params) => {
+  // return {
+  //   user: user,
+  //   onlineAt: formatTimestamp(metas[0].online_at),
+  //   teamName: metas[0].team_name
+  // }
+  console.log(metas);
+  return metas[0].team_name
 }
 
 // let userList = document.getElementById("UserList")
@@ -61,7 +65,7 @@ let sendToElm = (presences) => {
 }
 
 let countTeams = (presences) => {
-  return Presence.list(presences, listBy).length
+  return Presence.list(presences, listBy)
 }
 
 // Channels
@@ -83,4 +87,11 @@ room.join()
 app.ports.alarm.subscribe(function() {
   document.getElementById('alarm').play();
   // socket.sendStatus("foo");
+});
+
+app.ports.teamStatus.subscribe(function(arg) {
+  console.log(arg);
+  socket.params.teamName = arg;
+  console.log(socket);
+  room.push("update", arg, 1000);
 });

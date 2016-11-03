@@ -2,9 +2,11 @@ module Comm.Types exposing (..)
 
 
 type alias Model =
-    { numberOfTeams : Int }
+    { numberOfTeams : Int
+    , teamNames : List String
+    }
 
 
 type Msg
     = NoOp
-    | StatusUpdate Int
+    | StatusUpdate (List String)

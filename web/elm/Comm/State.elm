@@ -9,11 +9,14 @@ import Comm.Types as Comm exposing (Model, Msg)
 port alarm : () -> Cmd msg
 
 
+port teamStatus : String -> Cmd msg
+
+
 
 --INBOUND PORTS
 
 
-port globalStatus : (Int -> msg) -> Sub msg
+port globalStatus : (List String -> msg) -> Sub msg
 
 
 subscriptions : Model -> Sub Msg
@@ -23,7 +26,9 @@ subscriptions model =
 
 initialModel : Model
 initialModel =
-    { numberOfTeams = 0 }
+    { numberOfTeams = 0
+    , teamNames = []
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -32,5 +37,15 @@ update msg model =
         Comm.NoOp ->
             ( model, Cmd.none )
 
-        Comm.StatusUpdate totalOnline ->
-            Debug.log "status update! " ( { model | numberOfTeams = totalOnline }, Cmd.none )
+        Comm.StatusUpdate teams ->
+            let
+                totalOnline =
+                    List.length (Debug.log "teams: " teams)
+            in
+                Debug.log "status update! "
+                    ( { model
+                        | numberOfTeams = totalOnline
+                        , teamNames = teams
+                      }
+                    , Cmd.none
+                    )

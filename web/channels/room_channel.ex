@@ -4,6 +4,8 @@ defmodule Mobbur.RoomChannel do
 
   def join("room:lobby", _message, socket) do
     send self(), :after_join
+    IO.puts "Socket: "
+    IO.inspect socket
     {:ok, socket}
   end
 
@@ -13,10 +15,25 @@ defmodule Mobbur.RoomChannel do
 
   def handle_info(:after_join, socket) do
     Presence.track(socket, socket.assigns.user, %{
-      online_at: System.system_time(:milliseconds)
+      online_at: System.system_time(:milliseconds),
+      team_name: "Inglorious Anonymous"
       })
     push socket, "presence_state", Presence.list(socket)
     IO.inspect Presence.list(socket)
+    {:noreply, socket}
+  end
+
+  def handle_in("update", params, socket) do
+    user = socket.assigns.user
+    %{^user => presence} = Presence.fetch "room:lobby", Presence.list(socket)
+    IO.puts "Presence: "
+    IO.inspect presence
+    Presence.update(socket, socket.assigns.user, %{
+      team_name: params
+      })
+    push socket, "presence_state", Presence.list(socket)
+    # IO.puts "############################"
+    # IO.inspect Presence.list(socket)
     {:noreply, socket}
   end
 

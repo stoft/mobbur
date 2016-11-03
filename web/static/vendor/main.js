@@ -8776,9 +8776,10 @@ var _user$project$Iterations_Types$Model = F2(
 	});
 var _user$project$Iterations_Types$Increment = {ctor: 'Increment'};
 
-var _user$project$Comm_Types$Model = function (a) {
-	return {numberOfTeams: a};
-};
+var _user$project$Comm_Types$Model = F2(
+	function (a, b) {
+		return {numberOfTeams: a, teamNames: b};
+	});
 var _user$project$Comm_Types$StatusUpdate = function (a) {
 	return {ctor: 'StatusUpdate', _0: a};
 };
@@ -8915,6 +8916,9 @@ var _user$project$Comm_State$update = F2(
 		if (_p0.ctor === 'NoOp') {
 			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		} else {
+			var _p1 = _p0._0;
+			var totalOnline = _elm_lang$core$List$length(
+				A2(_elm_lang$core$Debug$log, 'teams: ', _p1));
 			return A2(
 				_elm_lang$core$Debug$log,
 				'status update! ',
@@ -8922,18 +8926,29 @@ var _user$project$Comm_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{numberOfTeams: _p0._0}),
+						{numberOfTeams: totalOnline, teamNames: _p1}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				});
 		}
 	});
-var _user$project$Comm_State$initialModel = {numberOfTeams: 0};
+var _user$project$Comm_State$initialModel = {
+	numberOfTeams: 0,
+	teamNames: _elm_lang$core$Native_List.fromArray(
+		[])
+};
 var _user$project$Comm_State$alarm = _elm_lang$core$Native_Platform.outgoingPort(
 	'alarm',
 	function (v) {
 		return null;
 	});
-var _user$project$Comm_State$globalStatus = _elm_lang$core$Native_Platform.incomingPort('globalStatus', _elm_lang$core$Json_Decode$int);
+var _user$project$Comm_State$teamStatus = _elm_lang$core$Native_Platform.outgoingPort(
+	'teamStatus',
+	function (v) {
+		return v;
+	});
+var _user$project$Comm_State$globalStatus = _elm_lang$core$Native_Platform.incomingPort(
+	'globalStatus',
+	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
 var _user$project$Comm_State$subscriptions = function (model) {
 	return _user$project$Comm_State$globalStatus(_user$project$Comm_Types$StatusUpdate);
 };
@@ -9557,7 +9572,7 @@ var _user$project$App_State$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{currentView: _p12._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_1: _user$project$Comm_State$teamStatus(model.team.name)
 				};
 		}
 	});
@@ -9834,6 +9849,137 @@ var _user$project$Views_FrontPage$frontPageView = function (model) {
 		content);
 };
 
+var _user$project$Views_Tiles$tileWithList = F3(
+	function (title, content, msg) {
+		var wrapInDiv = function (content) {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('content')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(content)
+					]));
+		};
+		var list = A2(_elm_lang$core$List$map, wrapInDiv, content);
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('tile is-parent')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('tile is-child notification is-success')
+						]),
+					A2(
+						_elm_lang$core$List_ops['::'],
+						A2(
+							_elm_lang$html$Html$h4,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('title')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(title)
+								])),
+						list))
+				]));
+	});
+var _user$project$Views_Tiles$tileWithOnlyTitle = F2(
+	function (title, msg) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('tile is-parent')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('tile is-child notification is-success')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$h4,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('title')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(title)
+								]))
+						]))
+				]));
+	});
+var _user$project$Views_Tiles$tile = F3(
+	function (title, content, msg) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('tile is-parent')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('tile is-child notification is-success')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$h4,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('title')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(title)
+								])),
+							A2(
+							_elm_lang$html$Html$div,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('content')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(content)
+								]))
+						]))
+				]));
+	});
+
+var _user$project$Views_GlobalPage$namesCard = function (model) {
+	return A3(_user$project$Views_Tiles$tileWithList, 'Teams', model.globalTeams.teamNames, _user$project$App_Types$Noop);
+};
+var _user$project$Views_GlobalPage$numbersCard = function (model) {
+	var numberOfTeams = model.globalTeams.numberOfTeams;
+	var title = _elm_lang$core$Native_Utils.eq(numberOfTeams, 1) ? A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(numberOfTeams),
+		' Team Online') : A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(numberOfTeams),
+		' Teams Online');
+	return A2(_user$project$Views_Tiles$tileWithOnlyTitle, title, _user$project$App_Types$Noop);
+};
 var _user$project$Views_GlobalPage$globalPageView = function (model) {
 	var numberOfTeams = model.globalTeams.numberOfTeams;
 	var title$ = _elm_lang$core$Native_Utils.eq(numberOfTeams, 1) ? '1 team online' : A2(
@@ -9846,7 +9992,8 @@ var _user$project$Views_GlobalPage$globalPageView = function (model) {
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html$text(title$)
+				_user$project$Views_GlobalPage$numbersCard(model),
+				_user$project$Views_GlobalPage$namesCard(model)
 			]));
 };
 
