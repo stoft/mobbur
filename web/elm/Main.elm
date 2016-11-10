@@ -5,12 +5,24 @@ import App.State exposing (update, subscriptions)
 import Views.App exposing (view)
 
 
-main : Program Never
+main : Program { teamName : String }
 main =
-    Html.App.program
+    Html.App.programWithFlags
         { init =
-            ( App.State.initialModel, App.State.getCurrentDate )
+            \flags -> App.State.init flags
+            -- ( App.State.initialModel
+            -- , Cmd.batch
+            --     [ App.State.getCurrentDate
+            --     , App.State.sendInitialState App.State.initialModel
+            --     ]
+            -- )
         , view = view
         , update = update
         , subscriptions = subscriptions
         }
+
+
+
+-- programWithFlags : { init : flags -> ( model, Platform.Cmd.Cmd msg )
+--   , update : msg -> model -> ( model, Platform.Cmd.Cmd msg )
+--   , subscriptions : model -> Platform.Sub.Sub msg , view : model -> Html msg } -> Platform.Program flags

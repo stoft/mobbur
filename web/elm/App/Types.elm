@@ -20,6 +20,7 @@ type alias Model =
     , today : Date
     , iterations : Iterations.Model
     , globalTeams : Comm.Model
+    , clientID : String
     }
 
 

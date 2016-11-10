@@ -8780,6 +8780,25 @@ var _user$project$Comm_Types$Model = F2(
 	function (a, b) {
 		return {numberOfTeams: a, teamNames: b};
 	});
+var _user$project$Comm_Types$ReplicatedModel = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h};
+	});
+var _user$project$Comm_Types$Team = F3(
+	function (a, b, c) {
+		return {name: a, members: b, activeMember: c};
+	});
+var _user$project$Comm_Types$TeamMember = F2(
+	function (a, b) {
+		return {id: a, nick: b};
+	});
+var _user$project$Comm_Types$Timer = F3(
+	function (a, b, c) {
+		return {countdown: a, interval: b, state: c};
+	});
+var _user$project$Comm_Types$TeamState = function (a) {
+	return {ctor: 'TeamState', _0: a};
+};
 var _user$project$Comm_Types$StatusUpdate = function (a) {
 	return {ctor: 'StatusUpdate', _0: a};
 };
@@ -8861,7 +8880,9 @@ var _user$project$App_Types$Model = function (a) {
 								return function (i) {
 									return function (j) {
 										return function (k) {
-											return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h, today: i, iterations: j, globalTeams: k};
+											return function (l) {
+												return {workTimer: a, breakTimer: b, activeTimer: c, useBreakTimer: d, autoRestart: e, autoRotateTeam: f, team: g, currentView: h, today: i, iterations: j, globalTeams: k, clientID: l};
+											};
 										};
 									};
 								};
@@ -8913,24 +8934,48 @@ var _user$project$App_Types$Noop = {ctor: 'Noop'};
 var _user$project$Comm_State$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		if (_p0.ctor === 'NoOp') {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-		} else {
-			var _p1 = _p0._0;
-			var totalOnline = _elm_lang$core$List$length(
-				A2(_elm_lang$core$Debug$log, 'teams: ', _p1));
-			return A2(
-				_elm_lang$core$Debug$log,
-				'status update! ',
-				{
+		switch (_p0.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'StatusUpdate':
+				var _p1 = _p0._0;
+				var totalOnline = _elm_lang$core$List$length(_p1);
+				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{numberOfTeams: totalOnline, teamNames: _p1}),
 					_1: _elm_lang$core$Platform_Cmd$none
-				});
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_elm_lang$core$Debug$log,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Elm received: ',
+							_elm_lang$core$Basics$toString(_p0._0)),
+						model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
+var _user$project$Comm_State$initialReplicatedModel = {
+	workTimer: A3(_user$project$Comm_Types$Timer, 0, 0, ''),
+	breakTimer: A3(_user$project$Comm_Types$Timer, 0, 0, ''),
+	activeTimer: '',
+	useBreakTimer: true,
+	autoRestart: true,
+	autoRotateTeam: true,
+	team: {
+		name: '',
+		members: _elm_lang$core$Native_List.fromArray(
+			[]),
+		activeMember: _elm_lang$core$Maybe$Nothing
+	},
+	currentView: ''
+};
 var _user$project$Comm_State$initialModel = {
 	numberOfTeams: 0,
 	teamNames: _elm_lang$core$Native_List.fromArray(
@@ -8944,13 +8989,186 @@ var _user$project$Comm_State$alarm = _elm_lang$core$Native_Platform.outgoingPort
 var _user$project$Comm_State$teamStatus = _elm_lang$core$Native_Platform.outgoingPort(
 	'teamStatus',
 	function (v) {
-		return v;
+		return {
+			workTimer: {countdown: v.workTimer.countdown, interval: v.workTimer.interval, state: v.workTimer.state},
+			breakTimer: {countdown: v.breakTimer.countdown, interval: v.breakTimer.interval, state: v.breakTimer.state},
+			activeTimer: v.activeTimer,
+			useBreakTimer: v.useBreakTimer,
+			autoRestart: v.autoRestart,
+			autoRotateTeam: v.autoRotateTeam,
+			team: {
+				name: v.team.name,
+				members: _elm_lang$core$Native_List.toArray(v.team.members).map(
+					function (v) {
+						return {id: v.id, nick: v.nick};
+					}),
+				activeMember: (v.team.activeMember.ctor === 'Nothing') ? null : v.team.activeMember._0
+			},
+			currentView: v.currentView
+		};
 	});
 var _user$project$Comm_State$globalStatus = _elm_lang$core$Native_Platform.incomingPort(
 	'globalStatus',
 	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
 var _user$project$Comm_State$subscriptions = function (model) {
 	return _user$project$Comm_State$globalStatus(_user$project$Comm_Types$StatusUpdate);
+};
+var _user$project$Comm_State$teamState = _elm_lang$core$Native_Platform.incomingPort(
+	'teamState',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(
+			_elm_lang$core$Json_Decode_ops[':='],
+			'workTimer',
+			A2(
+				_elm_lang$core$Json_Decode$andThen,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'countdown', _elm_lang$core$Json_Decode$int),
+				function (countdown) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'interval', _elm_lang$core$Json_Decode$int),
+						function (interval) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'state', _elm_lang$core$Json_Decode$string),
+								function (state) {
+									return _elm_lang$core$Json_Decode$succeed(
+										{countdown: countdown, interval: interval, state: state});
+								});
+						});
+				})),
+		function (workTimer) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				A2(
+					_elm_lang$core$Json_Decode_ops[':='],
+					'breakTimer',
+					A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'countdown', _elm_lang$core$Json_Decode$int),
+						function (countdown) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'interval', _elm_lang$core$Json_Decode$int),
+								function (interval) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'state', _elm_lang$core$Json_Decode$string),
+										function (state) {
+											return _elm_lang$core$Json_Decode$succeed(
+												{countdown: countdown, interval: interval, state: state});
+										});
+								});
+						})),
+				function (breakTimer) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'activeTimer', _elm_lang$core$Json_Decode$string),
+						function (activeTimer) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'useBreakTimer', _elm_lang$core$Json_Decode$bool),
+								function (useBreakTimer) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'autoRestart', _elm_lang$core$Json_Decode$bool),
+										function (autoRestart) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'autoRotateTeam', _elm_lang$core$Json_Decode$bool),
+												function (autoRotateTeam) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(
+															_elm_lang$core$Json_Decode_ops[':='],
+															'team',
+															A2(
+																_elm_lang$core$Json_Decode$andThen,
+																A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
+																function (name) {
+																	return A2(
+																		_elm_lang$core$Json_Decode$andThen,
+																		A2(
+																			_elm_lang$core$Json_Decode_ops[':='],
+																			'members',
+																			_elm_lang$core$Json_Decode$list(
+																				A2(
+																					_elm_lang$core$Json_Decode$andThen,
+																					A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$int),
+																					function (id) {
+																						return A2(
+																							_elm_lang$core$Json_Decode$andThen,
+																							A2(_elm_lang$core$Json_Decode_ops[':='], 'nick', _elm_lang$core$Json_Decode$string),
+																							function (nick) {
+																								return _elm_lang$core$Json_Decode$succeed(
+																									{id: id, nick: nick});
+																							});
+																					}))),
+																		function (members) {
+																			return A2(
+																				_elm_lang$core$Json_Decode$andThen,
+																				A2(
+																					_elm_lang$core$Json_Decode_ops[':='],
+																					'activeMember',
+																					_elm_lang$core$Json_Decode$oneOf(
+																						_elm_lang$core$Native_List.fromArray(
+																							[
+																								_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+																								A2(_elm_lang$core$Json_Decode$map, _elm_lang$core$Maybe$Just, _elm_lang$core$Json_Decode$int)
+																							]))),
+																				function (activeMember) {
+																					return _elm_lang$core$Json_Decode$succeed(
+																						{name: name, members: members, activeMember: activeMember});
+																				});
+																		});
+																})),
+														function (team) {
+															return A2(
+																_elm_lang$core$Json_Decode$andThen,
+																A2(_elm_lang$core$Json_Decode_ops[':='], 'currentView', _elm_lang$core$Json_Decode$string),
+																function (currentView) {
+																	return _elm_lang$core$Json_Decode$succeed(
+																		{workTimer: workTimer, breakTimer: breakTimer, activeTimer: activeTimer, useBreakTimer: useBreakTimer, autoRestart: autoRestart, autoRotateTeam: autoRotateTeam, team: team, currentView: currentView});
+																});
+														});
+												});
+										});
+								});
+						});
+				});
+		}));
+var _user$project$Comm_State$teamSubscription = function (model) {
+	return _user$project$Comm_State$teamState(_user$project$Comm_Types$TeamState);
+};
+
+var _user$project$Comm_NativeToPortConverter$convertTimer = function (model) {
+	return A3(
+		_user$project$Comm_Types$Timer,
+		model.countdown,
+		model.interval,
+		_elm_lang$core$Basics$toString(model.state));
+};
+var _user$project$Comm_NativeToPortConverter$convertMember = function (model) {
+	return A2(_user$project$Comm_Types$TeamMember, model.id$, model.nick);
+};
+var _user$project$Comm_NativeToPortConverter$convertTeam = function (model) {
+	return A3(
+		_user$project$Comm_Types$Team,
+		model.name,
+		A2(_elm_lang$core$List$map, _user$project$Comm_NativeToPortConverter$convertMember, model.members),
+		model.activeMember);
+};
+var _user$project$Comm_NativeToPortConverter$convertModel = function (model) {
+	return A8(
+		_user$project$Comm_Types$ReplicatedModel,
+		_user$project$Comm_NativeToPortConverter$convertTimer(model.workTimer),
+		_user$project$Comm_NativeToPortConverter$convertTimer(model.breakTimer),
+		_elm_lang$core$Basics$toString(model.activeTimer),
+		model.useBreakTimer,
+		model.autoRestart,
+		model.autoRotateTeam,
+		_user$project$Comm_NativeToPortConverter$convertTeam(model.team),
+		_elm_lang$core$Basics$toString(model.currentView));
 };
 
 var _user$project$Team_State$handleSetNextMemberActive = function (model) {
@@ -9572,7 +9790,8 @@ var _user$project$App_State$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{currentView: _p12._0}),
-					_1: _user$project$Comm_State$teamStatus(model.team.name)
+					_1: _user$project$Comm_State$teamStatus(
+						_user$project$Comm_NativeToPortConverter$convertModel(model))
 				};
 		}
 	});
@@ -9587,7 +9806,8 @@ var _user$project$App_State$initialModel = {
 	currentView: _user$project$App_Types$MainView,
 	today: _elm_lang$core$Date$fromTime(0),
 	iterations: {iterationsToday: 0, iterationsTotal: 0},
-	globalTeams: _user$project$Comm_State$initialModel
+	globalTeams: _user$project$Comm_State$initialModel,
+	clientID: ''
 };
 var _user$project$App_State$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
@@ -9615,10 +9835,41 @@ var _user$project$App_State$subscriptions = function (model) {
 				A2(
 				_elm_lang$core$Platform_Sub$map,
 				_user$project$App_Types$CommMsg,
-				_user$project$Comm_State$subscriptions(model.globalTeams))
+				_user$project$Comm_State$subscriptions(model.globalTeams)),
+				A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$App_Types$CommMsg,
+				_user$project$Comm_State$teamSubscription(_user$project$Comm_State$initialReplicatedModel))
 			]));
 };
+var _user$project$App_State$sendInitialState = function (model) {
+	return _user$project$Comm_State$teamStatus(
+		_user$project$Comm_NativeToPortConverter$convertModel(model));
+};
 var _user$project$App_State$getCurrentDate = A3(_elm_lang$core$Task$perform, _user$project$App_Types$SetCurrentDate, _user$project$App_Types$SetCurrentDate, _elm_lang$core$Date$now);
+var _user$project$App_State$init = function (flags) {
+	var modifiedTeam = function (team) {
+		return _elm_lang$core$Native_Utils.update(
+			team,
+			{name: flags.teamName});
+	};
+	var cmds = _elm_lang$core$Platform_Cmd$batch(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$App_State$getCurrentDate,
+				_user$project$App_State$sendInitialState(_user$project$App_State$initialModel)
+			]));
+	var model = _user$project$App_State$initialModel;
+	return {
+		ctor: '_Tuple2',
+		_0: _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				team: modifiedTeam(model.team)
+			}),
+		_1: cmds
+	};
+};
 
 var _user$project$Views_Timer$inputFields = function (model) {
 	return A2(
@@ -10617,7 +10868,7 @@ var _user$project$Views_App$navigationBar = function (model) {
 		_elm_lang$html$Html$a,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$href('#settings'),
+				_elm_lang$html$Html_Attributes$href('#'),
 				_elm_lang$html$Html_Events$onClick(
 				_user$project$App_Types$UpdateView(_user$project$App_Types$SettingsView))
 			]),
@@ -10649,7 +10900,7 @@ var _user$project$Views_App$navigationBar = function (model) {
 			case 'SettingsView':
 				return mainItem;
 			default:
-				return mainItem;
+				return settingsItem;
 		}
 	}();
 	return A2(
@@ -10779,12 +11030,21 @@ var _user$project$Views_App$view = function (model) {
 };
 
 var _user$project$Main$main = {
-	main: _elm_lang$html$Html_App$program(
+	main: _elm_lang$html$Html_App$programWithFlags(
 		{
-			init: {ctor: '_Tuple2', _0: _user$project$App_State$initialModel, _1: _user$project$App_State$getCurrentDate},
+			init: function (flags) {
+				return _user$project$App_State$init(flags);
+			},
 			view: _user$project$Views_App$view,
 			update: _user$project$App_State$update,
 			subscriptions: _user$project$App_State$subscriptions
+		}),
+	flags: A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'teamName', _elm_lang$core$Json_Decode$string),
+		function (teamName) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{teamName: teamName});
 		})
 };
 

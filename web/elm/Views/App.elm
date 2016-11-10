@@ -41,7 +41,7 @@ navigationBar : Model -> Html Msg
 navigationBar model =
     let
         settingsItem =
-            a [ href "#settings", onClick (App.UpdateView App.SettingsView) ]
+            a [ href "#", onClick (App.UpdateView App.SettingsView) ]
                 [ span [ class "icon is-medium" ]
                     [ i [ class "fa fa-cog" ] []
                     ]
@@ -63,7 +63,7 @@ navigationBar model =
                     mainItem
 
                 App.GlobalView ->
-                    mainItem
+                    settingsItem
     in
         nav [ class "nav" ]
             [ div [ class "nav-left" ]

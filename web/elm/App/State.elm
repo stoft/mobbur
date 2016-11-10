@@ -5,6 +5,7 @@ import Date exposing (Date, now)
 import Keyboard exposing (KeyCode, presses)
 import App.Types as App exposing (Model, ActiveTimer(..), Page(..), Msg(..))
 import Comm.State as Comm
+import Comm.NativeToPortConverter
 import Team.State as Team
 import Timer.State as Timer
 import Timer.Types as Timer
@@ -20,6 +21,11 @@ getCurrentDate =
     Task.perform SetCurrentDate App.SetCurrentDate Date.now
 
 
+sendInitialState : Model -> Cmd Msg
+sendInitialState model =
+    Comm.teamStatus (Comm.NativeToPortConverter.convertModel model)
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
@@ -28,11 +34,30 @@ subscriptions model =
         , Sub.map App.TeamMsg (Team.subscriptions model.team)
         , Sub.map App.KeyPress (Keyboard.presses (\code -> code))
         , Sub.map App.CommMsg (Comm.subscriptions model.globalTeams)
+        , Sub.map App.CommMsg (Comm.teamSubscription Comm.initialReplicatedModel)
         ]
 
 
 
 --INIT
+
+
+init : { teamName : String } -> ( Model, Cmd Msg )
+init flags =
+    let
+        model =
+            initialModel
+
+        cmds =
+            Cmd.batch
+                [ getCurrentDate
+                , sendInitialState initialModel
+                ]
+
+        modifiedTeam team =
+            { team | name = flags.teamName }
+    in
+        ( { model | team = (modifiedTeam model.team) }, cmds )
 
 
 initialModel : Model
@@ -50,6 +75,7 @@ initialModel =
     , today = Date.fromTime 0
     , iterations = { iterationsToday = 0, iterationsTotal = 0 }
     , globalTeams = Comm.initialModel
+    , clientID = ""
     }
 
 
@@ -99,7 +125,7 @@ update msg model =
             ( { model | useBreakTimer = flag }, Cmd.none )
 
         UpdateView page ->
-            ( { model | currentView = page }, Comm.teamStatus model.team.name )
+            ( { model | currentView = page }, Comm.teamStatus (Comm.NativeToPortConverter.convertModel model) )
 
 
 handleKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
