@@ -1,6 +1,6 @@
 port module Comm.State exposing (..)
 
-import Comm.Types as Comm exposing (Model, Msg)
+import Comm.Types as Comm exposing (Model, Msg, ReplicatedModel)
 
 
 -- OUTBOUND PORTS
@@ -9,7 +9,7 @@ import Comm.Types as Comm exposing (Model, Msg)
 port alarm : () -> Cmd msg
 
 
-port teamStatus : String -> Cmd msg
+port teamStatus : ReplicatedModel -> Cmd msg
 
 
 
@@ -19,15 +19,36 @@ port teamStatus : String -> Cmd msg
 port globalStatus : (List String -> msg) -> Sub msg
 
 
+port teamState : (ReplicatedModel -> msg) -> Sub msg
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     globalStatus Comm.StatusUpdate
+
+
+teamSubscription : ReplicatedModel -> Sub Msg
+teamSubscription model =
+    teamState Comm.TeamState
 
 
 initialModel : Model
 initialModel =
     { numberOfTeams = 0
     , teamNames = []
+    }
+
+
+initialReplicatedModel : ReplicatedModel
+initialReplicatedModel =
+    { workTimer = Comm.Timer 0 0 ""
+    , breakTimer = Comm.Timer 0 0 ""
+    , activeTimer = ""
+    , useBreakTimer = True
+    , autoRestart = True
+    , autoRotateTeam = True
+    , team = { name = "", members = [], activeMember = Nothing }
+    , currentView = ""
     }
 
 
@@ -40,12 +61,11 @@ update msg model =
         Comm.StatusUpdate teams ->
             let
                 totalOnline =
-                    List.length (Debug.log "teams: " teams)
+                    List.length teams
             in
-                Debug.log "status update! "
-                    ( { model
-                        | numberOfTeams = totalOnline
-                        , teamNames = teams
-                      }
-                    , Cmd.none
-                    )
+                ( { model | numberOfTeams = totalOnline, teamNames = teams }
+                , Cmd.none
+                )
+
+        Comm.TeamState state ->
+            ( Debug.log ("Elm received: " ++ toString state) model, Cmd.none )

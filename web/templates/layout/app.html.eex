@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta itemprop="client-id" id="client-id" content="<%= %>">
+    <meta itemprop="team-id" id="team-id" content="<%= @conn.assigns.uuid %>">
+    <meta itemprop="team-name" id="team-name" content="<%= @conn.assigns.team_name %>">
 
     <title>Hello Mobbur!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
@@ -14,6 +17,7 @@
   </head>
 
   <body>
+    <!-- <div id="client-id" value="foo"></div> -->
     <div id="elm-app-lives-here" class="" name="elm-app-lives-here"></div>
 
       <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

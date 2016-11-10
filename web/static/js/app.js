@@ -19,8 +19,11 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 import {Socket, Presence} from "phoenix"
 
+let clientId = document.getElementById('client-id').content;
+let teamName = document.getElementById('team-name').content;
+// console.log(clientId);
 var elmDiv = document.getElementById('elm-app-lives-here');
-var app = Elm.Main.embed(elmDiv);
+var app = Elm.Main.embed(elmDiv, {teamName: teamName});
 
 // var audio = new Audio('/audio/start1.mp3')
 let user = window.location.pathname.split('/')[1];
@@ -42,7 +45,7 @@ let listBy = (user, {metas: metas}) => {
   //   onlineAt: formatTimestamp(metas[0].online_at),
   //   teamName: metas[0].team_name
   // }
-  console.log(metas);
+  // console.log(metas);
   return metas[0].team_name
 }
 
@@ -69,20 +72,30 @@ let countTeams = (presences) => {
 }
 
 // Channels
-let room = socket.channel("room:lobby")
-room.on("presence_state", state => {
+let lobby = socket.channel("room:lobby")
+lobby.on("presence_state", state => {
   presences = Presence.syncState(presences, state)
   // render(presences)
   sendToElm(presences)
 })
 
-room.on("presence_diff", diff => {
+lobby.on("presence_diff", diff => {
   presences = Presence.syncDiff(presences, diff)
   // render(presences)
   sendToElm(presences)
 })
 
-room.join()
+lobby.join()
+
+let team_room = socket.channel("room:" + user);
+
+team_room.on("team_state", state => {
+  console.log("incoming state:");
+  console.log(state);
+  app.ports.teamState.send(state);
+})
+
+team_room.join();
 
 app.ports.alarm.subscribe(function() {
   document.getElementById('alarm').play();
@@ -90,8 +103,10 @@ app.ports.alarm.subscribe(function() {
 });
 
 app.ports.teamStatus.subscribe(function(arg) {
-  console.log(arg);
-  socket.params.teamName = arg;
-  console.log(socket);
-  room.push("update", arg, 1000);
+  // console.log(arg);
+  socket.params.teamName = arg.team.name;
+  let teamName = arg.team.name;
+  // console.log(socket);
+  lobby.push("update", teamName, 1000);
+  team_room.push("team_state", arg, 1000);
 });
