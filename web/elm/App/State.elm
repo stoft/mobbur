@@ -129,38 +129,75 @@ update msg model =
 
 
 handleKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
-handleKeyPress code model =
-    let
-        toggleTimer timer =
-            let
-                ( model', _ ) =
-                    Timer.update Timer.Toggle timer
-            in
-                model'
+handleKeyPress keyCode model =
+    case model.currentView of
+        MainView ->
+            handleMainViewKeyPress keyCode model
 
-        ( workTimer', breakTimer' ) =
+        GlobalView ->
+            handleGlobalViewKeyPress keyCode model
+
+        _ ->
+            ( model, Cmd.none )
+
+
+handleMainViewKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
+handleMainViewKeyPress keyCode model =
+    let
+        ( workTimer_, breakTimer_ ) =
             case model.activeTimer of
                 App.WorkTimer ->
-                    ( (toggleTimer model.workTimer), model.breakTimer )
+                    ( (updateTimerWithKeyPress keyCode model.workTimer), model.breakTimer )
 
                 App.BreakTimer ->
-                    ( model.workTimer, (toggleTimer model.breakTimer) )
+                    ( model.workTimer, (updateTimerWithKeyPress keyCode model.breakTimer) )
     in
-        case (fromCode code) of
+        case (fromCode keyCode) of
             ' ' ->
-                if model.currentView == MainView then
-                    ( { model | workTimer = workTimer', breakTimer = breakTimer' }, Cmd.none )
-                else
-                    ( model, Cmd.none )
+                ( { model | workTimer = workTimer_, breakTimer = breakTimer_ }, Cmd.none )
+
+            'r' ->
+                ( { model | workTimer = workTimer_, breakTimer = breakTimer_ }, Cmd.none )
 
             'e' ->
-                if model.currentView == MainView then
-                    ( { model | currentView = SettingsView }, Cmd.none )
-                else
-                    ( model, Cmd.none )
+                ( { model | currentView = SettingsView }, Cmd.none )
+
+            'g' ->
+                ( { model | currentView = GlobalView }, Cmd.none )
 
             _ ->
                 ( model, Cmd.none )
+
+
+handleGlobalViewKeyPress : KeyCode -> Model -> ( Model, Cmd Msg )
+handleGlobalViewKeyPress keycode model =
+    case (fromCode keycode) of
+        ' ' ->
+            ( { model | currentView = MainView }, Cmd.none )
+
+        'g' ->
+            ( { model | currentView = MainView }, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+updateTimerWithKeyPress : KeyCode -> Timer.Model -> Timer.Model
+updateTimerWithKeyPress keyCode timer =
+    let
+        keyPress =
+            fromCode keyCode
+
+        dictionary =
+            [ ( ' ', Timer.Toggle ), ( 'r', Timer.Reset ) ]
+
+        msg =
+            (List.filter (\( char, _ ) -> char == keyPress) dictionary)
+                |> List.head
+                |> (Maybe.withDefault ( '_', Timer.NoOp ))
+                |> snd
+    in
+        Timer.update msg timer |> fst
 
 
 handleBreakTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )

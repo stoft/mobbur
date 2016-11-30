@@ -1,7 +1,7 @@
 module Views.Timer exposing (..)
 
-import Html exposing (Html, div, a, text, label, input)
-import Html.Attributes exposing (class, style, type', placeholder, name)
+import Html exposing (Html, div, a, text, label, input, span, i, button)
+import Html.Attributes exposing (class, style, type', placeholder, name, title)
 import Html.Events exposing (onClick, onInput)
 import Timer.Helpers exposing (secondsToString, secondsToTimeRecord)
 import Timer.Types exposing (..)
@@ -21,24 +21,30 @@ displayView model =
             else
                 "is-danger"
 
-        ( action, color' ) =
+        resetButton =
+            a [ class "button is-link is-white", onClick Reset, title "Reset (r)" ]
+                [ span [ class "icon is-medium" ] [ i [ class "fa fa-undo" ] [] ]
+                ]
+
+        ( action, color_, control ) =
             case model.state of
                 Paused ->
-                    ( Start, "is-default" )
+                    ( Start, "is-default", resetButton )
 
                 Stopped ->
-                    ( Start, "is-default" )
+                    ( Start, "is-default", resetButton )
 
                 _ ->
-                    ( Pause, getColor )
+                    ( Pause, getColor, div [] [] )
     in
-        div [ class "column is-narrow" ]
+        div [ class "column is-narrow unselectable" ]
             [ a
-                [ class ("title box is-1 is-large notification " ++ color')
+                [ class ("title box is-1 is-large notification " ++ color_)
                 , onClick action
                 , style [ ( "font-size", "28vw" ), ( "border", "none" ) ]
                 ]
                 [ text <| secondsToString <| model.countdown ]
+            , control
             ]
 
 
