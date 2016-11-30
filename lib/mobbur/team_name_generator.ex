@@ -6,7 +6,7 @@ defmodule Mobbur.TeamNameGenerator do
              "Inglorious",
              "Obsequious",
              "Obnoxious",
-             "Performig",
+             "Performing",
              "Storming",
              "Red",
              "Valorous"
@@ -29,7 +29,7 @@ defmodule Mobbur.TeamNameGenerator do
   def generate_name() do
     prefix = Enum.random @prefixen
     suffix = Enum.random @suffixen
-    "#{prefix} #{suffix}" 
+    "#{prefix} #{suffix}"
   end
 
 
