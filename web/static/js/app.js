@@ -98,7 +98,10 @@ team_room.on("team_state", state => {
 team_room.join();
 
 app.ports.alarm.subscribe(function() {
+  // var tabs = require("sdk/tabs");
+  // tabs.
   document.getElementById('alarm').play();
+  desktopNotify("Mobbur alarm!");
   // socket.sendStatus("foo");
 });
 
@@ -110,3 +113,24 @@ app.ports.teamStatus.subscribe(function(arg) {
   lobby.push("update", teamName, 1000);
   team_room.push("team_state", arg, 1000);
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  if (!Notification) {
+    alert('Desktop notifications not available in your browser. Try Chromium.');
+    return;
+  }
+
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+});
+
+function desktopNotify(message){
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+  else {
+    var notification = new Notification('Mobbur', {
+      icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
+      body: "Iteration or cooldown just ended.",
+    });
+  }
+}
