@@ -8842,9 +8842,9 @@ var _user$project$Team_Types$EditMember = function (a) {
 var _user$project$Team_Types$AddMember = {ctor: 'AddMember'};
 var _user$project$Team_Types$NoOp = {ctor: 'NoOp'};
 
-var _user$project$Timer_Types$Model = F3(
-	function (a, b, c) {
-		return {countdown: a, interval: b, state: c};
+var _user$project$Timer_Types$Model = F4(
+	function (a, b, c, d) {
+		return {countdown: a, interval: b, state: c, audioUri: d};
 	});
 var _user$project$Timer_Types$TimeRecord = F2(
 	function (a, b) {
@@ -8859,6 +8859,9 @@ var _user$project$Timer_Types$UpdateSeconds = function (a) {
 };
 var _user$project$Timer_Types$UpdateMinutes = function (a) {
 	return {ctor: 'UpdateMinutes', _0: a};
+};
+var _user$project$Timer_Types$UpdateAudioURI = function (a) {
+	return {ctor: 'UpdateAudioURI', _0: a};
 };
 var _user$project$Timer_Types$Tick = {ctor: 'Tick'};
 var _user$project$Timer_Types$Toggle = {ctor: 'Toggle'};
@@ -8984,7 +8987,7 @@ var _user$project$Comm_State$initialModel = {
 var _user$project$Comm_State$alarm = _elm_lang$core$Native_Platform.outgoingPort(
 	'alarm',
 	function (v) {
-		return null;
+		return v;
 	});
 var _user$project$Comm_State$teamStatus = _elm_lang$core$Native_Platform.outgoingPort(
 	'teamStatus',
@@ -9521,8 +9524,7 @@ var _user$project$Timer_State$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{countdown: model.countdown - 1}),
-						_1: _user$project$Comm_State$alarm(
-							{ctor: '_Tuple0'})
+						_1: _user$project$Comm_State$alarm(model.audioUri)
 					} : ((_elm_lang$core$Native_Utils.eq(model.state, _user$project$Timer_Types$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? {
 						ctor: '_Tuple2',
 						_0: model,
@@ -9539,6 +9541,14 @@ var _user$project$Timer_State$update = F2(
 							{countdown: model.countdown - 1}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
+				case 'UpdateAudioURI':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{audioUri: _p1._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				case 'UpdateMinutes':
 					var minutes = _user$project$Timer_Helpers$stringToSeconds(_p1._0);
 					var total = (minutes * 60) + A2(_elm_lang$core$Basics$rem, model.interval, 60);
@@ -9584,12 +9594,13 @@ var _user$project$Timer_State$update = F2(
 			}
 		}
 	});
-var _user$project$Timer_State$initialModel = function (seconds) {
-	return {countdown: seconds, interval: seconds, state: _user$project$Timer_Types$Stopped};
-};
+var _user$project$Timer_State$initialModel = F2(
+	function (seconds, audioUri) {
+		return {countdown: seconds, interval: seconds, state: _user$project$Timer_Types$Stopped, audioUri: audioUri};
+	});
 var _user$project$Timer_State$init = {
 	ctor: '_Tuple2',
-	_0: _user$project$Timer_State$initialModel(480),
+	_0: A2(_user$project$Timer_State$initialModel, 480, ''),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 
@@ -9878,8 +9889,8 @@ var _user$project$App_State$update = F2(
 		}
 	});
 var _user$project$App_State$initialModel = {
-	workTimer: _user$project$Timer_State$initialModel(300),
-	breakTimer: _user$project$Timer_State$initialModel(30),
+	workTimer: A2(_user$project$Timer_State$initialModel, 300, 'http://www.nasa.gov/mp3/640149main_Computers%20are%20in%20Control.mp3'),
+	breakTimer: A2(_user$project$Timer_State$initialModel, 30, 'http://www.nasa.gov/mp3/640148main_APU%20Shutdown.mp3'),
 	activeTimer: _user$project$App_Types$WorkTimer,
 	useBreakTimer: true,
 	autoRestart: true,
@@ -10037,7 +10048,35 @@ var _user$project$Views_Timer$inputFields = function (model) {
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[]))
-					]))
+					])),
+				A2(
+				_elm_lang$html$Html$label,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('label')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Audio URI: ')
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('string'),
+						_elm_lang$html$Html_Attributes$class('input'),
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'width', _1: '200px'}
+							])),
+						_elm_lang$html$Html_Attributes$placeholder(model.audioUri),
+						_elm_lang$html$Html_Attributes$value(model.audioUri),
+						_elm_lang$html$Html_Attributes$name('audio_uri'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Timer_Types$UpdateAudioURI)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
 			]));
 };
 var _user$project$Views_Timer$settingsView = function (model) {

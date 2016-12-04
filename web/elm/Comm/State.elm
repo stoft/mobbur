@@ -6,7 +6,7 @@ import Comm.Types as Comm exposing (Model, Msg, ReplicatedModel)
 -- OUTBOUND PORTS
 
 
-port alarm : () -> Cmd msg
+port alarm : String -> Cmd msg
 
 
 port teamStatus : ReplicatedModel -> Cmd msg

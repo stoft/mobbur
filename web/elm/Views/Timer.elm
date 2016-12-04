@@ -82,4 +82,16 @@ inputFields model =
                 ]
                 []
             ]
+        , label [ class "label" ]
+            [ text "Audio URI: " ]
+        , input
+            [ type' "string"
+            , class "input"
+            , style [ ( "width", "200px" ) ]
+            , placeholder <| model.audioUri
+            , Html.Attributes.value <| model.audioUri
+            , name "audio_uri"
+            , onInput UpdateAudioURI
+            ]
+            []
         ]

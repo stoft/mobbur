@@ -5,6 +5,7 @@ type alias Model =
     { countdown : Int
     , interval : Int
     , state : State
+    , audioUri : String
     }
 
 
@@ -28,5 +29,6 @@ type Msg
     | Start
     | Toggle
     | Tick
+    | UpdateAudioURI String
     | UpdateMinutes String
     | UpdateSeconds String

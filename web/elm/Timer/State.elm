@@ -10,17 +10,20 @@ import Timer.Types exposing (..)
 --INIT
 
 
-initialModel : Int -> Model
-initialModel seconds =
+initialModel : Int -> String -> Model
+initialModel seconds audioUri =
     { countdown = seconds
     , interval = seconds
     , state = Stopped
+    , audioUri =
+        audioUri
+        --"http://www.nasa.gov/mp3/640148main_APU%20Shutdown.mp3"
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel 480, Cmd.none )
+    ( initialModel 480 "", Cmd.none )
 
 
 
@@ -65,7 +68,7 @@ update msg model =
 
         Tick ->
             if (model.state == Started) && (model.countdown == 1) then
-                ( { model | countdown = model.countdown - 1 }, Comm.alarm () )
+                ( { model | countdown = model.countdown - 1 }, Comm.alarm model.audioUri )
             else if (model.state == Started) && (model.countdown < 1) then
                 -- ( model, Cmd.map (always Reset) Cmd.none )
                 ( model, Task.perform (always Alarm) (always Alarm) (Task.succeed ()) )
@@ -73,6 +76,9 @@ update msg model =
                 ( { model | countdown = model.countdown - 1 }, Cmd.none )
             else
                 ( model, Cmd.none )
+
+        UpdateAudioURI audioUri ->
+            ( { model | audioUri = audioUri }, Cmd.none )
 
         UpdateMinutes time ->
             let

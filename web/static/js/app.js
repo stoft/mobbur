@@ -97,10 +97,17 @@ team_room.on("team_state", state => {
 
 team_room.join();
 
-app.ports.alarm.subscribe(function() {
+app.ports.alarm.subscribe(function(audio_uri) {
   // var tabs = require("sdk/tabs");
   // tabs.
-  document.getElementById('alarm').play();
+  // document.getElementById('alarm').play();
+  try {
+    console.log("in alarm.subscribe");
+    var audio = new Audio(audio_uri);
+    audio.play();
+  } catch(e) {
+    document.getElementById('alarm').play();
+  }
   desktopNotify("Mobbur alarm!");
   // socket.sendStatus("foo");
 });

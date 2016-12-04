@@ -62,8 +62,8 @@ init flags =
 
 initialModel : Model
 initialModel =
-    { workTimer = Timer.initialModel 300
-    , breakTimer = Timer.initialModel 30
+    { workTimer = Timer.initialModel 300 "http://www.nasa.gov/mp3/640149main_Computers%20are%20in%20Control.mp3"
+    , breakTimer = Timer.initialModel 30 "http://www.nasa.gov/mp3/640148main_APU%20Shutdown.mp3"
     , activeTimer = App.WorkTimer
     , useBreakTimer = True
     , autoRestart = True
