@@ -22,8 +22,8 @@ frontPageView model =
 
         activeMember =
             case model.team.activeMember of
-                Just id' ->
-                    List.filter (\m -> m.id' == id') model.team.members
+                Just id ->
+                    List.filter (\m -> m.id == id) model.team.members
                         |> List.head
 
                 Nothing ->
@@ -33,7 +33,7 @@ frontPageView model =
             Html.App.map msgType (Timer.displayView activeTimer)
 
         getNick member =
-            Maybe.withDefault { nick = "", id' = 0, state = Team.DisplayingMember } member |> .nick
+            Maybe.withDefault { nick = "", id = 0, state = Team.DisplayingMember } member |> .nick
 
         content =
             if (model.activeTimer == App.BreakTimer && activeMember /= Nothing) then

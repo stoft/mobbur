@@ -1,6 +1,7 @@
 module Team.State exposing (..)
 
 import Dom exposing (focus)
+import Helpers.ListHelpers exposing (stepElementLeft, stepElementRight)
 import Keyboard exposing (KeyCode)
 import String
 import Task exposing (perform)
@@ -42,43 +43,64 @@ update msg model =
         Team.KeyPress code ->
             handleKeyPress code model
 
-        Team.EditMember id' ->
+        Team.EditMember id ->
             let
                 updatedMembers =
                     model.members
                         |> List.map
                             (\m ->
-                                if m.id' == id' then
+                                if m.id == id then
                                     { m | state = Team.Editing }
                                 else
                                     m
                             )
             in
                 ( { model | members = updatedMembers }
-                , Task.perform (always Team.NoOp) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString id'))
+                , Task.perform (always Team.NoOp) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString id))
                 )
 
         Team.EditTeam ->
             ( { model | state = Team.EditingTeam }, Cmd.none )
 
+        Team.MoveMemberUp id ->
+            let
+                updatedMembers =
+                    moveMemberLeftOne id model.members
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
+        Team.MoveMemberDown id ->
+            let
+                updatedMembers =
+                    moveMemberRightOne id model.members
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
+        Team.RemoveMember id ->
+            let
+                updatedMembers =
+                    List.filter (\m -> m.id /= id) model.members
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
         Team.SetNextMemberActive ->
             handleSetNextMemberActive model
 
-        Team.SubmitNick id' ->
+        Team.SubmitNick id ->
             let
                 member =
-                    List.filter (\m -> m.id' == id') model.members |> List.head
+                    List.filter (\m -> m.id == id) model.members |> List.head
 
                 changeToDisplaying =
                     (\m ->
-                        if m.id' == id' then
+                        if m.id == id then
                             { m | state = Team.DisplayingMember }
                         else
                             m
                     )
 
                 removeMember =
-                    List.filter (\m -> m.id' /= id') model.members
+                    List.filter (\m -> m.id /= id) model.members
 
                 updatedMembers =
                     case member of
@@ -96,13 +118,13 @@ update msg model =
         Team.SubmitTeamName ->
             ( { model | state = Team.Displaying }, Cmd.none )
 
-        Team.UpdateNick id' nick' ->
+        Team.UpdateNick id nick' ->
             let
                 updatedMembers =
                     model.members
                         |> List.map
                             (\m ->
-                                if m.id' == id' then
+                                if m.id == id then
                                     { m | nick = nick' }
                                 else
                                     m
@@ -132,8 +154,8 @@ handleAddMember model =
     let
         findMax =
             (\m max ->
-                if m.id' > max then
-                    m.id'
+                if m.id > max then
+                    m.id
                 else
                     max
             )
@@ -178,7 +200,7 @@ handleSetNextMemberActive model =
         getIdOfFirstMember members =
             case List.head members of
                 Just m ->
-                    Just m.id'
+                    Just m.id
 
                 Nothing ->
                     Nothing
@@ -197,3 +219,24 @@ handleSetNextMemberActive model =
 
             Just _ ->
                 ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
+
+
+moveMemberLeftOne : Int -> List TeamMember -> List TeamMember
+moveMemberLeftOne id list =
+    if List.length list < 2 then
+        list
+    else
+        stepElementLeft (matchFunction id) list
+
+
+moveMemberRightOne : Int -> List TeamMember -> List TeamMember
+moveMemberRightOne id list =
+    if List.length list < 2 then
+        list
+    else
+        stepElementRight (matchFunction id) list
+
+
+matchFunction : Int -> TeamMember -> Bool
+matchFunction soughtId member =
+    member.id == soughtId

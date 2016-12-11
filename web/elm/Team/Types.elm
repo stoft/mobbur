@@ -13,7 +13,7 @@ type alias Model =
 
 
 type alias TeamMember =
-    { id' : Int
+    { id : Int
     , nick : String
     , state : MemberState
     }
@@ -36,6 +36,9 @@ type Msg
     | EditMember Int
     | EditTeam
     | KeyPress KeyCode
+    | MoveMemberDown Int
+    | MoveMemberUp Int
+    | RemoveMember Int
     | SetNextMemberActive
     | SubmitNick Int
     | SubmitTeamName

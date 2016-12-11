@@ -52,8 +52,8 @@ memberSettingsView model =
 renderMemberList : Maybe Int -> List Team.TeamMember -> Html Msg
 renderMemberList activeMember members =
     case activeMember of
-        Just id' ->
-            div [] (List.map (renderMember id') members)
+        Just id ->
+            div [] (List.map (renderMember id) members)
 
         Nothing ->
             div [] (List.map (renderMember 0) members)
@@ -75,36 +75,69 @@ renderMemberInput model =
 
 renderMember : Int -> Team.TeamMember -> Html Msg
 renderMember activeMember member =
-    case member.state of
-        Team.Editing ->
-            let
-                ( _, memberId ) =
-                    ( Task.perform (Debug.log "failed" (always Team.NoOp)) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString member.id'))
-                    , member.id'
-                    )
-            in
-                input
-                    [ type' "text"
-                    , id ("team-member-" ++ toString member.id')
-                    , class "input"
-                    , name "nick"
-                    , value member.nick
-                    , onInput (Team.UpdateNick member.id')
-                    , onBlur (Team.SubmitNick member.id')
-                    ]
-                    []
+    let
+        ( _, memberId ) =
+            ( Task.perform (Debug.log "failed" (always Team.NoOp)) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString member.id))
+            , member.id
+            )
+    in
+        div [ class "control has-addons" ]
+            [ input
+                [ type' "text"
+                , id ("team-member-" ++ toString member.id)
+                , class "input"
+                , name "nick"
+                , value member.nick
+                , onInput (Team.UpdateNick member.id)
+                , onBlur (Team.SubmitNick member.id)
+                ]
+                []
+            , button [ class "button is-info is-inverted", onClick (Team.MoveMemberUp member.id) ]
+                [ span [ class "icon" ]
+                    [ i [ class "fa fa-arrow-up" ] [] ]
+                ]
+            , button [ class "button is-info is-inverted", onClick (Team.MoveMemberDown member.id) ]
+                [ span [ class "icon" ]
+                    [ i [ class "fa fa-arrow-down" ] [] ]
+                ]
+            , button [ class "button is-danger is-inverted", onClick (Team.RemoveMember member.id) ]
+                [ span [ class "icon" ]
+                    [ i [ class "fa fa-minus-square" ] [] ]
+                ]
+            ]
 
-        Team.DisplayingMember ->
-            if member.id' == activeMember then
-                div
-                    [ onClick (Team.EditMember member.id')
-                    , id ("team-member-" ++ toString member.id')
-                    ]
-                    [ a [ class "title label is-4" ] [ text (member.nick) ] ]
-            else
-                div
-                    [ onClick (Team.EditMember member.id')
-                    , id ("team-member-" ++ toString member.id')
-                    ]
-                    [ a [ class "title is-5" ] [ text member.nick ]
-                    ]
+
+
+-- case member.state of
+--     Team.Editing ->
+--         let
+--             ( _, memberId ) =
+--                 ( Task.perform (Debug.log "failed" (always Team.NoOp)) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString member.id))
+--                 , member.id
+--                 )
+--         in
+--             input
+--                 [ type' "text"
+--                 , id ("team-member-" ++ toString member.id)
+--                 , class "input"
+--                 , name "nick"
+--                 , value member.nick
+--                 , onInput (Team.UpdateNick member.id)
+--                 , onBlur (Team.SubmitNick member.id)
+--                 ]
+--                 []
+--
+--     Team.DisplayingMember ->
+--         if member.id == activeMember then
+--             div
+--                 [ onClick (Team.EditMember member.id)
+--                 , id ("team-member-" ++ toString member.id)
+--                 ]
+--                 [ a [ class "title label is-4" ] [ text (member.nick) ] ]
+--         else
+--             div
+--                 [ onClick (Team.EditMember member.id)
+--                 , id ("team-member-" ++ toString member.id)
+--                 ]
+--                 [ a [ class "title is-5" ] [ text member.nick ]
+--                 ]

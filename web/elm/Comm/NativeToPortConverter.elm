@@ -25,7 +25,7 @@ convertTeam model =
 
 convertMember : Team.Types.TeamMember -> TeamMember
 convertMember model =
-    (TeamMember model.id' model.nick)
+    (TeamMember model.id model.nick)
 
 
 convertTimer : Timer.Types.Model -> Timer
