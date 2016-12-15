@@ -1,4 +1,57 @@
-module Helpers.ListHelpers exposing (stepElementLeft, stepElementRight)
+module Helpers.ListHelpers exposing (stepElementLeft, stepElementRight, randomizeList)
+
+import Array
+import Random
+
+
+randomizeList : List a -> Int -> List a
+randomizeList list seedInt =
+    doRandomizeList [] (Array.fromList list) (Random.initialSeed seedInt)
+
+
+doRandomizeList : List a -> Array.Array a -> Random.Seed -> List a
+doRandomizeList newList originalArray seed =
+    let
+        max =
+            (Array.length originalArray)
+
+        ( elementIndex, newSeed ) =
+            Random.step (Random.int 1 max) seed
+    in
+        if max >= 1 then
+            let
+                ( element, rest ) =
+                    takeIndexedElement originalArray (elementIndex - 1)
+            in
+                case element of
+                    Just elem ->
+                        doRandomizeList (elem :: newList) rest newSeed
+
+                    Nothing ->
+                        doRandomizeList newList rest newSeed
+        else
+            newList
+
+
+takeIndexedElement : Array.Array a -> Int -> ( Maybe a, Array.Array a )
+takeIndexedElement array index =
+    let
+        indexedList =
+            array |> Array.toIndexedList
+
+        element =
+            indexedList
+                |> List.filter (\( i, a ) -> i == index)
+                |> List.map (\( i, a ) -> a)
+                |> List.head
+
+        rest =
+            indexedList
+                |> List.filter (\( i, a ) -> i /= index)
+                |> List.map (\( i, a ) -> a)
+                |> Array.fromList
+    in
+        ( element, rest )
 
 
 stepElementLeft : (a -> Bool) -> List a -> List a

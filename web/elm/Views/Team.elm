@@ -46,6 +46,11 @@ memberSettingsView model =
                 [ i [ class "fa fa-fast-forward" ] []
                 ]
             ]
+        , button [ class "button is-info is-inverted", onClick Team.RandomizeTeam ]
+            [ span [ class "icon" ]
+                [ i [ class "fa fa-random" ] []
+                ]
+            ]
         ]
 
 

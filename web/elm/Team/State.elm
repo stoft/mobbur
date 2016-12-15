@@ -1,11 +1,12 @@
 module Team.State exposing (..)
 
 import Dom exposing (focus)
-import Helpers.ListHelpers exposing (stepElementLeft, stepElementRight)
+import Helpers.ListHelpers exposing (stepElementLeft, stepElementRight, randomizeList)
 import Keyboard exposing (KeyCode)
 import String
 import Task exposing (perform)
 import Team.Types as Team exposing (Model, Msg, TeamMember)
+import Time
 
 
 --SUBSCRIPTIONS
@@ -73,6 +74,16 @@ update msg model =
             let
                 updatedMembers =
                     moveMemberRightOne id model.members
+            in
+                ( { model | members = updatedMembers }, Cmd.none )
+
+        Team.RandomizeTeam ->
+            ( model, Task.perform (always Team.NoOp) Team.RandomizeTeamWithSeed Time.now )
+
+        Team.RandomizeTeamWithSeed time ->
+            let
+                updatedMembers =
+                    randomizeList model.members (round time)
             in
                 ( { model | members = updatedMembers }, Cmd.none )
 

@@ -1,6 +1,7 @@
 module Team.Types exposing (..)
 
 import Keyboard exposing (KeyCode)
+import Time exposing (Time)
 
 
 type alias Model =
@@ -38,6 +39,8 @@ type Msg
     | KeyPress KeyCode
     | MoveMemberDown Int
     | MoveMemberUp Int
+    | RandomizeTeam
+    | RandomizeTeamWithSeed Time
     | RemoveMember Int
     | SetNextMemberActive
     | SubmitNick Int
