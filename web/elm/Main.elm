@@ -1,13 +1,14 @@
 module Main exposing (main)
 
-import Html.App
+import Html
 import App.State exposing (update, subscriptions)
 import Views.App exposing (view)
+import App.Types exposing (Model, Msg)
 
 
-main : Program { teamName : String }
+main : Program { teamName : String } App.Types.Model App.Types.Msg
 main =
-    Html.App.programWithFlags
+    Html.programWithFlags
         { init =
             \flags -> App.State.init flags
             -- ( App.State.initialModel

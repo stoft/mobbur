@@ -18,7 +18,7 @@ import Task exposing (perform)
 
 getCurrentDate : Cmd Msg
 getCurrentDate =
-    Task.perform SetCurrentDate App.SetCurrentDate Date.now
+    Task.perform App.SetCurrentDate Date.now
 
 
 sendInitialState : Model -> Cmd Msg
@@ -195,9 +195,9 @@ updateTimerWithKeyPress keyCode timer =
             (List.filter (\( char, _ ) -> char == keyPress) dictionary)
                 |> List.head
                 |> (Maybe.withDefault ( '_', Timer.NoOp ))
-                |> snd
+                |> Tuple.second
     in
-        Timer.update msg timer |> fst
+        Timer.update msg timer |> Tuple.first
 
 
 handleBreakTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )

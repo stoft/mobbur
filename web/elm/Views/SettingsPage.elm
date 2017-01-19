@@ -1,8 +1,7 @@
 module Views.SettingsPage exposing (..)
 
-import Html.App
-import Html exposing (Html, div, h3, h4, a, text, label, input)
-import Html.Attributes exposing (class, type', checked, name)
+import Html exposing (Html, div, h3, h4, a, text, label, input, map)
+import Html.Attributes exposing (class, type_, checked, name)
 import Html.Events exposing (onClick, onCheck)
 import App.Types as App exposing (Model, Msg)
 import Views.Team as Team
@@ -17,23 +16,23 @@ settingsView model =
 
         workTimerSettings =
             [ h4 [ class "title" ] [ text "Timer" ]
-            , Html.App.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
+            , Html.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
             ]
                 |> childTile "is-primary"
                 |> parentTile
 
         breakTimerSettings =
             [ h4 [ class "title" ] [ text "Cooldown" ]
-            , Html.App.map App.BreakTimerMsg (Timer.settingsView model.breakTimer)
+            , Html.map App.BreakTimerMsg (Timer.settingsView model.breakTimer)
             ]
                 |> childTile "is-warning"
                 |> parentTile
 
         teamSettings =
-            Html.App.map App.TeamMsg (Team.teamSettingsView model.team) |> parentTile
+            Html.map App.TeamMsg (Team.teamSettingsView model.team) |> parentTile
 
         teamMemberSettings =
-            Html.App.map App.TeamMsg (Team.memberSettingsView model.team)
+            Html.map App.TeamMsg (Team.memberSettingsView model.team)
                 |> parentTile
 
         team =
@@ -72,7 +71,7 @@ controlCheckBox name_ text_ flag msg =
     div [ class "control" ]
         [ label [ class "checkbox" ]
             [ input
-                [ type' "checkbox"
+                [ type_ "checkbox"
                 , checked flag
                 , name name_
                 , onCheck msg
@@ -88,7 +87,7 @@ controlCheckBox name_ text_ flag msg =
 -- tile : String -> String -> Html Msg -> Html Msg
 -- tile title' color' content =
 --     [ h4 [ class "title" ] [ text "Timer" ]
---     , Html.App.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
+--     , Html.map App.WorkTimerMsg (Timer.settingsView model.workTimer)
 --     ]
 --         |> childTile "is-primary"
 --         |> parentTile
@@ -100,5 +99,5 @@ parentTile child =
 
 
 childTile : String -> List (Html Msg) -> Html Msg
-childTile color' content =
-    div [ class ("tile is-child notification " ++ color') ] content
+childTile color_ content =
+    div [ class ("tile is-child notification " ++ color_) ] content

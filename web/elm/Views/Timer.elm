@@ -1,7 +1,7 @@
 module Views.Timer exposing (..)
 
 import Html exposing (Html, div, a, text, label, input, span, i, button)
-import Html.Attributes exposing (class, style, type', placeholder, name, title)
+import Html.Attributes exposing (class, style, type_, placeholder, name, title)
 import Html.Events exposing (onClick, onInput)
 import Timer.Helpers exposing (secondsToString, secondsToTimeRecord)
 import Timer.Types exposing (..)
@@ -59,7 +59,7 @@ inputFields model =
         [ label [ class "label" ]
             [ text "mins: "
             , input
-                [ type' "number"
+                [ type_ "number"
                 , class "input"
                 , style [ ( "width", "100px" ) ]
                 , placeholder <| toString <| .minutes <| secondsToTimeRecord <| model.interval
@@ -72,7 +72,7 @@ inputFields model =
         , label [ class "label" ]
             [ text "secs: "
             , input
-                [ type' "number"
+                [ type_ "number"
                 , class "input"
                 , style [ ( "width", "100px" ) ]
                 , placeholder <| toString <| .seconds <| secondsToTimeRecord <| model.interval
@@ -85,7 +85,7 @@ inputFields model =
         , label [ class "label" ]
             [ text "Audio URI: " ]
         , input
-            [ type' "string"
+            [ type_ "string"
             , class "input"
             , style [ ( "width", "200px" ) ]
             , placeholder <| model.audioUri

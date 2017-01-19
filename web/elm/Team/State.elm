@@ -1,5 +1,6 @@
 module Team.State exposing (..)
 
+import Basics exposing (Never)
 import Dom exposing (focus)
 import Helpers.ListHelpers exposing (stepElementLeft, stepElementRight, randomizeList)
 import Keyboard exposing (KeyCode)
@@ -57,9 +58,10 @@ update msg model =
                             )
             in
                 ( { model | members = updatedMembers }
-                , Task.perform (always Team.NoOp) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString id))
+                , Task.attempt (always Team.NoOp) (Dom.focus ("team-member-" ++ toString id))
                 )
 
+        -- perform : (a -> msg) -> Task Never a -> Cmd msg
         Team.EditTeam ->
             ( { model | state = Team.EditingTeam }, Cmd.none )
 
@@ -78,7 +80,7 @@ update msg model =
                 ( { model | members = updatedMembers }, Cmd.none )
 
         Team.RandomizeTeam ->
-            ( model, Task.perform (always Team.NoOp) Team.RandomizeTeamWithSeed Time.now )
+            ( model, Task.perform Team.RandomizeTeamWithSeed Time.now )
 
         Team.RandomizeTeamWithSeed time ->
             let
@@ -129,14 +131,14 @@ update msg model =
         Team.SubmitTeamName ->
             ( { model | state = Team.Displaying }, Cmd.none )
 
-        Team.UpdateNick id nick' ->
+        Team.UpdateNick id nick_ ->
             let
                 updatedMembers =
                     model.members
                         |> List.map
                             (\m ->
                                 if m.id == id then
-                                    { m | nick = nick' }
+                                    { m | nick = nick_ }
                                 else
                                     m
                             )

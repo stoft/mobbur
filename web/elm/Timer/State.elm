@@ -71,7 +71,7 @@ update msg model =
                 ( { model | countdown = model.countdown - 1 }, Comm.alarm model.audioUri )
             else if (model.state == Started) && (model.countdown < 1) then
                 -- ( model, Cmd.map (always Reset) Cmd.none )
-                ( model, Task.perform (always Alarm) (always Alarm) (Task.succeed ()) )
+                ( model, Task.perform (always Alarm) (Task.succeed ()) )
             else if model.state == Started then
                 ( { model | countdown = model.countdown - 1 }, Cmd.none )
             else

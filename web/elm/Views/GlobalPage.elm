@@ -11,7 +11,7 @@ globalPageView model =
         numberOfTeams =
             model.globalTeams.numberOfTeams
 
-        title' =
+        title_ =
             if numberOfTeams == 1 then
                 "1 team online"
             else

@@ -1,7 +1,7 @@
 module Views.App exposing (..)
 
 import Html exposing (Html, section, div, a, span, h5, h4, text, i, nav)
-import Html.Attributes exposing (class, type', name, checked, class, href, style, value, max, title)
+import Html.Attributes exposing (class, name, checked, class, href, style, value, max, title)
 import Html.Events exposing (onCheck, onClick)
 import App.Types as App exposing (Model, Msg, Page)
 import Views.FrontPage exposing (frontPageView)
@@ -54,6 +54,42 @@ navigationBar model =
                     ]
                 ]
 
+        numberOfTeams =
+            model.globalTeams.numberOfTeams
+
+        title_ =
+            if numberOfTeams == 1 then
+                "1 team online"
+            else
+                toString numberOfTeams ++ " teams online"
+
+        globe =
+            if numberOfTeams < 5 then
+                icon "is-small"
+            else if numberOfTeams < 10 then
+                icon ""
+            else
+                icon "is-medium"
+
+        icon size_ =
+            span
+                [ class ("icon " ++ size_)
+                , title title_
+                ]
+                [ i [ class "fa fa-globe", style [ ( "color", "#1fc8db" ) ] ] []
+                ]
+
+        ( jumpToView, link_ ) =
+            case model.currentView of
+                App.MainView ->
+                    ( App.GlobalView, "#globalStatus" )
+
+                App.GlobalView ->
+                    ( App.MainView, "#" )
+
+                App.SettingsView ->
+                    ( App.GlobalView, "#globalStatus" )
+
         item =
             case model.currentView of
                 App.MainView ->
@@ -67,69 +103,36 @@ navigationBar model =
     in
         nav [ class "nav" ]
             [ div [ class "nav-left" ]
-                [ div [ class "nav-item" ]
-                    [ a [ href "https://github.com/stoft/mobbur" ]
-                        [ h5 [ class "title is-5" ]
-                            [ text "mobbur" ]
-                        ]
+                [ div [ class "nav-item" ] [ item ]
+                , div [ class "nav-item" ]
+                    [ h5 [ class "title is-5" ]
+                        [ text "Mobbur" ]
                     ]
                 ]
             , div [ class "nav-right" ]
-                [ div [ class "nav-item" ] [ item ]
-                ]
-            ]
-
-
-navFooter : Model -> Html Msg
-navFooter model =
-    let
-        numberOfTeams =
-            model.globalTeams.numberOfTeams
-
-        title' =
-            if numberOfTeams == 1 then
-                "1 team online"
-            else
-                toString numberOfTeams ++ " teams online"
-
-        icon size' =
-            span
-                [ class ("icon " ++ size')
-                , title title'
-                ]
-                [ i [ class "fa fa-globe", style [ ( "color", "#1fc8db" ) ] ] []
-                ]
-
-        globe =
-            if numberOfTeams < 5 then
-                icon "is-small"
-            else if numberOfTeams < 10 then
-                icon ""
-            else
-                icon "is-medium"
-
-        ( jumpToView, link' ) =
-            case model.currentView of
-                App.MainView ->
-                    ( App.GlobalView, "#globalStatus" )
-
-                App.GlobalView ->
-                    ( App.MainView, "#" )
-
-                App.SettingsView ->
-                    ( App.GlobalView, "#globalStatus" )
-    in
-        nav [ class "nav" ]
-            [ div [ class "nav-center" ]
                 [ div [ class "nav-item" ]
-                    [ h5 [ class "title is-5" ] [ text model.team.name ] ]
-                ]
-            , div [ class "nav-right" ]
-                [ div [ class "nav-item" ]
-                    [ a [ href link', onClick (App.UpdateView jumpToView) ]
+                    [ a [ href link_, onClick (App.UpdateView jumpToView) ]
                         [ globe ]
                       -- h5 [ class "title is-5" alt (toString model.globalTeams.numberOfTeams) ]
                       --     [ text <| toString model.globalTeams.numberOfTeams ]
                     ]
                 ]
             ]
+
+
+navFooter : Model -> Html Msg
+navFooter model =
+    nav [ class "nav" ]
+        [ div [ class "nav-center" ]
+            [ div [ class "nav-item" ]
+                [ h5 [ class "title is-5" ] [ text model.team.name ] ]
+            ]
+        , div [ class "nav-right" ]
+            [ div [ class "nav-item" ]
+                [ a [ href "https://github.com/stoft/mobbur" ]
+                    [ span [ class "icon is-medium" ]
+                        [ i [ class "fa fa-github" ] [] ]
+                    ]
+                ]
+            ]
+        ]

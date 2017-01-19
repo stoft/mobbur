@@ -16,7 +16,7 @@ teamSettingsView model =
             , label [ class "label" ]
                 [ text "Team Name" ]
             , input
-                [ type' "text"
+                [ type_ "text"
                 , class "input"
                 , value model.name
                 , name "team-name"
@@ -67,7 +67,7 @@ renderMemberList activeMember members =
 renderMemberInput : Model -> Html Msg
 renderMemberInput model =
     input
-        [ type' "text"
+        [ type_ "text"
         , class "input"
         , placeholder "Add member nick..."
         , name "nick"
@@ -82,13 +82,13 @@ renderMember : Int -> Team.TeamMember -> Html Msg
 renderMember activeMember member =
     let
         ( _, memberId ) =
-            ( Task.perform (Debug.log "failed" (always Team.NoOp)) (always Team.NoOp) (Dom.focus ("team-member-" ++ toString member.id))
+            ( Task.perform (\_ -> always Team.NoOp (Dom.focus ("team-member-" ++ toString member.id)))
             , member.id
             )
     in
         div [ class "control has-addons" ]
             [ input
-                [ type' "text"
+                [ type_ "text"
                 , id ("team-member-" ++ toString member.id)
                 , class "input"
                 , name "nick"
@@ -122,7 +122,7 @@ renderMember activeMember member =
 --                 )
 --         in
 --             input
---                 [ type' "text"
+--                 [ type_ "text"
 --                 , id ("team-member-" ++ toString member.id)
 --                 , class "input"
 --                 , name "nick"

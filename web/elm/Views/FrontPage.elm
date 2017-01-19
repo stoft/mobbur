@@ -1,7 +1,6 @@
 module Views.FrontPage exposing (..)
 
-import Html.App
-import Html exposing (Html, div, h3, h4, a, text)
+import Html exposing (Html, div, h3, h4, a, text, map)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import App.Types as App exposing (Model, Msg)
@@ -30,7 +29,7 @@ frontPageView model =
                     Nothing
 
         timerContent =
-            Html.App.map msgType (Timer.displayView activeTimer)
+            Html.map msgType (Timer.displayView activeTimer)
 
         getNick member =
             Maybe.withDefault { nick = "", id = 0, state = Team.DisplayingMember } member |> .nick
@@ -50,18 +49,3 @@ frontPageView model =
                 [ timerContent ]
     in
         div [ class "has-text-centered" ] content
-
-
-
--- TODO: Possibly remove?
---
--- activeTimerView : Model -> Html Msg
--- activeTimerView model =
---     div [ class "column" ]
---         [ case model.activeTimer of
---             WorkTimer ->
---                 span [] []
---
---             BreakTimer ->
---                 span [ class "title is-5" ] [ text "Cooldown!" ]
---         ]
