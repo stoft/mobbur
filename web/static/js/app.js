@@ -109,10 +109,7 @@ app.ports.alarm.subscribe(function(obj) {
     console.log("in alarm.subscribe");
     var audio = new Audio(obj.audioUri);
 
-    let userAgent = window.navigator.userAgent;
-    if (!userAgent.match(/iPhone|iPad/i)) {
-      audio.play();
-    }
+    audio.play();
   } catch (e) {
     if (!userAgent.match(/iPhone|iPad/i)) {
       document.getElementById('alarm').play();
@@ -132,7 +129,7 @@ app.ports.teamStatus.subscribe(function(arg) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  if (!("Notification" in window)) {
+  if (!('Notification' in window)) {
     alert('Desktop notifications not available in your browser. Try Chromium.');
     return;
   }
@@ -143,16 +140,18 @@ document.addEventListener('DOMContentLoaded', function() {
 );
 
 function desktopNotify(message) {
-  if (!("Notification" in window)) { return; }
-  let userAgent = window.navigator.userAgent;
+  if (!('Notification' in window)) {
+    return;
+  }
 
-  if (Notification.permission !== "granted")
+  if (Notification.permission !== "granted") {
     Notification.requestPermission();
-  else if (!userAgent.match(/iPhone|iPad/i)) {
+  } else {
     var notification = new Notification('Mobbur', {
       icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
       body: 'Iteration or cooldown just ended.'
     });
+
     window.setTimeout(function() {
       notification.close();
     }, 5000);
