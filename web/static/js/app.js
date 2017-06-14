@@ -28,7 +28,11 @@ var app = Elm.Main.embed(elmDiv, {teamName: teamName});
 // var audio = new Audio('/audio/start1.mp3')
 let user = window.location.pathname.split('/')[1];
 
-let socket = new Socket("/socket", {params: {user: user}})
+let socket = new Socket("/socket", {
+  params: {
+    user: user
+  }
+})
 socket.connect()
 
 let presences = {}
@@ -39,7 +43,7 @@ let formatTimestamp = (timestamp) => {
 }
 
 let listBy = (user, {metas: metas}) => {
-// let listBy = (user, params) => {
+  // let listBy = (user, params) => {
   // return {
   //   user: user,
   //   onlineAt: formatTimestamp(metas[0].online_at),
@@ -104,9 +108,13 @@ app.ports.alarm.subscribe(function(obj) {
   try {
     console.log("in alarm.subscribe");
     var audio = new Audio(obj.audioUri);
-    audio.play();
-  } catch(e) {
-    document.getElementById('alarm').play();
+    if (!userAgent.match(/iPhone|iPad/i)) {
+      audio.play();
+    }
+  } catch (e) {
+    if (!userAgent.match(/iPhone|iPad/i)) {
+      document.getElementById('alarm').play();
+    }
   }
   desktopNotify("Mobbur alarm!");
   // socket.sendStatus("foo");
@@ -121,7 +129,7 @@ app.ports.teamStatus.subscribe(function(arg) {
   team_room.push("team_state", arg, 1000);
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   if (!Notification) {
     alert('Desktop notifications not available in your browser. Try Chromium.');
     return;
@@ -129,18 +137,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (Notification.permission !== "granted")
     Notification.requestPermission();
-});
+  }
+);
 
-function desktopNotify(message){
+function desktopNotify(message) {
   let userAgent = window.navigator.userAgent;
 
   if (Notification.permission !== "granted")
     Notification.requestPermission();
-  else if (!userAgent.match(/iPhone|iPad/i)) {
+  else {
     var notification = new Notification('Mobbur', {
       icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
-      body: 'Iteration or cooldown just ended.',
+      body: 'Iteration or cooldown just ended.'
     });
-    window.setTimeout(function(){ notification.close(); }, 5000);
+    window.setTimeout(function() {
+      notification.close();
+    }, 5000);
   }
 }
