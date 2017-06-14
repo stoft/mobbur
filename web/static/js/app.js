@@ -145,7 +145,7 @@ function desktopNotify(message) {
 
   if (Notification.permission !== "granted")
     Notification.requestPermission();
-  else {
+  else if (!userAgent.match(/iPhone|iPad/i)) {
     var notification = new Notification('Mobbur', {
       icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
       body: 'Iteration or cooldown just ended.'
