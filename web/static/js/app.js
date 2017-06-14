@@ -97,13 +97,13 @@ team_room.on("team_state", state => {
 
 team_room.join();
 
-app.ports.alarm.subscribe(function(audio_uri) {
+app.ports.alarm.subscribe(function(obj) {
   // var tabs = require("sdk/tabs");
   // tabs.
   // document.getElementById('alarm').play();
   try {
     console.log("in alarm.subscribe");
-    var audio = new Audio(audio_uri);
+    var audio = new Audio(obj.audioUri);
     audio.play();
   } catch(e) {
     document.getElementById('alarm').play();
@@ -132,12 +132,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function desktopNotify(message){
+  let userAgent = window.navigator.userAgent;
+
   if (Notification.permission !== "granted")
     Notification.requestPermission();
-  else {
+  else if (!userAgent.match(/iPhone|iPad/i)) {
     var notification = new Notification('Mobbur', {
       icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
-      body: "Iteration or cooldown just ended.",
+      body: 'Iteration or cooldown just ended.',
     });
+    window.setTimeout(function(){ notification.close(); }, 5000);
   }
 }

@@ -32,6 +32,10 @@ type alias TeamMember =
     }
 
 
+type alias Alarm =
+    { nick : Maybe String, audioUri : String }
+
+
 type alias Timer =
     { countdown : Int
     , interval : Int

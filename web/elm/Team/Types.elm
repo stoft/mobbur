@@ -31,6 +31,16 @@ type TeamState
     | Displaying
 
 
+getActiveMember : Model -> Maybe TeamMember
+getActiveMember model =
+    case model.activeMember of
+        Just id_ ->
+            model.members |> List.filter (\m -> m.id == id_) |> List.head
+
+        _ ->
+            Nothing
+
+
 type Msg
     = NoOp
     | AddMember

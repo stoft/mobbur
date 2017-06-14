@@ -9500,6 +9500,10 @@ var _user$project$Comm_Types$TeamMember = F2(
 	function (a, b) {
 		return {id: a, nick: b};
 	});
+var _user$project$Comm_Types$Alarm = F2(
+	function (a, b) {
+		return {nick: a, audioUri: b};
+	});
 var _user$project$Comm_Types$Timer = F3(
 	function (a, b, c) {
 		return {countdown: a, interval: b, state: c};
@@ -9512,6 +9516,20 @@ var _user$project$Comm_Types$StatusUpdate = function (a) {
 };
 var _user$project$Comm_Types$NoOp = {ctor: 'NoOp'};
 
+var _user$project$Team_Types$getActiveMember = function (model) {
+	var _p0 = model.activeMember;
+	if (_p0.ctor === 'Just') {
+		return _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$filter,
+				function (m) {
+					return _elm_lang$core$Native_Utils.eq(m.id, _p0._0);
+				},
+				model.members));
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
 var _user$project$Team_Types$Model = F5(
 	function (a, b, c, d, e) {
 		return {name: a, members: b, state: c, newNick: d, activeMember: e};
@@ -9706,7 +9724,10 @@ var _user$project$Comm_State$initialModel = {
 var _user$project$Comm_State$alarm = _elm_lang$core$Native_Platform.outgoingPort(
 	'alarm',
 	function (v) {
-		return v;
+		return {
+			nick: (v.nick.ctor === 'Nothing') ? null : v.nick._0,
+			audioUri: v.audioUri
+		};
 	});
 var _user$project$Comm_State$teamStatus = _elm_lang$core$Native_Platform.outgoingPort(
 	'teamStatus',
@@ -10558,7 +10579,11 @@ var _user$project$Timer_State$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{countdown: model.countdown - 1}),
-						_1: _user$project$Comm_State$alarm(model.audioUri)
+						_1: _user$project$Comm_State$alarm(
+							{
+								nick: _elm_lang$core$Maybe$Just(''),
+								audioUri: model.audioUri
+							})
 					} : ((_elm_lang$core$Native_Utils.eq(model.state, _user$project$Timer_Types$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? {
 						ctor: '_Tuple2',
 						_0: model,
@@ -11386,11 +11411,16 @@ var _user$project$Views_FrontPage$frontPageView = function (model) {
 		_1: {
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$h4,
+				_elm_lang$html$Html$a,
 				{
 					ctor: '::',
 					_0: _elm_lang$html$Html_Attributes$class('title is-4'),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$App_Types$TeamMsg(_user$project$Team_Types$SetNextMemberActive)),
+						_1: {ctor: '[]'}
+					}
 				},
 				{
 					ctor: '::',

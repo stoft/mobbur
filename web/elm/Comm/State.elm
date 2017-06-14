@@ -1,12 +1,12 @@
 port module Comm.State exposing (..)
 
-import Comm.Types as Comm exposing (Model, Msg, ReplicatedModel)
+import Comm.Types as Comm exposing (Model, Msg, ReplicatedModel, Alarm)
 
 
 -- OUTBOUND PORTS
 
 
-port alarm : String -> Cmd msg
+port alarm : Alarm -> Cmd msg
 
 
 port teamStatus : ReplicatedModel -> Cmd msg

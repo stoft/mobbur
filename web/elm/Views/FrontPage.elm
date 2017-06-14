@@ -37,7 +37,8 @@ frontPageView model =
         content =
             if (model.activeTimer == App.BreakTimer && activeMember /= Nothing) then
                 [ h3 [ class "title is-3" ] [ text "Cooldown!" ]
-                , h4 [ class "title is-4" ] [ text ("Up next: " ++ (getNick activeMember)) ]
+                , a [ class "title is-4", onClick (App.TeamMsg Team.SetNextMemberActive) ]
+                    [ text ("Up next: " ++ (getNick activeMember)) ]
                 , timerContent
                 ]
             else if activeMember /= Nothing then
