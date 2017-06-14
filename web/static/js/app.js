@@ -132,7 +132,7 @@ app.ports.teamStatus.subscribe(function(arg) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  if (!Notification) {
+  if (!("Notification" in window)) {
     alert('Desktop notifications not available in your browser. Try Chromium.');
     return;
   }
@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 );
 
 function desktopNotify(message) {
+  if (!("Notification" in window)) { return; }
   let userAgent = window.navigator.userAgent;
 
   if (Notification.permission !== "granted")
