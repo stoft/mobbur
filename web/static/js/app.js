@@ -108,6 +108,8 @@ app.ports.alarm.subscribe(function(obj) {
   try {
     console.log("in alarm.subscribe");
     var audio = new Audio(obj.audioUri);
+
+    let userAgent = window.navigator.userAgent;
     if (!userAgent.match(/iPhone|iPad/i)) {
       audio.play();
     }
