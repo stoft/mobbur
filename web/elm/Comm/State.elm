@@ -6,7 +6,10 @@ import Comm.Types as Comm exposing (Model, Msg, ReplicatedModel, Alarm)
 -- OUTBOUND PORTS
 
 
-port alarm : Alarm -> Cmd msg
+port playAudio : String -> Cmd msg
+
+
+port notify : { message : String, titleMessage : String, nick : Maybe String } -> Cmd msg
 
 
 port teamStatus : ReplicatedModel -> Cmd msg

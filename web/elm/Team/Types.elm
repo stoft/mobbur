@@ -31,14 +31,63 @@ type TeamState
     | Displaying
 
 
-getActiveMember : Model -> Maybe TeamMember
-getActiveMember model =
+getActiveMemberNick : Model -> Maybe String
+getActiveMemberNick model =
     case model.activeMember of
         Just id_ ->
-            model.members |> List.filter (\m -> m.id == id_) |> List.head
+            model.members
+                |> List.filter (\m -> m.id == id_)
+                |> List.head
+                |> Maybe.map (.nick)
 
         _ ->
             Nothing
+
+
+setNextMemberActive : Model -> Model
+setNextMemberActive model =
+    let
+        head =
+            List.head model.members
+
+        tail =
+            List.tail model.members
+
+        rotatedMembers =
+            case tail of
+                Just list ->
+                    case head of
+                        Just m ->
+                            list ++ [ m ]
+
+                        Nothing ->
+                            list
+
+                Nothing ->
+                    []
+
+        getIdOfFirstMember members =
+            case List.head members of
+                Just m ->
+                    Just m.id
+
+                Nothing ->
+                    Nothing
+
+        nextActiveMember =
+            case model.activeMember of
+                Just _ ->
+                    getIdOfFirstMember rotatedMembers
+
+                Nothing ->
+                    getIdOfFirstMember model.members
+    in
+        case model.activeMember of
+            Nothing ->
+                { model | activeMember = nextActiveMember, members = model.members }
+
+            Just _ ->
+                { model | activeMember = nextActiveMember, members = rotatedMembers }
 
 
 type Msg

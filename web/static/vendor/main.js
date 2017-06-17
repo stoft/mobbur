@@ -9516,16 +9516,72 @@ var _user$project$Comm_Types$StatusUpdate = function (a) {
 };
 var _user$project$Comm_Types$NoOp = {ctor: 'NoOp'};
 
-var _user$project$Team_Types$getActiveMember = function (model) {
-	var _p0 = model.activeMember;
-	if (_p0.ctor === 'Just') {
-		return _elm_lang$core$List$head(
-			A2(
-				_elm_lang$core$List$filter,
-				function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id, _p0._0);
-				},
-				model.members));
+var _user$project$Team_Types$setNextMemberActive = function (model) {
+	var getIdOfFirstMember = function (members) {
+		var _p0 = _elm_lang$core$List$head(members);
+		if (_p0.ctor === 'Just') {
+			return _elm_lang$core$Maybe$Just(_p0._0.id);
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	var tail = _elm_lang$core$List$tail(model.members);
+	var head = _elm_lang$core$List$head(model.members);
+	var rotatedMembers = function () {
+		var _p1 = tail;
+		if (_p1.ctor === 'Just') {
+			var _p3 = _p1._0;
+			var _p2 = head;
+			if (_p2.ctor === 'Just') {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p3,
+					{
+						ctor: '::',
+						_0: _p2._0,
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return _p3;
+			}
+		} else {
+			return {ctor: '[]'};
+		}
+	}();
+	var nextActiveMember = function () {
+		var _p4 = model.activeMember;
+		if (_p4.ctor === 'Just') {
+			return getIdOfFirstMember(rotatedMembers);
+		} else {
+			return getIdOfFirstMember(model.members);
+		}
+	}();
+	var _p5 = model.activeMember;
+	if (_p5.ctor === 'Nothing') {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{activeMember: nextActiveMember, members: model.members});
+	} else {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{activeMember: nextActiveMember, members: rotatedMembers});
+	}
+};
+var _user$project$Team_Types$getActiveMemberNick = function (model) {
+	var _p6 = model.activeMember;
+	if (_p6.ctor === 'Just') {
+		return A2(
+			_elm_lang$core$Maybe$map,
+			function (_) {
+				return _.nick;
+			},
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (m) {
+						return _elm_lang$core$Native_Utils.eq(m.id, _p6._0);
+					},
+					model.members)));
 	} else {
 		return _elm_lang$core$Maybe$Nothing;
 	}
@@ -9602,11 +9658,12 @@ var _user$project$Timer_Types$UpdateMinutes = function (a) {
 var _user$project$Timer_Types$UpdateAudioURI = function (a) {
 	return {ctor: 'UpdateAudioURI', _0: a};
 };
-var _user$project$Timer_Types$Tick = {ctor: 'Tick'};
 var _user$project$Timer_Types$Toggle = {ctor: 'Toggle'};
+var _user$project$Timer_Types$Tick = {ctor: 'Tick'};
 var _user$project$Timer_Types$Start = {ctor: 'Start'};
-var _user$project$Timer_Types$Pause = {ctor: 'Pause'};
 var _user$project$Timer_Types$Reset = {ctor: 'Reset'};
+var _user$project$Timer_Types$PreAlarm = {ctor: 'PreAlarm'};
+var _user$project$Timer_Types$Pause = {ctor: 'Pause'};
 var _user$project$Timer_Types$Edit = {ctor: 'Edit'};
 var _user$project$Timer_Types$Alarm = {ctor: 'Alarm'};
 var _user$project$Timer_Types$NoOp = {ctor: 'NoOp'};
@@ -9721,12 +9778,18 @@ var _user$project$Comm_State$initialModel = {
 	numberOfTeams: 0,
 	teamNames: {ctor: '[]'}
 };
-var _user$project$Comm_State$alarm = _elm_lang$core$Native_Platform.outgoingPort(
-	'alarm',
+var _user$project$Comm_State$playAudio = _elm_lang$core$Native_Platform.outgoingPort(
+	'playAudio',
+	function (v) {
+		return v;
+	});
+var _user$project$Comm_State$notify = _elm_lang$core$Native_Platform.outgoingPort(
+	'notify',
 	function (v) {
 		return {
-			nick: (v.nick.ctor === 'Nothing') ? null : v.nick._0,
-			audioUri: v.audioUri
+			message: v.message,
+			titleMessage: v.titleMessage,
+			nick: (v.nick.ctor === 'Nothing') ? null : v.nick._0
 		};
 	});
 var _user$project$Comm_State$teamStatus = _elm_lang$core$Native_Platform.outgoingPort(
@@ -10176,65 +10239,6 @@ var _user$project$Team_State$moveMemberLeftOne = F2(
 			_user$project$Team_State$matchFunction(id),
 			list);
 	});
-var _user$project$Team_State$handleSetNextMemberActive = function (model) {
-	var getIdOfFirstMember = function (members) {
-		var _p0 = _elm_lang$core$List$head(members);
-		if (_p0.ctor === 'Just') {
-			return _elm_lang$core$Maybe$Just(_p0._0.id);
-		} else {
-			return _elm_lang$core$Maybe$Nothing;
-		}
-	};
-	var tail = _elm_lang$core$List$tail(model.members);
-	var head = _elm_lang$core$List$head(model.members);
-	var rotatedMembers = function () {
-		var _p1 = tail;
-		if (_p1.ctor === 'Just') {
-			var _p3 = _p1._0;
-			var _p2 = head;
-			if (_p2.ctor === 'Just') {
-				return A2(
-					_elm_lang$core$Basics_ops['++'],
-					_p3,
-					{
-						ctor: '::',
-						_0: _p2._0,
-						_1: {ctor: '[]'}
-					});
-			} else {
-				return _p3;
-			}
-		} else {
-			return {ctor: '[]'};
-		}
-	}();
-	var nextActiveMember = function () {
-		var _p4 = model.activeMember;
-		if (_p4.ctor === 'Just') {
-			return getIdOfFirstMember(rotatedMembers);
-		} else {
-			return getIdOfFirstMember(model.members);
-		}
-	}();
-	var _p5 = model.activeMember;
-	if (_p5.ctor === 'Nothing') {
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{activeMember: nextActiveMember, members: model.members}),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
-	} else {
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{activeMember: nextActiveMember, members: rotatedMembers}),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
-	}
-};
 var _user$project$Team_State$handleAddMember = function (model) {
 	var findMax = F2(
 		function (m, max) {
@@ -10268,20 +10272,20 @@ var _user$project$Team_State$handleAddMember = function (model) {
 };
 var _user$project$Team_State$update = F2(
 	function (msg, model) {
-		var _p6 = msg;
-		switch (_p6.ctor) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'AddMember':
 				return _user$project$Team_State$handleAddMember(model);
 			case 'KeyPress':
-				return A2(_user$project$Team_State$handleKeyPress, _p6._0, model);
+				return A2(_user$project$Team_State$handleKeyPress, _p0._0, model);
 			case 'EditMember':
-				var _p7 = _p6._0;
+				var _p1 = _p0._0;
 				var updatedMembers = A2(
 					_elm_lang$core$List$map,
 					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id, _p7) ? _elm_lang$core$Native_Utils.update(
+						return _elm_lang$core$Native_Utils.eq(m.id, _p1) ? _elm_lang$core$Native_Utils.update(
 							m,
 							{state: _user$project$Team_Types$Editing}) : m;
 					},
@@ -10298,7 +10302,7 @@ var _user$project$Team_State$update = F2(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								'team-member-',
-								_elm_lang$core$Basics$toString(_p7))))
+								_elm_lang$core$Basics$toString(_p1))))
 				};
 			case 'EditTeam':
 				return {
@@ -10309,7 +10313,7 @@ var _user$project$Team_State$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MoveMemberUp':
-				var updatedMembers = A2(_user$project$Team_State$moveMemberLeftOne, _p6._0, model.members);
+				var updatedMembers = A2(_user$project$Team_State$moveMemberLeftOne, _p0._0, model.members);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -10318,7 +10322,7 @@ var _user$project$Team_State$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MoveMemberDown':
-				var updatedMembers = A2(_user$project$Team_State$moveMemberRightOne, _p6._0, model.members);
+				var updatedMembers = A2(_user$project$Team_State$moveMemberRightOne, _p0._0, model.members);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -10336,7 +10340,7 @@ var _user$project$Team_State$update = F2(
 				var updatedMembers = A2(
 					_user$project$Helpers_ListHelpers$randomizeList,
 					model.members,
-					_elm_lang$core$Basics$round(_p6._0));
+					_elm_lang$core$Basics$round(_p0._0));
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -10348,7 +10352,7 @@ var _user$project$Team_State$update = F2(
 				var updatedMembers = A2(
 					_elm_lang$core$List$filter,
 					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id, _p6._0);
+						return !_elm_lang$core$Native_Utils.eq(m.id, _p0._0);
 					},
 					model.members);
 				return {
@@ -10359,17 +10363,21 @@ var _user$project$Team_State$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SetNextMemberActive':
-				return _user$project$Team_State$handleSetNextMemberActive(model);
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Team_Types$setNextMemberActive(model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SubmitNick':
-				var _p9 = _p6._0;
+				var _p3 = _p0._0;
 				var removeMember = A2(
 					_elm_lang$core$List$filter,
 					function (m) {
-						return !_elm_lang$core$Native_Utils.eq(m.id, _p9);
+						return !_elm_lang$core$Native_Utils.eq(m.id, _p3);
 					},
 					model.members);
 				var changeToDisplaying = function (m) {
-					return _elm_lang$core$Native_Utils.eq(m.id, _p9) ? _elm_lang$core$Native_Utils.update(
+					return _elm_lang$core$Native_Utils.eq(m.id, _p3) ? _elm_lang$core$Native_Utils.update(
 						m,
 						{state: _user$project$Team_Types$DisplayingMember}) : m;
 				};
@@ -10377,14 +10385,14 @@ var _user$project$Team_State$update = F2(
 					A2(
 						_elm_lang$core$List$filter,
 						function (m) {
-							return _elm_lang$core$Native_Utils.eq(m.id, _p9);
+							return _elm_lang$core$Native_Utils.eq(m.id, _p3);
 						},
 						model.members));
 				var updatedMembers = function () {
-					var _p8 = member;
-					if (_p8.ctor === 'Just') {
+					var _p2 = member;
+					if (_p2.ctor === 'Just') {
 						return _elm_lang$core$Native_Utils.eq(
-							_elm_lang$core$String$trim(_p8._0.nick),
+							_elm_lang$core$String$trim(_p2._0.nick),
 							'') ? removeMember : A2(_elm_lang$core$List$map, changeToDisplaying, model.members);
 					} else {
 						return model.members;
@@ -10409,9 +10417,9 @@ var _user$project$Team_State$update = F2(
 				var updatedMembers = A2(
 					_elm_lang$core$List$map,
 					function (m) {
-						return _elm_lang$core$Native_Utils.eq(m.id, _p6._0) ? _elm_lang$core$Native_Utils.update(
+						return _elm_lang$core$Native_Utils.eq(m.id, _p0._0) ? _elm_lang$core$Native_Utils.update(
 							m,
-							{nick: _p6._1}) : m;
+							{nick: _p0._1}) : m;
 					},
 					model.members);
 				return {
@@ -10426,7 +10434,7 @@ var _user$project$Team_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{newNick: _p6._0}),
+						{newNick: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -10434,15 +10442,15 @@ var _user$project$Team_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{name: _p6._0}),
+						{name: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
 var _user$project$Team_State$handleKeyPress = F2(
 	function (code, model) {
-		var _p10 = code;
-		if (_p10 === 13) {
+		var _p4 = code;
+		if (_p4 === 13) {
 			return A2(_user$project$Team_State$update, _user$project$Team_Types$AddMember, model);
 		} else {
 			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
@@ -10522,6 +10530,8 @@ var _user$project$Timer_State$update = F2(
 					msg = _v1;
 					model = _v2;
 					continue update;
+				case 'PreAlarm':
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'Edit':
 					return {
 						ctor: '_Tuple2',
@@ -10579,11 +10589,11 @@ var _user$project$Timer_State$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{countdown: model.countdown - 1}),
-						_1: _user$project$Comm_State$alarm(
-							{
-								nick: _elm_lang$core$Maybe$Just(''),
-								audioUri: model.audioUri
-							})
+						_1: A2(
+							_elm_lang$core$Task$perform,
+							_elm_lang$core$Basics$always(_user$project$Timer_Types$PreAlarm),
+							_elm_lang$core$Task$succeed(
+								{ctor: '_Tuple0'}))
 					} : ((_elm_lang$core$Native_Utils.eq(model.state, _user$project$Timer_Types$Started) && (_elm_lang$core$Native_Utils.cmp(model.countdown, 1) < 0)) ? {
 						ctor: '_Tuple2',
 						_0: model,
@@ -10664,30 +10674,18 @@ var _user$project$Timer_State$init = {
 
 var _user$project$App_State$handleWorkTimerMsg = F2(
 	function (timerMsg, model) {
-		var _p0 = function () {
-			var _p1 = timerMsg;
-			switch (_p1.ctor) {
-				case 'Alarm':
-					return model.autoRotateTeam ? A2(_user$project$Team_State$update, _user$project$Team_Types$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
-				case 'Start':
-					return (model.autoRotateTeam && _elm_lang$core$Native_Utils.eq(model.team.activeMember, _elm_lang$core$Maybe$Nothing)) ? A2(_user$project$Team_State$update, _user$project$Team_Types$SetNextMemberActive, model.team) : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
-				default:
-					return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
-			}
-		}();
-		var team = _p0._0;
 		var activeTimer = function () {
-			var _p2 = timerMsg;
-			if (_p2.ctor === 'Alarm') {
+			var _p0 = timerMsg;
+			if (_p0.ctor === 'Alarm') {
 				return model.useBreakTimer ? _user$project$App_Types$BreakTimer : _user$project$App_Types$WorkTimer;
 			} else {
 				return model.activeTimer;
 			}
 		}();
-		var _p3 = A2(_user$project$Timer_State$update, timerMsg, model.workTimer);
-		var tmodel = _p3._0;
-		var tcmd = _p3._1;
-		var _p4 = (_elm_lang$core$Native_Utils.eq(timerMsg, _user$project$Timer_Types$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
+		var _p1 = A2(_user$project$Timer_State$update, timerMsg, model.workTimer);
+		var tmodel = _p1._0;
+		var tcmd = _p1._1;
+		var _p2 = (_elm_lang$core$Native_Utils.eq(timerMsg, _user$project$Timer_Types$Alarm) && model.autoRestart) ? (model.useBreakTimer ? A2(
 			F2(
 				function (v0, v1) {
 					return {ctor: '_Tuple2', _0: v0, _1: v1};
@@ -10706,39 +10704,122 @@ var _user$project$App_State$handleWorkTimerMsg = F2(
 				}),
 			{ctor: '_Tuple2', _0: model.breakTimer, _1: _elm_lang$core$Platform_Cmd$none},
 			{ctor: '_Tuple2', _0: tmodel, _1: tcmd});
-		var breakTimer = _p4._0._0;
-		var bcmd = _p4._0._1;
-		var workTimer = _p4._1._0;
-		var wcmd = _p4._1._1;
+		var breakTimer = _p2._0._0;
+		var bcmd = _p2._0._1;
+		var workTimer = _p2._1._0;
+		var wcmd = _p2._1._1;
+		var _p3 = function () {
+			var _p4 = timerMsg;
+			switch (_p4.ctor) {
+				case 'PreAlarm':
+					return {
+						ctor: '_Tuple2',
+						_0: model.team,
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							{
+								ctor: '::',
+								_0: _user$project$Comm_State$notify(
+									{
+										message: 'Iteration ended.',
+										titleMessage: ', get ready!',
+										nick: _user$project$Team_Types$getActiveMemberNick(
+											_user$project$Team_Types$setNextMemberActive(model.team))
+									}),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Comm_State$playAudio(workTimer.audioUri),
+									_1: {ctor: '[]'}
+								}
+							})
+					};
+				case 'Alarm':
+					return model.autoRotateTeam ? {
+						ctor: '_Tuple2',
+						_0: _user$project$Team_Types$setNextMemberActive(model.team),
+						_1: _elm_lang$core$Platform_Cmd$none
+					} : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'Start':
+					return (model.autoRotateTeam && _elm_lang$core$Native_Utils.eq(model.team.activeMember, _elm_lang$core$Maybe$Nothing)) ? {
+						ctor: '_Tuple2',
+						_0: _user$project$Team_Types$setNextMemberActive(model.team),
+						_1: _elm_lang$core$Platform_Cmd$none
+					} : {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+				default:
+					return {ctor: '_Tuple2', _0: model.team, _1: _elm_lang$core$Platform_Cmd$none};
+			}
+		}();
+		var team = _p3._0;
+		var msg = _p3._1;
 		return {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.update(
 				model,
 				{workTimer: workTimer, activeTimer: activeTimer, breakTimer: breakTimer, team: team}),
-			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Types$WorkTimerMsg, tcmd)
+			_1: _elm_lang$core$Platform_Cmd$batch(
+				{
+					ctor: '::',
+					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Types$WorkTimerMsg, tcmd),
+					_1: {
+						ctor: '::',
+						_0: msg,
+						_1: {ctor: '[]'}
+					}
+				})
 		};
 	});
 var _user$project$App_State$handleBreakTimerMsg = F2(
 	function (timerMsg, model) {
 		var _p5 = (model.autoRestart && _elm_lang$core$Native_Utils.eq(timerMsg, _user$project$Timer_Types$Alarm)) ? A2(_user$project$Timer_State$update, _user$project$Timer_Types$Start, model.workTimer) : {ctor: '_Tuple2', _0: model.workTimer, _1: _elm_lang$core$Platform_Cmd$none};
 		var workTimer = _p5._0;
-		var activeTimer = function () {
-			var _p6 = timerMsg;
-			if (_p6.ctor === 'Alarm') {
-				return _user$project$App_Types$WorkTimer;
-			} else {
-				return model.activeTimer;
+		var _p6 = function () {
+			var _p7 = timerMsg;
+			switch (_p7.ctor) {
+				case 'Alarm':
+					return {ctor: '_Tuple2', _0: _user$project$App_Types$WorkTimer, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'PreAlarm':
+					return {
+						ctor: '_Tuple2',
+						_0: model.activeTimer,
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							{
+								ctor: '::',
+								_0: _user$project$Comm_State$playAudio(model.breakTimer.audioUri),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Comm_State$notify(
+										{
+											message: 'Break over!',
+											titleMessage: ', go!',
+											nick: _user$project$Team_Types$getActiveMemberNick(model.team)
+										}),
+									_1: {ctor: '[]'}
+								}
+							})
+					};
+				default:
+					return {ctor: '_Tuple2', _0: model.activeTimer, _1: _elm_lang$core$Platform_Cmd$none};
 			}
 		}();
-		var _p7 = A2(_user$project$Timer_State$update, timerMsg, model.breakTimer);
-		var tmodel = _p7._0;
-		var tmsg = _p7._1;
+		var activeTimer = _p6._0;
+		var msg = _p6._1;
+		var _p8 = A2(_user$project$Timer_State$update, timerMsg, model.breakTimer);
+		var tmodel = _p8._0;
+		var tmsg = _p8._1;
 		return {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.update(
 				model,
 				{breakTimer: tmodel, activeTimer: activeTimer, workTimer: workTimer}),
-			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Types$BreakTimerMsg, tmsg)
+			_1: _elm_lang$core$Platform_Cmd$batch(
+				{
+					ctor: '::',
+					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Types$BreakTimerMsg, tmsg),
+					_1: {
+						ctor: '::',
+						_0: msg,
+						_1: {ctor: '[]'}
+					}
+				})
 		};
 	});
 var _user$project$App_State$updateTimerWithKeyPress = F2(
@@ -10772,9 +10853,9 @@ var _user$project$App_State$updateTimerWithKeyPress = F2(
 				_elm_lang$core$List$head(
 					A2(
 						_elm_lang$core$List$filter,
-						function (_p8) {
-							var _p9 = _p8;
-							return _elm_lang$core$Native_Utils.eq(_p9._0, keyPress);
+						function (_p9) {
+							var _p10 = _p9;
+							return _elm_lang$core$Native_Utils.eq(_p10._0, keyPress);
 						},
 						dictionary))));
 		return _elm_lang$core$Tuple$first(
@@ -10782,8 +10863,8 @@ var _user$project$App_State$updateTimerWithKeyPress = F2(
 	});
 var _user$project$App_State$handleGlobalViewKeyPress = F2(
 	function (keycode, model) {
-		var _p10 = _elm_lang$core$Char$fromCode(keycode);
-		switch (_p10.valueOf()) {
+		var _p11 = _elm_lang$core$Char$fromCode(keycode);
+		switch (_p11.valueOf()) {
 			case ' ':
 				return {
 					ctor: '_Tuple2',
@@ -10806,9 +10887,9 @@ var _user$project$App_State$handleGlobalViewKeyPress = F2(
 	});
 var _user$project$App_State$handleMainViewKeyPress = F2(
 	function (keyCode, model) {
-		var _p11 = function () {
-			var _p12 = model.activeTimer;
-			if (_p12.ctor === 'WorkTimer') {
+		var _p12 = function () {
+			var _p13 = model.activeTimer;
+			if (_p13.ctor === 'WorkTimer') {
 				return {
 					ctor: '_Tuple2',
 					_0: A2(_user$project$App_State$updateTimerWithKeyPress, keyCode, model.workTimer),
@@ -10822,10 +10903,10 @@ var _user$project$App_State$handleMainViewKeyPress = F2(
 				};
 			}
 		}();
-		var workTimer_ = _p11._0;
-		var breakTimer_ = _p11._1;
-		var _p13 = _elm_lang$core$Char$fromCode(keyCode);
-		switch (_p13.valueOf()) {
+		var workTimer_ = _p12._0;
+		var breakTimer_ = _p12._1;
+		var _p14 = _elm_lang$core$Char$fromCode(keyCode);
+		switch (_p14.valueOf()) {
 			case ' ':
 				return {
 					ctor: '_Tuple2',
@@ -10864,8 +10945,8 @@ var _user$project$App_State$handleMainViewKeyPress = F2(
 	});
 var _user$project$App_State$handleKeyPress = F2(
 	function (keyCode, model) {
-		var _p14 = model.currentView;
-		switch (_p14.ctor) {
+		var _p15 = model.currentView;
+		switch (_p15.ctor) {
 			case 'MainView':
 				return A2(_user$project$App_State$handleMainViewKeyPress, keyCode, model);
 			case 'GlobalView':
@@ -10876,13 +10957,13 @@ var _user$project$App_State$handleKeyPress = F2(
 	});
 var _user$project$App_State$update = F2(
 	function (msg, model) {
-		var _p15 = msg;
-		switch (_p15.ctor) {
+		var _p16 = msg;
+		switch (_p16.ctor) {
 			case 'Noop':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'CommMsg':
-				var _p16 = A2(_user$project$Comm_State$update, _p15._0, model.globalTeams);
-				var newGlobalTeams = _p16._0;
+				var _p17 = A2(_user$project$Comm_State$update, _p16._0, model.globalTeams);
+				var newGlobalTeams = _p17._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -10895,19 +10976,19 @@ var _user$project$App_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{today: _p15._0}),
+						{today: _p16._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'KeyPress':
-				return A2(_user$project$App_State$handleKeyPress, _p15._0, model);
+				return A2(_user$project$App_State$handleKeyPress, _p16._0, model);
 			case 'BreakTimerMsg':
-				return A2(_user$project$App_State$handleBreakTimerMsg, _p15._0, model);
+				return A2(_user$project$App_State$handleBreakTimerMsg, _p16._0, model);
 			case 'WorkTimerMsg':
-				return A2(_user$project$App_State$handleWorkTimerMsg, _p15._0, model);
+				return A2(_user$project$App_State$handleWorkTimerMsg, _p16._0, model);
 			case 'TeamMsg':
-				var _p17 = A2(_user$project$Team_State$update, _p15._0, model.team);
-				var tmodel = _p17._0;
-				var tmsg = _p17._1;
+				var _p18 = A2(_user$project$Team_State$update, _p16._0, model.team);
+				var tmodel = _p18._0;
+				var tmsg = _p18._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -10920,7 +11001,7 @@ var _user$project$App_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{autoRestart: _p15._0}),
+						{autoRestart: _p16._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'UpdateAutoRotateTeam':
@@ -10928,7 +11009,7 @@ var _user$project$App_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{autoRotateTeam: _p15._0}),
+						{autoRotateTeam: _p16._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'UpdateUseBreakTimer':
@@ -10936,7 +11017,7 @@ var _user$project$App_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{useBreakTimer: _p15._0}),
+						{useBreakTimer: _p16._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -10944,7 +11025,7 @@ var _user$project$App_State$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{currentView: _p15._0}),
+						{currentView: _p16._0}),
 					_1: _user$project$Comm_State$teamStatus(
 						_user$project$Comm_NativeToPortConverter$convertModel(model))
 				};

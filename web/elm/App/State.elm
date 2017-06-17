@@ -206,16 +206,25 @@ handleBreakTimerMsg timerMsg model =
         ( tmodel, tmsg ) =
             Timer.update timerMsg model.breakTimer
 
-        -- newToday =
-        --   case model.today == Date.fromTime 0 then
-        --
-        activeTimer =
+        ( activeTimer, msg ) =
             case timerMsg of
                 Timer.Alarm ->
-                    WorkTimer
+                    ( WorkTimer, Cmd.none )
+
+                Timer.PreAlarm ->
+                    ( model.activeTimer
+                    , Cmd.batch
+                        [ Comm.playAudio model.breakTimer.audioUri
+                        , Comm.notify
+                            { message = "Break over!"
+                            , titleMessage = ", go!"
+                            , nick = Team.getActiveMemberNick model.team
+                            }
+                        ]
+                    )
 
                 _ ->
-                    model.activeTimer
+                    ( model.activeTimer, Cmd.none )
 
         ( workTimer, _ ) =
             if model.autoRestart && timerMsg == Timer.Alarm then
@@ -224,13 +233,20 @@ handleBreakTimerMsg timerMsg model =
                 ( model.workTimer, Cmd.none )
     in
         ( { model | breakTimer = tmodel, activeTimer = activeTimer, workTimer = workTimer }
-        , Cmd.map BreakTimerMsg tmsg
+        , Cmd.batch [ Cmd.map BreakTimerMsg tmsg, msg ]
         )
 
 
 handleWorkTimerMsg : Timer.Msg -> Model -> ( Model, Cmd Msg )
 handleWorkTimerMsg timerMsg model =
     let
+        -- _ =
+        --     case timerMsg of
+        --         Timer.Tick ->
+        --             timerMsg
+        --
+        --         _ ->
+        --             Debug.log "worktimermsg" timerMsg
         ( tmodel, tcmd ) =
             Timer.update timerMsg model.workTimer
 
@@ -248,25 +264,35 @@ handleWorkTimerMsg timerMsg model =
                 Timer.Alarm ->
                     if model.useBreakTimer then
                         BreakTimer
-                        -- (BreakTimer, (Iterations.update Iterations.Increment model.iterations))
                     else
                         WorkTimer
 
-                -- (WorkTimer, (Iterations.update Iterations.Increment model.iterations))
                 _ ->
                     model.activeTimer
 
-        ( team, _ ) =
+        ( team, msg ) =
             case timerMsg of
+                Timer.PreAlarm ->
+                    ( model.team
+                    , Cmd.batch
+                        [ Comm.notify
+                            { message = "Iteration ended."
+                            , titleMessage = ", get ready!"
+                            , nick = Team.getActiveMemberNick <| Team.setNextMemberActive model.team
+                            }
+                        , Comm.playAudio workTimer.audioUri
+                        ]
+                    )
+
                 Timer.Alarm ->
                     if model.autoRotateTeam then
-                        (Team.update Team.SetNextMemberActive model.team)
+                        ( Team.setNextMemberActive model.team, Cmd.none )
                     else
                         ( model.team, Cmd.none )
 
                 Timer.Start ->
                     if model.autoRotateTeam && model.team.activeMember == Nothing then
-                        (Team.update Team.SetNextMemberActive model.team)
+                        ( Team.setNextMemberActive model.team, Cmd.none )
                     else
                         ( model.team, Cmd.none )
 
@@ -279,5 +305,5 @@ handleWorkTimerMsg timerMsg model =
             , breakTimer = breakTimer
             , team = team
           }
-        , Cmd.map WorkTimerMsg tcmd
+        , Cmd.batch [ Cmd.map WorkTimerMsg tcmd, msg ]
         )

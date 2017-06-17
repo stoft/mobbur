@@ -24,11 +24,12 @@ type Msg
     = NoOp
     | Alarm
     | Edit
-    | Reset
     | Pause
+    | PreAlarm
+    | Reset
     | Start
-    | Toggle
     | Tick
+    | Toggle
     | UpdateAudioURI String
     | UpdateMinutes String
     | UpdateSeconds String

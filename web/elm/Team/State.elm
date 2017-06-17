@@ -97,7 +97,7 @@ update msg model =
                 ( { model | members = updatedMembers }, Cmd.none )
 
         Team.SetNextMemberActive ->
-            handleSetNextMemberActive model
+            ( Team.setNextMemberActive model, Cmd.none )
 
         Team.SubmitNick id ->
             let
@@ -186,52 +186,6 @@ handleAddMember model =
                 model.members ++ [ newMember ]
     in
         ( { model | members = updatedMembers, newNick = "" }, Cmd.none )
-
-
-handleSetNextMemberActive : Model -> ( Model, Cmd Msg )
-handleSetNextMemberActive model =
-    let
-        head =
-            List.head model.members
-
-        tail =
-            List.tail model.members
-
-        rotatedMembers =
-            case tail of
-                Just list ->
-                    case head of
-                        Just m ->
-                            list ++ [ m ]
-
-                        Nothing ->
-                            list
-
-                Nothing ->
-                    []
-
-        getIdOfFirstMember members =
-            case List.head members of
-                Just m ->
-                    Just m.id
-
-                Nothing ->
-                    Nothing
-
-        nextActiveMember =
-            case model.activeMember of
-                Just _ ->
-                    getIdOfFirstMember rotatedMembers
-
-                Nothing ->
-                    getIdOfFirstMember model.members
-    in
-        case model.activeMember of
-            Nothing ->
-                ( { model | activeMember = nextActiveMember, members = model.members }, Cmd.none )
-
-            Just _ ->
-                ( { model | activeMember = nextActiveMember, members = rotatedMembers }, Cmd.none )
 
 
 moveMemberLeftOne : Int -> List TeamMember -> List TeamMember

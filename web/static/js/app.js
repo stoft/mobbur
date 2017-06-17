@@ -25,6 +25,7 @@ let teamName = document.getElementById('team-name').content;
 var elmDiv = document.getElementById('elm-app-lives-here');
 var app = Elm.Main.embed(elmDiv, {teamName: teamName});
 
+
 // var audio = new Audio('/audio/start1.mp3')
 let user = window.location.pathname.split('/')[1];
 
@@ -94,30 +95,31 @@ lobby.join()
 let team_room = socket.channel("room:" + user);
 
 team_room.on("team_state", state => {
-  console.log("incoming state:");
-  console.log(state);
+  // console.log("incoming state:");
+  // console.log(state);
   app.ports.teamState.send(state);
 })
 
 team_room.join();
 
-app.ports.alarm.subscribe(function(obj) {
-  // var tabs = require("sdk/tabs");
-  // tabs.
-  // document.getElementById('alarm').play();
+app.ports.playAudio.subscribe(function(uri) {
+  // console.log('in playAudio');
   try {
-    console.log("in alarm.subscribe");
-    var audio = new Audio(obj.audioUri);
+    // console.log("in alarm.subscribe");
+    var audio = new Audio(uri);
 
     audio.play();
   } catch (e) {
-    if (!userAgent.match(/iPhone|iPad/i)) {
-      document.getElementById('alarm').play();
-    }
+    document.getElementById('alarm').play();
   }
-  desktopNotify("Mobbur alarm!");
   // socket.sendStatus("foo");
 });
+
+app.ports.notify.subscribe(function(obj) {
+  // console.log('Notify port called with: ');
+  // console.log(obj);
+  desktopNotify(obj);
+})
 
 app.ports.teamStatus.subscribe(function(arg) {
   // console.log(arg);
@@ -136,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 );
 
-function desktopNotify(message) {
+function desktopNotify(obj) {
   if (!('Notification' in window)) {
     return;
   }
@@ -144,9 +146,16 @@ function desktopNotify(message) {
   if (Notification.permission !== "granted") {
     Notification.requestPermission();
   } else {
-    var notification = new Notification('Mobbur', {
+    var body = 'Iteration or cooldown just ended!';
+    if (obj.nick) {
+        body = 'Next up: ' + obj.nick;
+    }
+
+    let title = obj.nick ? 'Mobbur: ' + obj.nick + obj.titleMessage : 'Mobbur';
+
+    var notification = new Notification(title, {
       icon: 'https://cdn3.iconfinder.com/data/icons/auto-racing/423/Stopwatch_Timer-512.png',
-      body: 'Iteration or cooldown just ended.'
+      body: obj.message
     });
 
     window.setTimeout(function() {

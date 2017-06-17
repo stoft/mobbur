@@ -1,6 +1,5 @@
 module Timer.State exposing (..)
 
-import Comm.State as Comm exposing (alarm)
 import Task exposing (perform)
 import Time exposing (every, second)
 import Timer.Helpers exposing (stringToSeconds)
@@ -39,6 +38,9 @@ update msg model =
         Alarm ->
             update Reset model
 
+        PreAlarm ->
+            ( model, Cmd.none )
+
         Edit ->
             ( { model | state = Editing, countdown = model.interval }, Cmd.none )
 
@@ -68,7 +70,7 @@ update msg model =
 
         Tick ->
             if (model.state == Started) && (model.countdown == 1) then
-                ( { model | countdown = model.countdown - 1 }, Comm.alarm { nick = Just "", audioUri = model.audioUri } )
+                ( { model | countdown = model.countdown - 1 }, Task.perform (always PreAlarm) (Task.succeed ()) )
             else if (model.state == Started) && (model.countdown < 1) then
                 -- ( model, Cmd.map (always Reset) Cmd.none )
                 ( model, Task.perform (always Alarm) (Task.succeed ()) )
