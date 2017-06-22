@@ -25,6 +25,8 @@ let teamName = document.getElementById('team-name').content;
 var elmDiv = document.getElementById('elm-app-lives-here');
 var app = Elm.Main.embed(elmDiv, {teamName: teamName});
 
+let userAgent = window.navigator.userAgent;
+let iOS = !!userAgent.match(/iPad/i) || !!userAgent.match(/iPhone/i);
 
 // var audio = new Audio('/audio/start1.mp3')
 let user = window.location.pathname.split('/')[1];
@@ -131,15 +133,17 @@ app.ports.teamStatus.subscribe(function(arg) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+  if (iOS) return;
+
   if (!('Notification' in window)) {
-    alert('Desktop notifications not available in your browser. Try Chromium.');
+    alert('Desktop notifications not available in your browser. Try another browser?');
   } else if (Notification.permission !== "granted")
     Notification.requestPermission();
   }
 );
 
 function desktopNotify(obj) {
-  if (!('Notification' in window)) {
+  if (!('Notification' in window) || iOS) {
     return;
   }
 
